@@ -1,0 +1,299 @@
+package iphstich.platformer.engine.levels
+{
+	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
+	import iphstich.library.CustomMath;
+	import iphstich.platformer.Main;
+	import iphstich.platformer.engine.Engine;
+	import iphstich.platformer.engine.entities.Entity;
+	import iphstich.platformer.engine.HitData;
+	import iphstich.platformer.engine.levels.interactables.Door;
+	import iphstich.platformer.engine.levels.interactables.Interactable;
+	import iphstich.platformer.engine.levels.parts.*;
+	import iphstich.platformer.engine.entities.enemies.TestEnemy;
+	import iphstich.platformer.engine.levels.misc.Area;
+	
+	import flash.utils.getQualifiedClassName;
+	
+	public class Level extends MovieClip
+	{
+		private static var levels:Dictionary;
+		public static function getLevel(name:String) : Level
+		{
+			if (levels == null) levels = new Dictionary();
+			if (levels[name]) return levels[name];
+			
+			var ret:Level = null;
+			
+			switch (name) {
+				case "testLevel":
+					ret = new TestLevel();
+					break;
+				case "hallway":
+					ret = new Hallway();
+					break;
+				case "trixieArena":
+					ret = new TrixieArena();
+					break;
+				case "firstRoom":
+					ret = new FirstRoom();
+					break;
+			}
+			
+			levels[name] = ret;
+			if (ret == null) throw new Error("null level");
+			return ret;
+		}
+		
+		//public static const GRID_SIZE:Number = 10;
+		public static var OUTSIDE_LEVEL:DisplayObject;
+		
+		private var areas:Dictionary;
+		private var parts:Vector.<Part>;
+		private var numEntities:uint;
+		private var numParts:uint;
+		private var numInteractables:uint;
+		private var doors:Vector.<Door>;
+		private var entities:Vector.<Entity>;
+		private var entityLevel:uint;
+		private var interactables:Vector.<Interactable>;
+		//private var entityToRemove:Vector.<Entity>;
+		
+		public var top:Number;
+		public var left:Number;
+		public var right:Number;
+		public var bottom:Number;
+		
+		public function Level()
+		{
+			if (OUTSIDE_LEVEL == null) OUTSIDE_LEVEL = new Bitmap();
+			super();
+			
+			//entityToRemove = new Vector.<Entity>();
+			numEntities = 0;
+			
+			interpretLevel();
+		}
+		
+		private function interpretLevel () : void
+		{
+			var i:uint, j:uint;
+			
+			parts 			= new Vector.<Part>();
+			doors 			= new Vector.<Door>();
+			entities 		= new Vector.<Entity>();
+			interactables 	= new Vector.<Interactable>();
+			areas			= new Dictionary();
+			
+			// initialize level bounds to 'null' values
+			top 	= Number.MAX_VALUE;
+			left 	= Number.MAX_VALUE;
+			right 	= Number.MIN_VALUE;
+			bottom 	= Number.MIN_VALUE;
+			
+			// grab the level pieces
+			var numC:uint = numChildren;
+			for (i = 0; i < numC; ++i)
+			{
+				var child:DisplayObject = this.getChildAt(i);
+				if (child is Door) doors.push(child);
+				if (child is Part) parts.push(child);
+				if (child is EntityPlane) { entityLevel = i; child.visible = false;  }
+				if (child is Interactable) interactables.push(child);
+				if (child is Area) areas[child.name] = child;
+			}
+			
+			numInteractables = interactables.length;
+			
+			// interpret the level parts
+			numParts = parts.length;
+			for (i = 0; i < numParts; ++i)
+			{
+				var p:Part = parts[i]
+				
+				// stretch level bounds
+				if (top > p.top) 		top = p.top;
+				if (left > p.left) 		left = p.left;
+				if (right < p.right) 	right = p.right;
+				if (bottom < p.bottom) 	bottom = p.bottom;
+				
+				// connect pieces by showing every piece every other piece
+				for (j=i+1; j<numParts; ++j)
+				{
+					//if (j == i) continue;
+					p.show( parts[j] );
+				}
+			}
+		}
+		
+		public function testHit(result:Vector.<HitData>, x:Number, y:Number, radius:Number=0, time:Number=-1):Vector.<HitData>
+		{
+			var obj:Object;
+			var ret:Vector.<HitData>; var i:uint;
+			
+			ret = result;
+			
+			if (time == -1) time = Engine.time;
+			//if (radius == 0) radius = 1;
+			
+			// test level bounds
+			if (!(x >= left - radius && x <= right + radius && y >= top - radius && y <= bottom + radius))
+			{
+				ret.push(HitData.hit(OUTSIDE_LEVEL, x, y, time));
+				return ret;
+			}
+			
+			// hit test Parts
+			var p:Part;
+			for (i = 0; i < numParts; ++i)
+			{
+				p = parts[i];
+				if (p.hitTest(x, y, radius))
+					ret.push(HitData.hit(p, x, y, time));
+			}
+			
+			// hit test entities
+			var e:Entity;
+			for (i = 0; i < numEntities; ++i)
+			{
+				e = entities[i];
+				if (e.hitTest(x, y, radius, time))
+					ret.push(HitData.hit(entities[i], x, y, time));
+			}
+			
+			// hit test interactables
+			var r:Interactable;
+			for (i=0; i<numInteractables; ++i)
+			{
+				r = interactables[i];
+				if (r.hitTest(x, y, radius))
+					ret.push(HitData.hit(r, x, y, time));
+			}
+			
+			return ret;
+		}
+		
+		public var pointResult:Vector.<HitData>;
+		public function testHitPath(result:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number, radius:Number = 0, timeFrom:Number = -1, timeTo:Number = -1, interval:Number = -1, endOnFirst:Vector.<Class> = null):Vector.<HitData>
+		{
+			if (pointResult == null) pointResult = new Vector.<HitData>();
+			//this.graphics.clear();
+			//this.graphics.lineStyle(1, 0xFF0000, 1);
+			//this.graphics.moveTo(x1, y1);
+				if (pointResult.length > 0)
+					throw new Error("made new");
+			var i:uint;
+			
+			if (timeFrom == -1) timeFrom = Engine.time;
+			if (timeTo == -1) timeTo = Engine.time;
+			if (interval <= 0) interval = Main.GRID_SIZE;
+			
+			var distance:Number = CustomMath.distance(x1, x2, y1, y2)
+			var numIterations:Number = Math.floor(distance / interval);
+			
+			if (numIterations == 0)
+			{
+				return testHit(result, x2, y2, radius, timeTo);
+			}
+			else
+			{
+				interval = distance / numIterations;
+				//var ret:Vector.<HitData> = new Vector.<HitData>();
+				var pathDirection:Point = CustomMath.normalize(new Point(x2 - x1, y2 - y1));
+				var pathX:Number = pathDirection.x;
+				var pathY:Number = pathDirection.y;
+				var timeDif:Number = (timeTo - timeFrom) / numIterations;
+				var start:Point = new Point(x1, y1);
+				
+				for (i=0; i<=numIterations; ++i)
+				{
+					var point:Point = CustomMath.multiply(pathDirection, interval * i);
+					point = point.add(start);
+					//this.graphics.lineTo(point.x, point.y - 5);
+					//this.graphics.lineTo(point.x, point.y);
+					testHit
+						( result
+						, start.x + pathX * interval * i
+						, start.y + pathY * interval * i
+						, radius
+						, timeFrom + timeDif * i
+					);
+					//while (pointResult.length > 0) {
+						//var b:HitData = result.pop();
+					//}
+					//for each (var b:HitData in pointResult) {
+						//ret.push(b);
+						//if (endOnFirst != null) for each (var c:Class in endOnFirst) if (b.hit is c) return ret;
+						//if (b.hit == Level.OUTSIDE_LEVEL) return ret;
+					//}
+				}
+			}
+			
+			return result;
+		} //testHitPath
+		
+		public function tick() : void
+		{
+			for each (var e:Entity in entities)
+			{
+				e.tick();
+				e.x = e.getX(Engine.time)
+				e.y = e.getY(Engine.time);
+			}
+		}
+		
+		public function addEntity(target:Entity):void
+		{
+			//trace(getQualifiedClassName(target) + " - " + target.name)
+			
+			target.level = this;
+			entities.push(target)
+			addChildAt(target, entityLevel);
+			numEntities = entities.length;
+		}
+		
+		public function removeEntity(target:Entity):void
+		{
+			entities.splice(entities.indexOf(target), 1);
+			removeChild(target);
+			target.level = null;
+			numEntities = entities.length;
+		}
+		
+		public function getDoor(localName:String):Door
+		{
+			var i:uint;
+			for (i = 0; i < doors.length; ++i)
+			{
+				if (doors[i].local == localName) return doors[i];
+			}
+			return null;
+		}
+		
+		public function getArea (name:String) : Area
+		{
+			return areas[name] as Area;
+		}
+		
+		public function clear () : void
+		{
+			var i:int;
+			// this function returns the level to its default state, for use again
+			
+			// delete entities
+			//while (entities.length > 0)
+			for (i=entities.length-1; i>=0; --i)
+			{
+				entities[i].clear();
+			}
+		}
+		
+		public function start () : void
+		{
+			
+		}
+	}
+}
