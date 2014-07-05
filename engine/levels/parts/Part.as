@@ -45,8 +45,8 @@ package iphstich.platformer.engine.levels.parts
 			var i:uint;
 			var numC:uint = connections.length;
 			
-			var x:Number = obj.getX(Engine.time);
-			var y:Number = obj.getX(Engine.time);
+			var x:Number = obj.getX(obj.engine.time);
+			var y:Number = obj.getX(obj.engine.time);
 			
 			if ((x + obj.getBaseRight() >= this.left) && (x + obj.getBaseLeft() <= this.right)) ret = this;
 			

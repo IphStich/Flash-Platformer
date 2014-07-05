@@ -6,6 +6,7 @@ package iphstich.platformer.engine.entities
 	
 	public class HitPoint
 	{
+		public var engine:Engine;
 		public var x:Number;
 		public var y:Number;
 		public var size:Number;
@@ -28,11 +29,11 @@ package iphstich.platformer.engine.entities
 			var i:uint;
 			
 			// prevents the check from happening multiple times in one frame
-			if ((lastCheckTime == Engine.time) && (lastCheckKeyTime == parent.kt)) return lastCheckResult;
-			lastCheckTime = Engine.time;
+			if ((lastCheckTime == engine.time) && (lastCheckKeyTime == parent.kt)) return lastCheckResult;
+			lastCheckTime = engine.time;
 			lastCheckKeyTime = parent.kt;
 			
-			var lf:Number = Engine.lastFrame;
+			var lf:Number = engine.lastFrame;
 			if (lf < lastCheckKeyTime) lf = lastCheckKeyTime;
 			
 			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
@@ -42,11 +43,11 @@ package iphstich.platformer.engine.entities
 				( lastCheckResult
 				, parent.getX(lf) + x
 				, parent.getY(lf) + y
-				, parent.getX(Engine.time) + x
-				, parent.getY(Engine.time) + y
+				, parent.getX(lastCheckTime) + x
+				, parent.getY(lastCheckTime) + y
 				, size
-				, Engine.lastFrame
-				, Engine.time
+				, lf
+				, lastCheckTime
 				, -1
 				, hitList
 			);

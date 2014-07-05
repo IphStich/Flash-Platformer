@@ -4,6 +4,7 @@
 	import flash.display.MovieClip;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	//import iphstich.mcs.engine.entities.Player;
 	import iphstich.platformer.engine.entities.enemies.TestEnemy;
@@ -19,9 +20,9 @@
 		public static const STATUS_IDLE:uint = 0;
 		public static const STATUS_START:uint = 1;
 		
-		public static var lastFrame:Number;
-		public static var instance:Engine;
-		public static var time:Number;
+		public var lastFrame:Number;
+		//public static var instance:Engine;
+		public var time:Number;
 		
 		
 		
@@ -31,12 +32,13 @@
 		private var level:Level;
 		
 		public var view:MovieClip;
+		public var viewport:Rectangle;
 		
 		
 		
 		public function Engine (stage:MovieClip)
 		{
-			instance = this;
+			//instance = this;
 			
 			this.stage 	= stage;
 			status 		= STATUS_IDLE;
@@ -46,11 +48,9 @@
 			stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler, false, -10);
 			
 			view = new MovieClip();
-			view.x = Main.SCREEN_WIDTH / 2;
-			view.y = Main.SCREEN_HEIGHT / 2;
 			stage.addChild(view);
 			
-			this.setLevel(Level.getLevel("testLevel"));
+			//this.setLevel(Level.getLevel("testLevel"));
 		}
 		
 		public function setLevel (lev:Level) : void
@@ -65,19 +65,42 @@
 			level = lev;
 			if (level != null) {
 				view.addChild(lev);
-				level.start();
+				level.start(this);
 			}
 		}
 		
-		public function startGame () : void
+		public function setViewport (vp:Rectangle) : void
 		{
+			viewport = vp;
+			
+			view.x = viewport.x + viewport.width / 2;
+			//view.x = viewport. / 2;
+			view.y = viewport.y + viewport.height / 2;
+		}
+		
+		public function start () : void
+		{
+			if (status == STATUS_START) {
+				throw new Error("The engine is already started");
+			}
+			
+			if (level == null) {
+				throw new Error("Cannot start the engine without a level");
+			}
+			
 			lastFrame 	= getTimer() / 1000;
 			time 		= getTimer() / 1000;
-			spawnHero();
 			
 			// start the engine
 			status = STATUS_START
 			enterFrameHandler();
+		}
+		
+		public function startGame_hiohio () : void
+		{
+			//spawnHero();
+			
+			start();
 		}
 		
 		private function spawnHero () : void
@@ -100,6 +123,10 @@
 			if (status > 0)
 			{
 				level.tick();
+				
+				level.x = level.width / -2;
+				level.y = level.height / -2;
+				
 				
 				// move screen
 				//level.x += -Player.instance.x;

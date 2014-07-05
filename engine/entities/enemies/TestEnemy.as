@@ -18,8 +18,8 @@ package iphstich.platformer.engine.entities.enemies
 		{
 			if (surface != null)
 			{
-				if (getVX(Engine.time) == 0) {
-					setCourse( { vx: 250 }, Engine.time );
+				if (getVX(engine.time) == 0) {
+					setCourse( { vx: 250 }, engine.time );
 				}
 			}
 		}

@@ -33,6 +33,8 @@ package iphstich.platformer.engine.entities
 		protected var hitCenter:HitPoint;
 		
 		public var level:Level;
+		public var engine:Engine;
+		
 		public var alive:Boolean = true;
 		public var hitBox:HitBox;
 		public var team:int;
@@ -58,7 +60,7 @@ package iphstich.platformer.engine.entities
 			
 			// cap X and Y velocities
 			if (!isNaN(cx)) {
-				if (Engine.time >= cxt) {
+				if (engine.time >= cxt) {
 					//trace("cap X")
 					f = cxf;
 					setCourse
@@ -71,7 +73,7 @@ package iphstich.platformer.engine.entities
 				}
 			}
 			if (!isNaN(cy)) {
-				if (Engine.time >= cyt) {
+				if (engine.time >= cyt) {
 					//trace("cap Y", getValue("vy", cyt), cy)
 					f = cyf;
 					setCourse
@@ -85,8 +87,8 @@ package iphstich.platformer.engine.entities
 			}
 			
 			// Calculate the position
-			x =getX(Engine.time);
-			y =getY(Engine.time);
+			x = getX(engine.time);
+			y = getY(engine.time);
 			
 			// Don't do collisions?
 			if (collisionPoints == null) return;
@@ -103,7 +105,7 @@ package iphstich.platformer.engine.entities
 					var obj:HitData = hit[j];
 					if (obj.hit is Interactable) continue;
 					if (obj.hit == Level.OUTSIDE_LEVEL) {
-						trace("auto desu", this, Engine.time, vectorsToString());
+						trace("auto desu", this, engine.time, vectorsToString());
 						this.death();
 						return;
 					}
@@ -148,7 +150,7 @@ package iphstich.platformer.engine.entities
 			if (props.vy == undefined) props.vy = getVY(time);
 			props.kt = time;
 			
-			if (time < 1 && Engine.time > 2) throw new Error("time = " + time + " (< 1)\n" + vectorsToString());
+			if (time < 1 && engine.time > 2) throw new Error("time = " + time + " (< 1)\n" + vectorsToString());
 			if (kx < this.level.left) throw new Error("X outside" + vectorsToString());
 			if (ky < this.level.top) throw new Error("Y outside" + vectorsToString());
 			
@@ -236,7 +238,7 @@ package iphstich.platformer.engine.entities
 			// dead entities cannot be hit
 			if (alive == false) return false;
 			
-			if (time == -1) time = Engine.time;
+			if (time == -1) time = engine.time;
 			
 			return this.hitBox.hitTest(x - getX(time), y - getY(time), radius);
 		}
@@ -259,6 +261,15 @@ package iphstich.platformer.engine.entities
 				, kx: x
 				, ky: y
 			});
+		}
+		
+		public function addedToLevel (lev:Level) : void
+		{
+			level = lev;
+			engine = level.engine;
+			
+			for each (var p:HitPoint in collisionPoints)
+				p.engine = level.engine;
 		}
 		
 		public function applyImpulse (x:Number, y:Number, time:Number) : void

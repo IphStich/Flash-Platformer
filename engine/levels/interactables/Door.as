@@ -30,7 +30,7 @@
 			{
 				// get and set the next level
 				var nextLevel:Level = Level.getLevel( next )
-				Engine.instance.setLevel( nextLevel );
+				//Engine.instance.setLevel( nextLevel );
 				
 				// move the player to the next level
 				var targetDoor:Door = nextLevel.getDoor( target );

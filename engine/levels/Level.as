@@ -20,7 +20,7 @@ package iphstich.platformer.engine.levels
 	
 	public class Level extends MovieClip
 	{
-		private static var levels:Dictionary;
+		protected static var levels:Dictionary;
 		public static function getLevel(name:String) : Level
 		{
 			if (levels == null) levels = new Dictionary();
@@ -51,21 +51,24 @@ package iphstich.platformer.engine.levels
 		//public static const GRID_SIZE:Number = 10;
 		public static var OUTSIDE_LEVEL:DisplayObject;
 		
-		private var areas:Dictionary;
-		private var parts:Vector.<Part>;
-		private var numEntities:uint;
-		private var numParts:uint;
-		private var numInteractables:uint;
-		private var doors:Vector.<Door>;
-		private var entities:Vector.<Entity>;
-		private var entityLevel:uint;
-		private var interactables:Vector.<Interactable>;
+		protected var areas:Dictionary;
+		protected var parts:Vector.<Part>;
+		protected var numEntities:uint;
+		protected var numParts:uint;
+		protected var numInteractables:uint;
+		protected var doors:Vector.<Door>;
+		protected var entities:Vector.<Entity>;
+		protected var entityLevel:uint;
+		protected var entityPlane:EntityPlane;
+		protected var interactables:Vector.<Interactable>;
 		//private var entityToRemove:Vector.<Entity>;
 		
 		public var top:Number;
 		public var left:Number;
 		public var right:Number;
 		public var bottom:Number;
+		
+		public var engine:Engine;
 		
 		public function Level()
 		{
@@ -78,7 +81,7 @@ package iphstich.platformer.engine.levels
 			interpretLevel();
 		}
 		
-		private function interpretLevel () : void
+		protected function interpretLevel () : void
 		{
 			var i:uint, j:uint;
 			
@@ -100,33 +103,70 @@ package iphstich.platformer.engine.levels
 			{
 				var child:DisplayObject = this.getChildAt(i);
 				if (child is Door) doors.push(child);
-				if (child is Part) parts.push(child);
-				//if (child is EntityPlane) { entityLevel = i; child.visible = false;  }
+				if (child is Part) addPart (child);
+				if (child is EntityPlane) entityPlane = child as EntityPlane; // { entityLevel = i; child.visible = false;  }
 				if (child is Interactable) interactables.push(child);
-				if (child is Area) areas[child.name] = child;
+				if (child is Area) addArea(child); // areas[child.name] = child;
 			}
 			
 			numInteractables = interactables.length;
 			
 			// interpret the level parts
-			numParts = parts.length;
-			for (i = 0; i < numParts; ++i)
+			//numParts = parts.length;
+			//for (i = 0; i < numParts; ++i)
+			//{
+				////var p:Part = parts[i]
+				//
+				////// stretch level bounds
+				////if (top > p.top) 		top = p.top;
+				////if (left > p.left) 		left = p.left;
+				////if (right < p.right) 	right = p.right;
+				////if (bottom < p.bottom) 	bottom = p.bottom;
+				//
+				//// connect pieces by showing every piece every other piece
+				////for (j=i+1; j<numParts; ++j)
+				////{
+					//////if (j == i) continue;
+					////p.show( parts[j] );
+				////}
+			//}
+		}
+		
+		public function addPart (child:DisplayObject) : void
+		{
+			var p:Part = child as Part;
+			
+			if (child.parent != this)
+				this.addChild(child);
+			
+			// add to parts list
+			parts.push(p);
+			
+			// stretch level bounds
+			if (top > p.top) 		top = p.top;
+			if (left > p.left) 		left = p.left;
+			if (right < p.right) 	right = p.right;
+			if (bottom < p.bottom) 	bottom = p.bottom;
+			
+			// connect pieces by showing every piece every other piece
+			for (var i = parts.length-1; i>=0; --i)
 			{
-				var p:Part = parts[i]
-				
-				// stretch level bounds
-				if (top > p.top) 		top = p.top;
-				if (left > p.left) 		left = p.left;
-				if (right < p.right) 	right = p.right;
-				if (bottom < p.bottom) 	bottom = p.bottom;
-				
-				// connect pieces by showing every piece every other piece
-				for (j=i+1; j<numParts; ++j)
-				{
-					//if (j == i) continue;
-					p.show( parts[j] );
-				}
+				p.show( parts[i] );
 			}
+		}
+		
+		public function addArea (child:DisplayObject) : void
+		{
+			var a:Area = child as Area;
+			
+			// add to area dictionary
+			areas[a.name] = a;
+			
+			// stretch level bounds
+			if (top > a.top) 		top = a.top;
+			if (left > a.left) 		left = a.left;
+			if (right < a.right) 	right = a.right;
+			if (bottom < a.bottom) 	bottom = a.bottom;
 		}
 		
 		public function testHit(result:Vector.<HitData>, x:Number, y:Number, radius:Number=0, time:Number=-1):Vector.<HitData>
@@ -136,7 +176,7 @@ package iphstich.platformer.engine.levels
 			
 			ret = result;
 			
-			if (time == -1) time = Engine.time;
+			if (time == -1) time = engine.time;
 			//if (radius == 0) radius = 1;
 			
 			// test level bounds
@@ -187,8 +227,8 @@ package iphstich.platformer.engine.levels
 					throw new Error("made new");
 			var i:uint;
 			
-			if (timeFrom == -1) timeFrom = Engine.time;
-			if (timeTo == -1) timeTo = Engine.time;
+			if (timeFrom == -1) timeFrom = engine.time;
+			if (timeTo == -1) timeTo = engine.time;
 			if (interval <= 0) interval = Main.GRID_SIZE;
 			
 			var distance:Number = CustomMath.distance(x1, x2, y1, y2)
@@ -240,8 +280,8 @@ package iphstich.platformer.engine.levels
 			for each (var e:Entity in entities)
 			{
 				e.tick();
-				e.x = e.getX(Engine.time)
-				e.y = e.getY(Engine.time);
+				e.x = e.getX(engine.time)
+				e.y = e.getY(engine.time);
 			}
 		}
 		
@@ -249,7 +289,8 @@ package iphstich.platformer.engine.levels
 		{
 			//trace(getQualifiedClassName(target) + " - " + target.name)
 			
-			target.level = this;
+			target.addedToLevel(this);
+			//target.level = this;
 			entities.push(target)
 			addChildAt(target, entityLevel);
 			numEntities = entities.length;
@@ -291,9 +332,9 @@ package iphstich.platformer.engine.levels
 			}
 		}
 		
-		public function start () : void
+		public function start (inEngine:Engine) : void
 		{
-			
+			engine = inEngine;
 		}
 	}
 }

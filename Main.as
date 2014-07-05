@@ -16,7 +16,7 @@ package iphstich.platformer
 		public static const SCREEN_HEIGHT:Number = 576;
 		public static const GRID_SIZE:Number = 10;
 		
-		public static var instance:Main;
+		//public static var instance:Main;
 		
 		protected var pl:Entity;
 		protected var level:Level;
@@ -25,30 +25,23 @@ package iphstich.platformer
 		public function Main()
 		{
 			super();
-			instance = this;
+			
+			//instance = this;
 			Controls.init(stage);
 			NextFrame.init(stage);
-			//NextFrame.init(stage);
 			
 			addChildAt(new FPSCounter(this), this.numChildren);// addChild( new FPSCounter(this) );
 			//stage.scaleMode = StageScaleMode.SHOW_ALL;
 		}
 		
 		/**
-		 * This ensures that whenever a child is added to the the stage, it goes below the FPS counter
+		 * Override so that whenever a child is added to the the stage, it goes below the FPS counter
 		 * @param	child
 		 * @return
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject
 		{
 			return addChildAt(child, 0);
-		}
-		
-		protected function startEngine() : void
-		{
-			engine = new Engine(this);
-			
-			NextFrame.perform(engine.startGame);
 		}
 	}
 }

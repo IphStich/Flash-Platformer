@@ -47,6 +47,18 @@ package iphstich.platformer.engine.entities
 			airPoints.push(leftBase, rightBase, leftPoint, rightPoint, headLeft, headRight, upperLeft, upperRight);
 		}
 		
+		override public function addedToLevel (lev:Level) : void
+		{
+			level = lev;
+			engine = level.engine;
+			
+			var p:HitPoint;
+			for each (p in airPoints)
+				p.engine = level.engine;
+			for each (p in groundPoints)
+				p.engine = level.engine;
+		}
+		
 		private var hasFlyingHitPoints : Boolean = false;
 		protected function addFlyingHitPoints() : void
 		{
@@ -81,7 +93,7 @@ package iphstich.platformer.engine.entities
 				var side:Number;
 				if (ns == null) {
 					// calculate when they hit the edge of the platform
-					side = (getX(Engine.time) <= surface.left) ? surface.left : surface.right;
+					side = (getX(engine.time) <= surface.left) ? surface.left : surface.right;
 					if (side == surface.left) side -= this.getBaseRight();
 					if (side == surface.right) side -= this.getBaseLeft();
 					var t:Number = getTimeX(side);
