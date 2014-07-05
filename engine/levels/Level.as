@@ -28,20 +28,20 @@ package iphstich.platformer.engine.levels
 			
 			var ret:Level = null;
 			
-			switch (name) {
-				case "testLevel":
-					ret = new TestLevel();
-					break;
-				case "hallway":
-					ret = new Hallway();
-					break;
-				case "trixieArena":
-					ret = new TrixieArena();
-					break;
-				case "firstRoom":
-					ret = new FirstRoom();
-					break;
-			}
+			//switch (name) {
+				//case "testLevel":
+					//ret = new TestLevel();
+					//break;
+				//case "hallway":
+					//ret = new Hallway();
+					//break;
+				//case "trixieArena":
+					//ret = new TrixieArena();
+					//break;
+				//case "firstRoom":
+					//ret = new FirstRoom();
+					//break;
+			//}
 			
 			levels[name] = ret;
 			if (ret == null) throw new Error("null level");
@@ -101,7 +101,7 @@ package iphstich.platformer.engine.levels
 				var child:DisplayObject = this.getChildAt(i);
 				if (child is Door) doors.push(child);
 				if (child is Part) parts.push(child);
-				if (child is EntityPlane) { entityLevel = i; child.visible = false;  }
+				//if (child is EntityPlane) { entityLevel = i; child.visible = false;  }
 				if (child is Interactable) interactables.push(child);
 				if (child is Area) areas[child.name] = child;
 			}

@@ -5,7 +5,7 @@
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.utils.getTimer;
-	import iphstich.mcs.engine.entities.Player;
+	//import iphstich.mcs.engine.entities.Player;
 	import iphstich.platformer.engine.entities.enemies.TestEnemy;
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.levels.interactables.Door;
@@ -83,14 +83,14 @@
 		private function spawnHero () : void
 		{
 			// move player to the spawn
-			var d:Door = level.getDoor("spawn1");
-			var pl:Player = Player.instance;
-			pl.spawn
-				( (d.right + d.left) / 2
-				, d.bottom
-				, time
-				, level
-			);
+			//var d:Door = level.getDoor("spawn1");
+			//var pl:Player = Player.instance;
+			//pl.spawn
+				//( (d.right + d.left) / 2
+				//, d.bottom
+				//, time
+				//, level
+			//);
 		}
 		
 		private function enterFrameHandler(e:Event = null):void
@@ -102,16 +102,16 @@
 				level.tick();
 				
 				// move screen
-				level.x += -Player.instance.x;
-				level.y += -Player.instance.y;
-				level.x /= 2;
-				level.y /= 2;
+				//level.x += -Player.instance.x;
+				//level.y += -Player.instance.y;
+				//level.x /= 2;
+				//level.y /= 2;
 				
 				// keep screen inside level
-				if (-level.x - Main.SCREEN_WIDTH / 2 / view.scaleX < level.left) level.x = -level.left - Main.SCREEN_WIDTH / 2 / view.scaleX;
-				if (-level.x + Main.SCREEN_WIDTH / 2 / view.scaleX > level.right) level.x = -level.right + Main.SCREEN_WIDTH / 2 / view.scaleX;
-				if (-level.y - Main.SCREEN_HEIGHT / 2 / view.scaleY < level.top) level.y = -level.top - Main.SCREEN_HEIGHT / 2 / view.scaleY;
-				if (-level.y + Main.SCREEN_HEIGHT / 2 / view.scaleY > level.bottom) level.y = -level.bottom + Main.SCREEN_HEIGHT / 2 / view.scaleY;
+				//if (-level.x - Main.SCREEN_WIDTH / 2 / view.scaleX < level.left) level.x = -level.left - Main.SCREEN_WIDTH / 2 / view.scaleX;
+				//if (-level.x + Main.SCREEN_WIDTH / 2 / view.scaleX > level.right) level.x = -level.right + Main.SCREEN_WIDTH / 2 / view.scaleX;
+				//if (-level.y - Main.SCREEN_HEIGHT / 2 / view.scaleY < level.top) level.y = -level.top - Main.SCREEN_HEIGHT / 2 / view.scaleY;
+				//if (-level.y + Main.SCREEN_HEIGHT / 2 / view.scaleY > level.bottom) level.y = -level.bottom + Main.SCREEN_HEIGHT / 2 / view.scaleY;
 			}
 			lastFrame = time;
 		}
