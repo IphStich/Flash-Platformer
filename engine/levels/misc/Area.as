@@ -1,5 +1,6 @@
 package iphstich.platformer.engine.levels.misc
 {
+	import flash.geom.Point;
 	import iphstich.platformer.engine.HitBox;
 	
 	/**
@@ -11,6 +12,11 @@ package iphstich.platformer.engine.levels.misc
 		public function Area()
 		{
 			super();
+		}
+		
+		public function get center () : Point
+		{
+			return new Point(x + width / 2, y + height / 2);
 		}
 	}
 }

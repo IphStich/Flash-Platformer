@@ -4,6 +4,7 @@
 	import flash.display.MovieClip;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	//import iphstich.mcs.engine.entities.Player;
@@ -20,6 +21,15 @@
 		public static const STATUS_IDLE:uint = 0;
 		public static const STATUS_START:uint = 1;
 		
+		public static const TICK_DISTINCT:uint = 1; 	// take framerate into account and tick a fixed number of times each second, this results in a fixed deltatime each tick
+		//												// can create 'random' jumps in lag, but produces a consistant result
+		
+		public static const TICK_DELTA:uint = 2; 		// ignore framerate and tick each frame regardless, using delta-time
+		// 												// probably the best option, this is what the majority of multiplayer games out there use
+		
+		//public static const TICK_CALCULATED:uint = 3;	// isntead of using deltatime, simply calculate vectoral movement and tick based on predictions
+		//												// this probably uses the most processing power
+		
 		public var lastFrame:Number;
 		//public static var instance:Engine;
 		public var time:Number;
@@ -28,8 +38,10 @@
 		
 		//private var dummy:MovieClip;
 		private var status:int;
+		private var tickStyle:uint = 0;
+		private var tickDelta:Number;
 		private var stage:MovieClip;
-		private var level:Level;
+		public var level:Level;
 		
 		public var view:MovieClip;
 		public var viewport:Rectangle;
@@ -78,14 +90,24 @@
 			view.y = viewport.y + viewport.height / 2;
 		}
 		
+		public function setTickStyle (style:uint, frequency:Number = 32) : void
+		{
+			tickStyle = style;
+			tickDelta = 1.0 / frequency;
+		}
+		
 		public function start () : void
 		{
 			if (status == STATUS_START) {
-				throw new Error("The engine is already started");
+				throw Error("The engine is already started.");
+			}
+			
+			if (tickStyle == -1) {
+				throw Error("The engine does not have a tick style set.");
 			}
 			
 			if (level == null) {
-				throw new Error("Cannot start the engine without a level");
+				throw Error("The engine requires a level to start.");
 			}
 			
 			lastFrame 	= getTimer() / 1000;
@@ -96,7 +118,7 @@
 			enterFrameHandler();
 		}
 		
-		public function startGame_hiohio () : void
+		public function startGame_deprecated () : void
 		{
 			//spawnHero();
 			
@@ -118,29 +140,49 @@
 		
 		private function enterFrameHandler(e:Event = null):void
 		{
-			time = getTimer() / 1000;
-			//trace(time)
-			if (status > 0)
+			// do nothing if idle
+			if (status == STATUS_IDLE) return;
+			
+			
+			if (tickStyle == TICK_DISTINCT)
 			{
-				level.tick();
+				if (getTimer() / 1000 <= time)
+					return;
 				
-				level.x = level.width / -2;
-				level.y = level.height / -2;
-				
-				
-				// move screen
-				//level.x += -Player.instance.x;
-				//level.y += -Player.instance.y;
-				//level.x /= 2;
-				//level.y /= 2;
-				
-				// keep screen inside level
-				//if (-level.x - Main.SCREEN_WIDTH / 2 / view.scaleX < level.left) level.x = -level.left - Main.SCREEN_WIDTH / 2 / view.scaleX;
-				//if (-level.x + Main.SCREEN_WIDTH / 2 / view.scaleX > level.right) level.x = -level.right + Main.SCREEN_WIDTH / 2 / view.scaleX;
-				//if (-level.y - Main.SCREEN_HEIGHT / 2 / view.scaleY < level.top) level.y = -level.top - Main.SCREEN_HEIGHT / 2 / view.scaleY;
-				//if (-level.y + Main.SCREEN_HEIGHT / 2 / view.scaleY > level.bottom) level.y = -level.bottom + Main.SCREEN_HEIGHT / 2 / view.scaleY;
+				lastFrame = time;
+				time += tickDelta;
 			}
-			lastFrame = time;
+			
+			else if (tickStyle == TICK_DELTA)
+			{
+				lastFrame = time;
+				time = getTimer() / 1000;
+				tickDelta = time - lastFrame;
+			}
+			
+			else if (tickStyle == TICK_CALCULATED)
+			{
+				time = getTimer() / 1000;
+				tickDelta = time;
+			}
+			
+			
+			// tick the level, and as a result all the contained entities
+			level.tick (tickStyle, tickDelta);
+			
+			
+			// keep the level centered
+			// todo: move this stuff to a camera of sorts
+			level.x = (level.left + level.right) / -2;
+			level.y = (level.top + level.bottom) / -2;
+		}
+		
+		public function spawnEntity (target:Entity, spawnPoint:Point) : void
+		{
+			target.spawn (spawnPoint.x, spawnPoint.y, time, level);
+			//target.x = spawnPoint.x;
+			//target.y = spawnPoint.y;
+			//level.addEntity (target);
 		}
 	}
 }

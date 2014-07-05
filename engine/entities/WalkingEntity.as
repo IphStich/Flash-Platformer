@@ -82,9 +82,9 @@ package iphstich.platformer.engine.entities
 			//hasFlyingHitPoints = false;
 		}
 		
-		override public function tick():void
+		override public function tickMove (style:uint, delta:Number):void
 		{
-			super.tick();
+			super.tickMove (style, delta);
 			
 			// If on a ground
 			if (surface != null)
@@ -176,6 +176,7 @@ package iphstich.platformer.engine.entities
 		
 		protected function land (data:HitData) : void
 		{
+			trace("LAND");
 			setCourse( { surface: (data.hit as Part), vy: 0, cy: NaN, ay: 0 }, data.time);
 		}
 		

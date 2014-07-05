@@ -1,6 +1,5 @@
 ﻿package iphstich.platformer.engine.weapons
 {
-	import iphstich.mcs.engine.entities.Player;
 	import iphstich.platformer.engine.entities.Character;
 	import iphstich.platformer.engine.entities.Entity;
 	/**

@@ -111,7 +111,7 @@ package iphstich.platformer.engine.entities
 			// this function is all about controls, so if they are frozen return and do nothing
 			if (controlsFrozen()) return;
 			
-			var pressTime:Number = (Engine.time * 3 + Engine.lastFrame) / 4
+			var pressTime:Number = (engine.time * 3 + engine.lastFrame) / 4
 			var newHeading:Number = Number.NaN;
 			
 			// work out which direction the player wants to go
@@ -293,7 +293,7 @@ package iphstich.platformer.engine.entities
 		
 		public function controlsFrozen() : Boolean
 		{
-			if (Chat.inChat) return true;
+			//if (Chat.inChat) return true;
 			
 			return false;
 		}

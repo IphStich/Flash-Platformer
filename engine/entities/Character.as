@@ -31,10 +31,10 @@ package iphstich.platformer.engine.entities
 			health = 100;
 		}
 		
-		override public function tick():void
+		override public function tickMove (style:uint, delta:Number):void
 		{
-			super.tick();
-			this.makeDecisions();
+			super.tickMove (style, delta);
+			//this.makeDecisions();
 		}
 		
 		protected function makeDecisions():void

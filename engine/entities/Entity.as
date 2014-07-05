@@ -53,7 +53,7 @@ package iphstich.platformer.engine.entities
 		
 		//-----------------------------------------------------------//
 		
-		public function tick():void
+		public function tickMove (style:uint, delta:Number):void
 		{
 			var i:int, j:int
 			var f:Function = null;
@@ -101,7 +101,7 @@ package iphstich.platformer.engine.entities
 				p = collisionPoints[i];
 			//for each (var p:HitPoint in collisionPoints) {
 				var hit:Vector.<HitData> = p.getHitPath();
-				for (j=0; j<hit.length; ++j) {
+				for (j = 0; j < hit.length; ++j) {
 					var obj:HitData = hit[j];
 					if (obj.hit is Interactable) continue;
 					if (obj.hit == Level.OUTSIDE_LEVEL) {
@@ -115,6 +115,11 @@ package iphstich.platformer.engine.entities
 					if (alive == false || kt != preCheck) return;
 				}
 			}
+		}
+		
+		public function tickThink (style:uint, delta:Number) : void
+		{
+			
 		}
 		
 		protected function collide(point:HitPoint, data:HitData):void

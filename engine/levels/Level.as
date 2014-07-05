@@ -141,6 +141,7 @@ package iphstich.platformer.engine.levels
 			
 			// add to parts list
 			parts.push(p);
+			numParts ++;
 			
 			// stretch level bounds
 			if (top > p.top) 		top = p.top;
@@ -275,14 +276,15 @@ package iphstich.platformer.engine.levels
 			return result;
 		} //testHitPath
 		
-		public function tick() : void
+		public function tick (style:uint, delta:Number) : void
 		{
-			for each (var e:Entity in entities)
-			{
-				e.tick();
-				e.x = e.getX(engine.time)
-				e.y = e.getY(engine.time);
-			}
+			var e:Entity;
+			
+			for each (e in entities)
+				e.tickThink (style, delta);
+			
+			for each (e in entities)
+				e.tickMove (style, delta);
 		}
 		
 		public function addEntity(target:Entity):void
