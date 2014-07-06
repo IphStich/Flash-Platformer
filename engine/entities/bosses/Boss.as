@@ -10,14 +10,10 @@ package iphstich.platformer.engine.entities.bosses
 	public class Boss extends WalkingEntity
 	{
 		public var pattern:String;
+		
 		public function Boss()
 		{
 			super();
-		}
-		
-		override public function applyImpulse(x:Number, y:Number, time:Number):void 
-		{
-			super.applyImpulse(x, y, time);
 		}
 		
 		override public function spawn(x:Number, y:Number, time:Number, lev:Level):void 

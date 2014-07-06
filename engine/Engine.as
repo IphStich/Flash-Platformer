@@ -106,6 +106,10 @@
 				throw Error("The engine does not have a tick style set.");
 			}
 			
+			if (tickStyle == TICK_CALCULATED) {
+				throw Error("The calculated tick-style is not currently supported.");
+			}
+			
 			if (level == null) {
 				throw Error("The engine requires a level to start.");
 			}
