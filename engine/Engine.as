@@ -27,7 +27,7 @@
 		public static const TICK_DELTA:uint = 2; 		// ignore framerate and tick each frame regardless, using delta-time
 		// 												// probably the best option, this is what the majority of multiplayer games out there use
 		
-		//public static const TICK_CALCULATED:uint = 3;	// isntead of using deltatime, simply calculate vectoral movement and tick based on predictions
+		public static const TICK_CALCULATED:uint = 3;	// isntead of using deltatime, simply calculate vectoral movement and tick based on predictions
 		//												// this probably uses the most processing power
 		
 		public var lastFrame:Number;
@@ -38,7 +38,7 @@
 		
 		//private var dummy:MovieClip;
 		private var status:int;
-		private var tickStyle:uint = 0;
+		public var tickStyle:uint = 0;
 		private var tickDelta:Number;
 		private var stage:MovieClip;
 		public var level:Level;

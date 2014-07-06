@@ -39,18 +39,31 @@ package iphstich.platformer.engine.entities
 			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
 			else lastCheckResult = new Vector.<HitData>();
 			
-			parent.level.testHitPath
-				( lastCheckResult
-				, parent.getX(lf) + x
-				, parent.getY(lf) + y
-				, parent.getX(lastCheckTime) + x
-				, parent.getY(lastCheckTime) + y
-				, size
-				, lf
-				, lastCheckTime
-				, -1
-				, hitList
-			);
+			if (engine.tickStyle == Engine.TICK_CALCULATED)
+			{
+				parent.level.testHitPath
+					( lastCheckResult
+					, parent.getX(lf) + x
+					, parent.getY(lf) + y
+					, parent.getX(lastCheckTime) + x
+					, parent.getY(lastCheckTime) + y
+					, size
+					, lf
+					, lastCheckTime
+					, -1
+					, hitList
+				);
+			}
+			else
+			{
+				parent.level.testHitPath
+					( lastCheckResult
+					, parent.x
+					, parent.y
+					, parent.kx
+					, parent.ky
+				);
+			}
 			
 			for (i=0; i<lastCheckResult.length; ++i)
 				if (lastCheckResult[i].hit == parent) {

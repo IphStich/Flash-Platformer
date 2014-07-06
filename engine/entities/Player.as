@@ -106,129 +106,148 @@ package iphstich.platformer.engine.entities
 			}
 		}
 		
-		override protected function makeDecisions():void
+		//override protected function makeDecisions():void
+		override public function tickThink (style:uint, delta:Number) : void
 		{
 			// this function is all about controls, so if they are frozen return and do nothing
 			if (controlsFrozen()) return;
 			
 			var pressTime:Number = (engine.time * 3 + engine.lastFrame) / 4
-			var newHeading:Number = Number.NaN;
 			
-			// work out which direction the player wants to go
-			if (Controls.pressed("right")) newHeading = 1;
-			if (Controls.pressed("left")) newHeading = -1;
-			if (Controls.down("right") && heading == 0) newHeading = 1;
-			if (Controls.down("left") && heading == 0) newHeading = -1;
-			if (Controls.released("right") && heading == 1) newHeading = 0;
-			if (Controls.released("left") && heading == -1) newHeading = 0;
-			
-			// change facing (ie which direction the character is looking)
-			if (newHeading != heading && !isNaN(newHeading))
+			if (engine.tickStyle == Engine.TICK_CALCULATED)
 			{
-				if (newHeading == -1) currentFacing = "left";
-				if (newHeading == 1) currentFacing = "right";
-				playAnim();
-			}
-			
-			// handle direction and movement changes
-			if (!isNaN(newHeading))
-			{
-				if (currentAction == "dash")
+				var newHeading:Number = Number.NaN;
+				
+				// work out which direction the player wants to go
+				if (Controls.pressed("right")) newHeading = 1;
+				if (Controls.pressed("left")) newHeading = -1;
+				if (Controls.down("right") && heading == 0) newHeading = 1;
+				if (Controls.down("left") && heading == 0) newHeading = -1;
+				if (Controls.released("right") && heading == 1) newHeading = 0;
+				if (Controls.released("left") && heading == -1) newHeading = 0;
+				
+				// change facing (ie which direction the character is looking)
+				if (newHeading != heading && !isNaN(newHeading))
 				{
-					
+					if (newHeading == -1) currentFacing = "left";
+					if (newHeading == 1) currentFacing = "right";
+					playAnim();
 				}
-				else
-				{ // normal movement logic
-					heading = newHeading;
-					
-					if (getVX(pressTime) != MAX_HORIZ_SPEED * heading) // isn't moving at target speed
+				
+				// handle direction and movement changes
+				if (!isNaN(newHeading))
+				{
+					if (currentAction == "dash")
 					{
-						if (heading == 0)
-						{ // stop
-							setCourse( { cx: 0, ax: -CustomMath.normalize( getVX(pressTime) ) * (surface ? HORIZ_ACC : HORIZ_ACC_FEATHER) }, pressTime);
-							currentAction = (surface ? "stand" : "hop");
-							playAnim();
-						}
-						else if (ax != heading * (surface ? HORIZ_ACC : HORIZ_ACC_AIR) || cx != heading * MAX_HORIZ_SPEED) // isn't accelerating
+						
+					}
+					else
+					{ // normal movement logic
+						heading = newHeading;
+						
+						if (getVX(pressTime) != MAX_HORIZ_SPEED * heading) // isn't moving at target speed
 						{
-							setCourse(
-								{ ax: heading * (surface ? HORIZ_ACC : HORIZ_ACC_AIR) // <- start moving
-								, cx: heading * MAX_HORIZ_SPEED // <- cap speed
-								}
-							, pressTime);
-							currentAction = (surface ? "walk" : "leap");
-							playAnim();
+							if (heading == 0)
+							{ // stop
+								setCourse( { cx: 0, ax: -CustomMath.normalize( getVX(pressTime) ) * (surface ? HORIZ_ACC : HORIZ_ACC_FEATHER) }, pressTime);
+								currentAction = (surface ? "stand" : "hop");
+								playAnim();
+							}
+							else if (ax != heading * (surface ? HORIZ_ACC : HORIZ_ACC_AIR) || cx != heading * MAX_HORIZ_SPEED) // isn't accelerating
+							{
+								setCourse(
+									{ ax: heading * (surface ? HORIZ_ACC : HORIZ_ACC_AIR) // <- start moving
+									, cx: heading * MAX_HORIZ_SPEED // <- cap speed
+									}
+								, pressTime);
+								currentAction = (surface ? "walk" : "leap");
+								playAnim();
+							}
 						}
 					}
 				}
-			}
-			
-			// dash
-			if (Controls.pressed("dash"))
-			{
-				//TODO: some stuff here, like clean up a bit
-				const DASH_DISTANCE = 400;
-				const DASH_TIME = 0.2;
-				const DASH_SPEED = 800;
-				const DASH_SLOW = 1800;
-				fall(pressTime);
-				setCourse(
-					{ vx: heading * DASH_SPEED
-					, ax: -heading * DASH_SLOW
-					, cx: heading * MAX_HORIZ_SPEED
-					, cxf: endDashLength
-					}
-				, pressTime);
-				currentAction = "dash";
-				playAnim();
-			}
-			
-			// jump
-			if (Controls.pressed("jump"))
-			{
-				// start jump
-				if (surface != null) {
-					setCourse( { ky:getY(pressTime)-3, vy: -JUMP_VELOCITY, ay: GRAVITY, cy: JUMP_VELOCITY, ax: CustomMath.normalize(ax) * HORIZ_ACC_AIR }, pressTime );
-					if (currentAction == "walk")
-						playAnim("leap")
-					else if (currentAction == "stand")
-						playAnim("hop")
-					//surface = null;
-				} else {
-					
-				}
-			}
-			if (Controls.released("jump"))
-			{
-				// precision jumping
-				var gvy = getVY(pressTime)
-				if (surface == null && gvy < 0) {
-					setCourse( { vy: gvy / 2 }, pressTime);
-				}
-			}
-			
-			// interact
-			if (Controls.pressed("interact"))
-			{
-				var check:Vector.<HitData>;
-				check = hitCenter.getHitPath();
-				for each (var hd:HitData in check)
+				
+				// dash
+				if (Controls.pressed("dash"))
 				{
-					if (hd.hit is Interactable)
-					{
-						(hd.hit as Interactable).activate(this, pressTime);
+					//TODO: some stuff here, like clean up a bit
+					const DASH_DISTANCE = 400;
+					const DASH_TIME = 0.2;
+					const DASH_SPEED = 800;
+					const DASH_SLOW = 1800;
+					fall(pressTime);
+					setCourse(
+						{ vx: heading * DASH_SPEED
+						, ax: -heading * DASH_SLOW
+						, cx: heading * MAX_HORIZ_SPEED
+						, cxf: endDashLength
+						}
+					, pressTime);
+					currentAction = "dash";
+					playAnim();
+				}
+				
+				// jump
+				if (Controls.pressed("jump"))
+				{
+					// start jump
+					if (surface != null) {
+						setCourse( { ky:getY(pressTime)-3, vy: -JUMP_VELOCITY, ay: GRAVITY, cy: JUMP_VELOCITY, ax: CustomMath.normalize(ax) * HORIZ_ACC_AIR }, pressTime );
+						if (currentAction == "walk")
+							playAnim("leap")
+						else if (currentAction == "stand")
+							playAnim("hop")
+						//surface = null;
+					} else {
+						
 					}
 				}
+				if (Controls.released("jump"))
+				{
+					// precision jumping
+					var gvy = getVY(pressTime)
+					if (surface == null && gvy < 0) {
+						setCourse( { vy: gvy / 2 }, pressTime);
+					}
+				}
+				
+				// interact
+				if (Controls.pressed("interact"))
+				{
+					var check:Vector.<HitData>;
+					check = hitCenter.getHitPath();
+					for each (var hd:HitData in check)
+					{
+						if (hd.hit is Interactable)
+						{
+							(hd.hit as Interactable).activate(this, pressTime);
+						}
+					}
+				}
+				
+				// weapons
+				if (equipedWeapon != null) {
+					var st:uint = Controls.button("shoot");
+					if (st & Controls.KEY_UP)		equipedWeapon.triggerUp(pressTime);
+					if (st & Controls.KEY_RELEASED)	equipedWeapon.triggerRelease(pressTime);
+					if (st & Controls.KEY_DOWN)		equipedWeapon.triggerDown(pressTime);
+					if (st & Controls.KEY_PRESSED)	equipedWeapon.triggerPull(pressTime);
+				}
+			}
+			else
+			{
+				cx = MAX_HORIZ_SPEED;
+				
+				if (Controls.down("left")) heading = -1;
+				if (Controls.down("right")) heading += 1;
+				
+				ax = heading * HORIZ_ACC;
+				//if (heading == 0)
+				//{
+					//ax = CustomMath.capBetween(vx / delta, -HORIZ_ACC, HORIZ_ACC);
+				//}
 			}
 			
-			// weapons
-			if (equipedWeapon != null) {
-				var st:uint = Controls.button("shoot");
-				if (st & Controls.KEY_UP)		equipedWeapon.triggerUp(pressTime);
-				if (st & Controls.KEY_RELEASED)	equipedWeapon.triggerRelease(pressTime);
-				if (st & Controls.KEY_DOWN)		equipedWeapon.triggerDown(pressTime);
-				if (st & Controls.KEY_PRESSED)	equipedWeapon.triggerPull(pressTime);
-			}
 		} //makeDecisions
 		
 		//private function pcLoaded (e:Event) : void

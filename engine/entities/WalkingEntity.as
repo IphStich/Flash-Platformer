@@ -176,8 +176,9 @@ package iphstich.platformer.engine.entities
 		
 		protected function land (data:HitData) : void
 		{
-			trace("LAND");
 			setCourse( { surface: (data.hit as Part), vy: 0, cy: NaN, ay: 0 }, data.time);
+			ky = getY(data.time);
+			y = ky;
 		}
 		
 		override public function spawn (x:Number, y:Number, time:Number, lev:Level) : void

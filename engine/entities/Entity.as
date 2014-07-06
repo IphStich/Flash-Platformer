@@ -3,6 +3,7 @@ package iphstich.platformer.engine.entities
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import Math;
 	import flash.utils.getQualifiedClassName;
 	import iphstich.library.CustomMath;
 	import iphstich.platformer.engine.Engine;
@@ -17,8 +18,8 @@ package iphstich.platformer.engine.entities
 	{
 		protected var vx:Number = 0; // velocity x
 		protected var vy:Number = 0; // velocity y
-		protected var kx:Number = 0; // start X
-		protected var ky:Number = 0; // start Y
+		public var kx:Number = 0; // start X
+		public var ky:Number = 0; // start Y
 		public var kt:Number = 0; // start time
 		protected var ax:Number = 0; // acceleration X
 		protected var ay:Number = 0; // acceleration Y
@@ -53,73 +54,125 @@ package iphstich.platformer.engine.entities
 		
 		//-----------------------------------------------------------//
 		
-		public function tickMove (style:uint, delta:Number):void
-		{
-			var i:int, j:int
-			var f:Function = null;
-			
-			// cap X and Y velocities
-			if (!isNaN(cx)) {
-				if (engine.time >= cxt) {
-					//trace("cap X")
-					f = cxf;
-					setCourse
-						( { cx: NaN, vx: cx, ax: 0 }
-						, cxt
-						);
-					if (f != null) {
-						f(cxt);
-					}
-				}
-			}
-			if (!isNaN(cy)) {
-				if (engine.time >= cyt) {
-					//trace("cap Y", getValue("vy", cyt), cy)
-					f = cyf;
-					setCourse
-						( { cy: NaN, vy: cy, ay: 0 }
-						, cyt
-						);
-					if (f != null) {
-						f(cyt)
-					}
-				}
-			}
-			
-			// Calculate the position
-			x = getX(engine.time);
-			y = getY(engine.time);
-			
-			// Don't do collisions?
-			if (collisionPoints == null) return;
-			if (collisionPoints.length == 0) return;
-			
-			// Check for collisions
-			var preCheck:Number = kt;
-			var p:HitPoint;
-			for (i=0; i<collisionPoints.length; ++i) {
-				p = collisionPoints[i];
-			//for each (var p:HitPoint in collisionPoints) {
-				var hit:Vector.<HitData> = p.getHitPath();
-				for (j = 0; j < hit.length; ++j) {
-					var obj:HitData = hit[j];
-					if (obj.hit is Interactable) continue;
-					if (obj.hit == Level.OUTSIDE_LEVEL) {
-						trace("auto desu", this, engine.time, vectorsToString());
-						this.death();
-						return;
-					}
-					if (obj.hit != this) {
-						collide(p, obj);
-					}
-					if (alive == false || kt != preCheck) return;
-				}
-			}
-		}
-		
 		public function tickThink (style:uint, delta:Number) : void
 		{
 			
+		}
+		
+		public function tickMove (style:uint, delta:Number):void
+		{
+			if (style == Engine.TICK_CALCULATED)
+			{
+				var i:int, j:int
+				var f:Function = null;
+				
+				// cap X and Y velocities
+				if (!isNaN(cx)) {
+					if (engine.time >= cxt) {
+						//trace("cap X")
+						f = cxf;
+						setCourse
+							( { cx: NaN, vx: cx, ax: 0 }
+							, cxt
+							);
+						if (f != null) {
+							f(cxt);
+						}
+					}
+				}
+				if (!isNaN(cy)) {
+					if (engine.time >= cyt) {
+						//trace("cap Y", getValue("vy", cyt), cy)
+						f = cyf;
+						setCourse
+							( { cy: NaN, vy: cy, ay: 0 }
+							, cyt
+							);
+						if (f != null) {
+							f(cyt)
+						}
+					}
+				}
+				
+				// Calculate the position
+				x = getX(engine.time);
+				y = getY(engine.time);
+				
+				// Don't do collisions?
+				if (collisionPoints == null) return;
+				if (collisionPoints.length == 0) return;
+				
+				// Check for collisions
+				var preCheck:Number = kt;
+				var p:HitPoint;
+				for (i=0; i<collisionPoints.length; ++i) {
+					p = collisionPoints[i];
+				//for each (var p:HitPoint in collisionPoints) {
+					var hit:Vector.<HitData> = p.getHitPath();
+					for (j = 0; j < hit.length; ++j) {
+						var obj:HitData = hit[j];
+						if (obj.hit is Interactable) continue;
+						if (obj.hit == Level.OUTSIDE_LEVEL) {
+							trace("auto desu", this, engine.time, vectorsToString());
+							this.death();
+							return;
+						}
+						if (obj.hit != this) {
+							collide(p, obj);
+						}
+						if (alive == false || kt != preCheck) return;
+					}
+				}
+			}
+			else
+			{
+				// Apply acceleration
+				vx += ax * delta;
+				vy += ay * delta;
+				
+				// Cap X and Y velocities
+				if (!isNaN(cx))
+				{
+					vx = CustomMath.capBetween(vx, -cx, cx);
+				}
+				if (!isNaN(cy))
+				{
+					vy = CustomMath.capBetween(vy, -cy, cy);
+				}
+				
+				kx = x + vx * delta;
+				ky = y + vy * delta;
+				
+				// Don't do collisions?
+				if (collisionPoints == null) return;
+				if (collisionPoints.length == 0) return;
+				
+				// Check for collisions
+				//var preCheck:Number = kt;
+				//var p:HitPoint;
+				for (i=0; i<collisionPoints.length; ++i) {
+					p = collisionPoints[i];
+				//for each (var p:HitPoint in collisionPoints) {
+					hit = p.getHitPath();
+					for (j = 0; j < hit.length; ++j) {
+						obj = hit[j];
+						if (obj.hit is Interactable) continue;
+						if (obj.hit == Level.OUTSIDE_LEVEL) {
+							trace("auto desu", this, engine.time, vectorsToString());
+							this.death();
+							return;
+						}
+						if (obj.hit != this) {
+							collide(p, obj);
+						}
+						if (alive == false || kt != preCheck) return;
+					}
+				}
+				
+				// If no blocking collisions: move
+				x = kx;
+				y = ky;
+			}
 		}
 		
 		protected function collide(point:HitPoint, data:HitData):void
@@ -136,23 +189,32 @@ package iphstich.platformer.engine.entities
 				//if (p == "cx" && props[p] == 0) trace(new Error().getStackTrace());
 				this[p] = props[p]
 			}
+			
+			if (engine.tickStyle != Engine.TICK_CALCULATED)
+			{
+				x = kx;
+				y = ky;
+			}
 		}
 		
 		public function setCourse(props:Object, time:Number):void
 		{
 			// if new x or y velocities were passed, and no new caps, clear caps
-			if (props.vx != undefined && props.cx == undefined) props.cxt = NaN;
-			if (props.vy != undefined && props.cy == undefined) props.cyt = NaN;
+			if (props.vx != undefined && props.cx == undefined) props.cx = NaN;
+			if (props.vy != undefined && props.cy == undefined) props.cy = NaN;
 			
 			// if new x or y velocities, and no new accelerations, clear accelerations
 			//if (props.vx != undefined && props.ax == undefined) props.ax = 0;
 			//if (props.vy != undefined && props.ay == undefined) props.ax = 0;
 			
 			//this.alpha = (this.alpha == 1) ? 0.25 : 1;
-			if (props.kx == undefined) props.kx = getX(time);
-			if (props.ky == undefined) props.ky = getY(time);
-			if (props.vx == undefined) props.vx = getVX(time);
-			if (props.vy == undefined) props.vy = getVY(time);
+			if (engine.tickStyle == Engine.TICK_CALCULATED)
+			{
+				if (props.kx == undefined) props.kx = getX(time);
+				if (props.ky == undefined) props.ky = getY(time);
+				if (props.vx == undefined) props.vx = getVX(time);
+				if (props.vy == undefined) props.vy = getVY(time);
+			}
 			props.kt = time;
 			
 			if (time < 1 && engine.time > 2) throw new Error("time = " + time + " (< 1)\n" + vectorsToString());
@@ -163,8 +225,11 @@ package iphstich.platformer.engine.entities
 			setP(props);
 			
 			// update cap times
-			if (!isNaN(cx)) cxt = getTimeVX(cx);
-			if (!isNaN(cy)) cyt = getTimeVY(cy);
+			if (engine.tickStyle == Engine.TICK_CALCULATED)
+			{
+				if (!isNaN(cx)) cxt = getTimeVX(cx);
+				if (!isNaN(cy)) cyt = getTimeVY(cy);
+			}
 			//if (!isNaN(cx) && cxt < time && !isNaN(cxt)) throw new Error("time = " + cxt + " < " + time + "\n" + vectorsToString());
 			
 			// if new caps were passed, and not new cap functions, clear cap funcitons
