@@ -284,7 +284,12 @@ package iphstich.platformer.engine.levels
 				e.tickThink (style, delta);
 			
 			for each (e in entities)
-				e.tickMove (style, delta);
+				e.tickMove (delta);
+			
+			for each (e in entities) {
+				e.x = e.px;
+				e.y = e.py;
+			}
 		}
 		
 		public function addEntity(target:Entity):void

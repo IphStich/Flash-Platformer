@@ -24,47 +24,48 @@ package iphstich.platformer.engine.entities
 		private var lastCheckTime:Number
 		private var lastCheckKeyTime:Number;
 		private var lastCheckResult:Vector.<HitData>
-		public function getHitPath():Vector.<HitData>
+		public function getHitPath () : Vector.<HitData>
 		{
 			var i:uint;
 			
-			// prevents the check from happening multiple times in one frame
-			if ((lastCheckTime == engine.time) && (lastCheckKeyTime == parent.kt)) return lastCheckResult;
+			// Prevents the check from happening multiple times in one frame
+			if ((lastCheckTime == engine.time) /*&& (lastCheckKeyTime == parent.kt)*/) return lastCheckResult;
 			lastCheckTime = engine.time;
-			lastCheckKeyTime = parent.kt;
-			
-			var lf:Number = engine.lastFrame;
-			if (lf < lastCheckKeyTime) lf = lastCheckKeyTime;
+			//lastCheckKeyTime = parent.kt;
+			//
+			//var lf:Number = engine.lastFrame;
+			//if (lf < lastCheckKeyTime) lf = lastCheckKeyTime;
 			
 			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
 			else lastCheckResult = new Vector.<HitData>();
 			
-			if (engine.tickStyle == Engine.TICK_CALCULATED)
-			{
+			//if (engine.tickStyle == Engine.TICK_CALCULATED)
+			//{
+				//parent.level.testHitPath
+					//( lastCheckResult
+					//, parent.getX(lf) + x
+					//, parent.getY(lf) + y
+					//, parent.getX(lastCheckTime) + x
+					//, parent.getY(lastCheckTime) + y
+					//, size
+					//, lf
+					//, lastCheckTime
+					//, -1
+					//, hitList
+				//);
+			//}
+			//else
+			//{
 				parent.level.testHitPath
 					( lastCheckResult
-					, parent.getX(lf) + x
-					, parent.getY(lf) + y
-					, parent.getX(lastCheckTime) + x
-					, parent.getY(lastCheckTime) + y
-					, size
-					, lf
-					, lastCheckTime
-					, -1
-					, hitList
+					, x + parent.x
+					, y + parent.y
+					, x + parent.px
+					, y + parent.py
 				);
-			}
-			else
-			{
-				parent.level.testHitPath
-					( lastCheckResult
-					, parent.x
-					, parent.y
-					, parent.kx
-					, parent.ky
-				);
-			}
+			//}
 			
+			// remove referrences to parent
 			for (i=0; i<lastCheckResult.length; ++i)
 				if (lastCheckResult[i].hit == parent) {
 					lastCheckResult.splice(i, 1)[0].destroy();

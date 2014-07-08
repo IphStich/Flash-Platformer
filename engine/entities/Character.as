@@ -31,17 +31,6 @@ package iphstich.platformer.engine.entities
 			health = 100;
 		}
 		
-		override public function tickMove (style:uint, delta:Number):void
-		{
-			super.tickMove (style, delta);
-			//this.makeDecisions();
-		}
-		
-		protected function makeDecisions():void
-		{
-			throw Error("Error. No default behavior for make decision defined for class " + getQualifiedClassName(this))
-		}
-		
 		public function dealDamage (damage:Number) : void
 		{
 			health -= damage;
@@ -49,7 +38,7 @@ package iphstich.platformer.engine.entities
 		
 		override public function applyImpulse (x:Number, y:Number, time:Number) : void
 		{
-			this.setCourse({vx: x, vy: y, ay: GRAVITY, cy: JUMP_VELOCITY}, time);
+			//this.setCourse({vx: x, vy: y, ay: GRAVITY, cy: JUMP_VELOCITY}, time);
 		}
 		
 		/**
@@ -58,10 +47,10 @@ package iphstich.platformer.engine.entities
 		 */
 		protected function playAnim (anim:String = "") : void
 		{
-			if (anim == "") return;
-			var act:Array = anim.split(" ")
-			if (act[0].length > 0) currentAction = act[0];
-			if (act.length > 1) if (act[1].length > 0) currentFacing = act[1];
+			//if (anim == "") return;
+			//var act:Array = anim.split(" ")
+			//if (act[0].length > 0) currentAction = act[0];
+			//if (act.length > 1) if (act[1].length > 0) currentFacing = act[1];
 		}
 		
 		public function updateMoveVariables () : void

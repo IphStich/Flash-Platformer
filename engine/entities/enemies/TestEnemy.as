@@ -5,6 +5,9 @@ package iphstich.platformer.engine.entities.enemies
 	import iphstich.platformer.engine.levels.parts.Part;
 	import iphstich.platformer.engine.Engine;
 	
+	/**
+	 * The TestEnemy simply walks back and forth along whatever platform it lands on.
+	 */
 	public class TestEnemy extends WalkingEntity
 	{
 		public function TestEnemy()
@@ -14,35 +17,28 @@ package iphstich.platformer.engine.entities.enemies
 			setSize (30, 30);
 		}
 		
-		override protected function makeDecisions() : void
+		override public function tickThink (style:uint, delta:Number) : void
 		{
 			if (surface != null)
 			{
-				if (getVX(engine.time) == 0) {
-					setCourse( { vx: 250 }, engine.time );
+				if (vx == 0)
+				{
+					vx = 250;
 				}
 			}
 		}
 		
 		override protected function hitEdge(side:Number, time:Number):void
 		{
-			setCourse({vx: -getVX(time) }, time);
+			vx *= -1;
 		}
 		
 		override protected function hitWall(direction:String, data:HitData):void
 		{
-			//this.alpha = (this.alpha == 1) ? 0.25 : 1;
+			super.hitWall (direction, data);
 			
-			var wall:Part = data.hit as Part;
-			if (direction == "left") {
-				this.setCourse( { vx: -getVX(data.time), ax: 0, cx: NaN, kx: wall.right - hitBox.left + 1.001 }, data.time );
-			} else if (direction == "right") {
-				this.setCourse( { vx: -getVX(data.time), ax: 0, cx: NaN, kx: wall.left - hitBox.right - 1.001 }, data.time );
-			}
-			
-			// the default behaviour is identical to when it hits the edge of a platform
-			//var side:Number = (direction == "right") ? wall.left : wall.right;
-			//hitEdge(getTimeX(side));
+			// reverse direciton
+			vx *= -1;
 		}
 	}
 }

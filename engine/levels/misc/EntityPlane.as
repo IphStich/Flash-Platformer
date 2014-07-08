@@ -1,5 +1,4 @@
-package iphstich.platformer.engine.levels.parts 
-{
+package iphstich.platformer.engine.levels.misc {
 	import flash.display.MovieClip;
 	
 	/**
