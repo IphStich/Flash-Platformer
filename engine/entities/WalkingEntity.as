@@ -9,6 +9,7 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.entities.HitPoint;
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.engine.levels.Level;
+	import flash.utils.getTimer;
 	
 	public class WalkingEntity extends Character
 	{
@@ -44,7 +45,7 @@ package iphstich.platformer.engine.entities
 			groundPoints = new Vector.<HitPoint>();
 			groundPoints.push(leftBase, rightBase, leftPoint, rightPoint);
 			airPoints = new Vector.<HitPoint>();
-			airPoints.push(leftBase, rightBase, leftPoint, rightPoint, headLeft, headRight, upperLeft, upperRight);
+			airPoints.push(headLeft, headRight, leftBase, rightBase, leftPoint, rightPoint, upperLeft, upperRight);
 		}
 		
 		override public function addedToLevel (lev:Level) : void
@@ -162,15 +163,16 @@ package iphstich.platformer.engine.entities
 		
 		protected function hitWall (direction:String, data:HitData) : void
 		{
+			//collided = true;
 			//throw Error("Error. No default behavior for wall hitting defined for class " + getQualifiedClassName(this))
 			var wall:Part = data.hit as Part;
 			if (direction == "left") {
 				vx = 0;
-				px = wall.right - hitBox.left + 1.001;
+				px = wall.right - hitBox.left + 0.001;
 				//this.setCourse( { vx: 0, ax: 0, cx: NaN, kx: wall.right - hitBox.left + 1.001 }, data.time );
 			} else if (direction == "right") {
 				vx = 0;
-				px = wall.left - hitBox.right - 1.001;
+				px = wall.left - hitBox.right - 0.001;
 				//this.setCourse( { vx: 0, ax: 0, cx: NaN, kx: wall.left - hitBox.right - 1.001 }, data.time );
 			}
 			this.heading = 0;
@@ -178,8 +180,9 @@ package iphstich.platformer.engine.entities
 		
 		protected function hitHead (data:HitData) : void
 		{
-			vy = 0;
-			y = 1 + getHeight() + (data.hit as Part).bottom;
+			//collided = true;
+			fall();
+			py = 0.001 + getHeight() + data.y;
 			//this.setCourse(
 				//{ vy: 0
 				//, ky: 1 + getHeight() + (data.hit as Part).bottom
@@ -217,7 +220,7 @@ package iphstich.platformer.engine.entities
 			else removeFlyingHitPoints();
 		}
 		
-		public function fall(time:Number):void
+		public function fall(time:Number=0):void
 		{
 			addFlyingHitPoints();
 			vy = 0;

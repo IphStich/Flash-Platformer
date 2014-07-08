@@ -36,6 +36,7 @@ package iphstich.platformer.engine.entities
 		public var cx:Number = NaN;
 		public var cy:Number = NaN;
 		
+		protected var collided:Boolean;
 		protected var collisionPoints:Vector.<HitPoint>
 		protected var hitCenter:HitPoint;
 		
@@ -96,6 +97,7 @@ package iphstich.platformer.engine.entities
 			// Check for collisions
 			//var preCheck:Number = kt;
 			//var p:HitPoint;
+			collided = false;
 			for (i=0; i<collisionPoints.length; ++i) {
 				p = collisionPoints[i];
 			//for each (var p:HitPoint in collisionPoints) {
@@ -104,12 +106,13 @@ package iphstich.platformer.engine.entities
 					obj = hit[j];
 					if (obj.hit is Interactable) continue;
 					if (obj.hit == Level.OUTSIDE_LEVEL) {
-						trace("auto desu"); //, this, engine.time, vectorsToString()
-						this.death();
-						return;
+						//trace("auto desu"); //, this, engine.time, vectorsToString()
+						//this.death();
+						//return;
 					}
 					if (obj.hit != this) {
 						collide(p, obj);
+						if (collided) return;
 					}
 					if (alive == false) return;
 				}

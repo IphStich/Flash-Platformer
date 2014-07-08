@@ -77,7 +77,7 @@ package iphstich.platformer.engine.entities
 			playAnim();
 		}
 		
-		override public function fall (time:Number) : void
+		override public function fall (time:Number=0) : void
 		{
 			super.fall(time);
 			
@@ -130,8 +130,8 @@ package iphstich.platformer.engine.entities
 			{
 				addFlyingHitPoints();
 				surface = null;
-				y -= 3;
-				py -= 3;
+				//y -= 3;
+				//py -= 3;
 				vy = -JUMP_VELOCITY;
 				ay = GRAVITY;
 				cy = JUMP_VELOCITY;
