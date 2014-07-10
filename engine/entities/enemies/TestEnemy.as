@@ -30,6 +30,7 @@ package iphstich.platformer.engine.entities.enemies
 		
 		override protected function hitEdge(side:Number, time:Number):void
 		{
+			px = side;
 			vx *= -1;
 		}
 		
