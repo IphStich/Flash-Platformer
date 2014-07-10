@@ -71,5 +71,10 @@ package iphstich.platformer.engine.levels.parts
 				other.connect(this);
 			}
 		}
+		
+		public function getTopAt (x:Number) : Number
+		{
+			throw Error ("No top function set for " + getQualifiedClassName(this));
+		}
 	}
 }

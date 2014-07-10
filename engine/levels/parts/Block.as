@@ -17,5 +17,10 @@ package iphstich.platformer.engine.levels.parts
 			
 			return 1;
 		}
+		
+		override public function getTopAt (x:Number) : Number
+		{
+			return top;
+		}
 	}
 }

@@ -43,7 +43,7 @@ package iphstich.platformer.engine.entities
 			collisionPoints = null;
 			hitCenter = null;
 			groundPoints = new Vector.<HitPoint>();
-			groundPoints.push(leftBase, rightBase, leftPoint, rightPoint);
+			groundPoints.push(leftPoint, rightPoint, leftBase, rightBase);
 			airPoints = new Vector.<HitPoint>();
 			airPoints.push(headLeft, headRight, leftBase, rightBase, leftPoint, rightPoint, upperLeft, upperRight);
 		}
@@ -98,15 +98,7 @@ package iphstich.platformer.engine.entities
 			
 			if (surface != null)
 			{
-				if (surface is Block) {
-					py = surface.top;
-				} else if (surface is RampR) {
-					//py = surface.bottom + (getX(time) - surface.left) * (surface as RampR).slope
-					py = surface.bottom + (px - surface.left) * (surface as RampR).slope
-				} else if (surface is RampL) {
-					//py = surface.top + (getX(time) - surface.left) * (surface as RampL).slope
-					py = surface.top + (px - surface.left) * (surface as RampL).slope
-				}
+				py = surface.getTopAt (px);
 			}
 		}
 		
@@ -121,6 +113,7 @@ package iphstich.platformer.engine.entities
 			if (surface != null) if (surface.connections.indexOf(target) >= 0) return;
 			
 			if (target is Part) {
+				collided = true;
 				if ((point == leftPoint && !(target is RampL)) || point == upperLeft)
 				{
 					this.hitWall("left", data);
@@ -168,7 +161,7 @@ package iphstich.platformer.engine.entities
 			var wall:Part = data.hit as Part;
 			if (direction == "left") {
 				vx = 0;
-				px = wall.right - hitBox.left + 0.001;
+				px = wall.right - hitBox.left + 0.1;
 				//this.setCourse( { vx: 0, ax: 0, cx: NaN, kx: wall.right - hitBox.left + 1.001 }, data.time );
 			} else if (direction == "right") {
 				vx = 0;

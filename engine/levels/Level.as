@@ -218,8 +218,10 @@ package iphstich.platformer.engine.levels
 		}
 		
 		public var pointResult:Vector.<HitData>;
-		public function testHitPath(result:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number, radius:Number = 0, timeFrom:Number = -1, timeTo:Number = -1, interval:Number = -1, endOnFirst:Vector.<Class> = null):Vector.<HitData>
+		public function testHitPath(results:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number, radius:Number = 0, timeFrom:Number = -1, timeTo:Number = -1, interval:Number = -1, endOnFirst:Vector.<Class> = null) : void
 		{
+			if (x1 == x2 && y1 == y2) return;
+			
 			//this.graphics.clear();
 			//this.graphics.lineStyle(1, 0xFF0000, 1);
 			//this.graphics.moveTo(x1, y1);
@@ -281,8 +283,8 @@ package iphstich.platformer.engine.levels
 			
 			if (!(x2 >= left && x2 <= right && y2 >= top && y2 <= bottom))
 			{
-				result.push(HitData.hit(OUTSIDE_LEVEL, x, y, 0));
-				return result;
+				results.push(HitData.hit(OUTSIDE_LEVEL, x, y, 0));
+				return;
 			}
 			
 			// hit test Parts
@@ -292,9 +294,25 @@ package iphstich.platformer.engine.levels
 				p = parts[i];
 				h = p.hitTestPath(x1, y1, x2, y2);
 				if (h != null)
-					result.push(h);
+					results.push(h);
 			}
-			return null;
+			
+			// sort results
+			if (results.length > 1)
+			{
+				if (x1 != x2)
+				{
+					results.sort(SORT_BY_X);
+					if (x1 > x2) results.reverse();
+					return;
+				}
+				if (y1 != y2)
+				{
+					results.sort(SORT_BY_Y);
+					if (y1 > y2) results.reverse();
+					return;
+				}
+			}
 			
 			//// hit test entities
 			//var e:Entity;
@@ -314,6 +332,20 @@ package iphstich.platformer.engine.levels
 					//ret.push(HitData.hit(r, x, y, time));
 			//}
 		} //testHitPath
+		
+		private function SORT_BY_X (a:HitData, b:HitData) : Number
+		{
+			if (a.x < b.x) return -1;
+			if (a.x > b.x) return 1;
+			return 0;
+		}
+		
+		private function SORT_BY_Y (a:HitData, b:HitData) : Number
+		{
+			if (a.y < b.y) return -1;
+			if (a.y > b.y) return 1;
+			return 0;
+		}
 		
 		public function tick (style:uint, delta:Number) : void
 		{
