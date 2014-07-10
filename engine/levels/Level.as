@@ -110,26 +110,6 @@ package iphstich.platformer.engine.levels
 			}
 			
 			numInteractables = interactables.length;
-			
-			// interpret the level parts
-			//numParts = parts.length;
-			//for (i = 0; i < numParts; ++i)
-			//{
-				////var p:Part = parts[i]
-				//
-				////// stretch level bounds
-				////if (top > p.top) 		top = p.top;
-				////if (left > p.left) 		left = p.left;
-				////if (right < p.right) 	right = p.right;
-				////if (bottom < p.bottom) 	bottom = p.bottom;
-				//
-				//// connect pieces by showing every piece every other piece
-				////for (j=i+1; j<numParts; ++j)
-				////{
-					//////if (j == i) continue;
-					////p.show( parts[j] );
-				////}
-			//}
 		}
 		
 		public function addPart (child:DisplayObject) : void
@@ -279,39 +259,38 @@ package iphstich.platformer.engine.levels
 			//return result;
 			
 			
-			var h:HitData;
-			
-			if (!(x2 >= left && x2 <= right && y2 >= top && y2 <= bottom))
-			{
-				results.push(HitData.hit(OUTSIDE_LEVEL, x, y, 0));
-				return;
-			}
+			var hd:HitData;
 			
 			// hit test Parts
 			var p:Part;
 			for (i = 0; i < numParts; ++i)
 			{
 				p = parts[i];
-				h = p.hitTestPath(x1, y1, x2, y2);
-				if (h != null)
-					results.push(h);
+				hd = p.hitTestPath(x1, y1, x2, y2);
+				if (hd != null)
+					results.push(hd);
 			}
 			
-			// sort results
-			if (results.length > 1)
+			// set t markers for results
+			if (results.length > 0)
 			{
 				if (x1 != x2)
 				{
-					results.sort(SORT_BY_X);
-					if (x1 > x2) results.reverse();
-					return;
+					for each (hd in results)
+						hd.t = Math.abs(hd.x - x1);
 				}
-				if (y1 != y2)
+				else if (y1 != y2)
 				{
-					results.sort(SORT_BY_Y);
-					if (y1 > y2) results.reverse();
-					return;
+					for each (hd in results)
+						hd.t = Math.abs(hd.y - y1);
 				}
+			}
+			
+			// check for outside level
+			if (!(x2 >= left && x2 <= right && y2 >= top && y2 <= bottom))
+			{
+				hd = HitData.hit(OUTSIDE_LEVEL, x2, y2, -1)
+				results.push();
 			}
 			
 			//// hit test entities
@@ -333,20 +312,6 @@ package iphstich.platformer.engine.levels
 			//}
 		} //testHitPath
 		
-		private function SORT_BY_X (a:HitData, b:HitData) : Number
-		{
-			if (a.x < b.x) return -1;
-			if (a.x > b.x) return 1;
-			return 0;
-		}
-		
-		private function SORT_BY_Y (a:HitData, b:HitData) : Number
-		{
-			if (a.y < b.y) return -1;
-			if (a.y > b.y) return 1;
-			return 0;
-		}
-		
 		public function tick (style:uint, delta:Number) : void
 		{
 			var e:Entity;
@@ -356,6 +321,9 @@ package iphstich.platformer.engine.levels
 			
 			for each (e in entities)
 				e.tickMove (delta);
+			
+			for each (e in entities)
+				e.tickCollide (delta);
 			
 			for each (e in entities) {
 				e.x = e.px;
@@ -413,6 +381,14 @@ package iphstich.platformer.engine.levels
 		public function start (inEngine:Engine) : void
 		{
 			engine = inEngine;
+			
+			var a:Area = getArea("enemies");
+			if (a == null) return;
+			var i:int;
+			for (i=0; i<40; ++i)
+			{
+				new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, 0, this);
+			}
 		}
 	}
 }

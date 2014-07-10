@@ -120,9 +120,7 @@ package iphstich.platformer.engine
 			{
 				c = x1 + (top - y1) / (y2 - y1) * (x2 - x1);
 				if (c >= left && c <= right)
-					return HitData.hit(this, c, top);
-				else
-					return null;
+					return HitData.hit(this, c, top, 0, HitData.TYPE_TOP);
 			}
 			
 			// bottom
@@ -130,9 +128,7 @@ package iphstich.platformer.engine
 			{
 				c = x1 + (bottom - y1) / (y2 - y1) * (x2 - x1);
 				if (c >= left && c <= right)
-					return HitData.hit(this, c, bottom);
-				else
-					return null;
+					return HitData.hit(this, c, bottom, 0, HitData.TYPE_BOTTOM);
 			}
 			
 			// left
@@ -140,9 +136,7 @@ package iphstich.platformer.engine
 			{
 				c = y1 + (left - x1) / (x2 - x1) * (y2 - y1);
 				if (c >= top && c <= bottom)
-					return HitData.hit(this, left, c);
-				else
-					return null;
+					return HitData.hit(this, left, c, 0, HitData.TYPE_LEFT);
 			}
 			
 			// right
@@ -150,9 +144,7 @@ package iphstich.platformer.engine
 			{
 				c = y1 + (right - x1) / (x2 - x1) * (y2 - y1);
 				if (c >= top && c <= bottom)
-					return HitData.hit(this, right, c);
-				else
-					return null;
+					return HitData.hit(this, right, c, 0, HitData.TYPE_RIGHT);
 			}
 			return null;
 		}

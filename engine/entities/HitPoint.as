@@ -1,12 +1,13 @@
 package iphstich.platformer.engine.entities
 {
+	import Math;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.HitData;
 	
 	public class HitPoint
 	{
-		public var engine:Engine;
+		//public var engine:Engine;
 		public var x:Number;
 		public var y:Number;
 		public var size:Number;
@@ -26,52 +27,50 @@ package iphstich.platformer.engine.entities
 		private var lastCheckResult:Vector.<HitData>
 		public function getHitPath () : Vector.<HitData>
 		{
-			var i:uint;
+			// No collision if the parent isn't moving
+			if (parent.x == parent.px && parent.y == parent.py)
+			{
+				clearResultVector();
+				return lastCheckResult;
+			}
+			
+			var i:int;
+			var hd:HitData;
+			var engine:Engine = parent.level.engine;
 			
 			// Prevents the check from happening multiple times in one frame
-			if ((lastCheckTime == engine.time) /*&& (lastCheckKeyTime == parent.kt)*/) return lastCheckResult;
-			lastCheckTime = engine.time;
-			//lastCheckKeyTime = parent.kt;
-			//
-			//var lf:Number = engine.lastFrame;
-			//if (lf < lastCheckKeyTime) lf = lastCheckKeyTime;
+			//if ((lastCheckTime == engine.time) /*&& (lastCheckKeyTime == parent.kt)*/) return lastCheckResult;
+			//lastCheckTime = engine.time;
 			
-			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
-			else lastCheckResult = new Vector.<HitData>();
+			clearResultVector();
 			
-			//if (engine.tickStyle == Engine.TICK_CALCULATED)
-			//{
-				//parent.level.testHitPath
-					//( lastCheckResult
-					//, parent.getX(lf) + x
-					//, parent.getY(lf) + y
-					//, parent.getX(lastCheckTime) + x
-					//, parent.getY(lastCheckTime) + y
-					//, size
-					//, lf
-					//, lastCheckTime
-					//, -1
-					//, hitList
-				//);
-			//}
-			//else
-			//{
-				parent.level.testHitPath
-					( lastCheckResult
-					, x + parent.x
-					, y + parent.y
-					, x + parent.px
-					, y + parent.py
-				);
-			//}
+			// Do the collision trace
+			parent.level.testHitPath
+				( lastCheckResult
+				, x + parent.x
+				, y + parent.y
+				, x + parent.px
+				, y + parent.py
+			);
 			
-			// remove referrences to parent
-			for (i=0; i<lastCheckResult.length; ++i)
+			for (i=lastCheckResult.length-1; i>=0; --i)
+			{
+				// set point to this....
+				lastCheckResult[i].point = this;
+				
+				// remove referrences to parent
 				if (lastCheckResult[i].hit == parent) {
 					lastCheckResult.splice(i, 1)[0].destroy();
 				}
+			}
 			
 			return lastCheckResult;
+		}
+		
+		private function clearResultVector ()
+		{
+			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
+			else lastCheckResult = new Vector.<HitData>();
 		}
 	}
 

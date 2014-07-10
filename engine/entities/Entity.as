@@ -68,11 +68,6 @@ package iphstich.platformer.engine.entities
 		
 		public function tickMove (delta:Number):void
 		{
-			var p:HitPoint;
-			var obj:HitData;
-			var i:uint, j:uint;
-			var hit:Vector.<HitData>;
-			
 			// Apply acceleration
 			vx += ax * delta;
 			vy += ay * delta;
@@ -87,153 +82,100 @@ package iphstich.platformer.engine.entities
 				vy = CustomMath.capBetween(vy, -cy, cy);
 			}
 			
+			// Calculate the 'end'
 			px = x + vx * delta;
 			py = y + vy * delta;
+		}
+		
+		public function tickCollide (delta:Number) : void
+		{
+			var hd:HitData;
+			var count:int = 0;
 			
-			// Don't do collisions?
-			if (collisionPoints == null) return;
-			if (collisionPoints.length == 0) return;
+			while (true)
+			{
+				collided = false;
+				
+				refreshCollisions();
+				
+				for each (hd in collisions)
+					collide (hd);
+				
+				if (!alive) return;
+				
+				if (count++ > 2) break;
+				if (collided) continue;
+				break;
+			}
 			
-			// Check for collisions
-			//var preCheck:Number = kt;
 			//var p:HitPoint;
-			collided = false;
-			for (i=0; i<collisionPoints.length; ++i) {
-				p = collisionPoints[i];
-			//for each (var p:HitPoint in collisionPoints) {
-				hit = p.getHitPath();
-				for (j = 0; j < hit.length; ++j) {
-					obj = hit[j];
-					if (obj.hit is Interactable) continue;
-					if (obj.hit == Level.OUTSIDE_LEVEL) {
+			//var obj:HitData;
+			//var i:uint, j:uint;
+			//var hit:Vector.<HitData>;
+			//
+			//// Don't do collisions?
+			//if (collisionPoints == null) return;
+			//if (collisionPoints.length == 0) return;
+			//
+			//// Check for collisions
+			////var preCheck:Number = kt;
+			////var p:HitPoint;
+			//collided = false;
+			//for (i=0; i<collisionPoints.length; ++i) {
+				//p = collisionPoints[i];
+			////for each (var p:HitPoint in collisionPoints) {
+				//hit = p.getHitPath();
+				//for (j = 0; j < hit.length; ++j) {
+					//obj = hit[j];
+					//if (obj.hit is Interactable) continue;
+					//if (obj.hit == Level.OUTSIDE_LEVEL) {
 						//trace("auto desu"); //, this, engine.time, vectorsToString()
 						//this.death();
 						//return;
-					}
-					if (obj.hit != this) {
-						collide(p, obj);
-						if (collided) return;
-					}
-					if (alive == false) return;
-				}
-			}
-			
-			
-			//if (style == Engine.TICK_CALCULATED)
-			//{
-				//var i:int, j:int
-				//var f:Function = null;
-				//
-				//// cap X and Y velocities
-				//if (!isNaN(cx)) {
-					//if (engine.time >= cxt) {
-						////trace("cap X")
-						//f = cxf;
-						//setCourse
-							//( { cx: NaN, vx: cx, ax: 0 }
-							//, cxt
-							//);
-						//if (f != null) {
-							//f(cxt);
-						//}
 					//}
-				//}
-				//if (!isNaN(cy)) {
-					//if (engine.time >= cyt) {
-						////trace("cap Y", getValue("vy", cyt), cy)
-						//f = cyf;
-						//setCourse
-							//( { cy: NaN, vy: cy, ay: 0 }
-							//, cyt
-							//);
-						//if (f != null) {
-							//f(cyt)
-						//}
+					//if (obj.hit != this) {
+						//collide(p, obj);
+						//if (collided) return;
 					//}
+					//if (alive == false) return;
 				//}
-				//
-				//// Calculate the position
-				//x = getX(engine.time);
-				//y = getY(engine.time);
-				//
-				//// Don't do collisions?
-				//if (collisionPoints == null) return;
-				//if (collisionPoints.length == 0) return;
-				//
-				//// Check for collisions
-				//var preCheck:Number = kt;
-				//var p:HitPoint;
-				//for (i=0; i<collisionPoints.length; ++i) {
-					//p = collisionPoints[i];
-				////for each (var p:HitPoint in collisionPoints) {
-					//var hit:Vector.<HitData> = p.getHitPath();
-					//for (j = 0; j < hit.length; ++j) {
-						//var obj:HitData = hit[j];
-						//if (obj.hit is Interactable) continue;
-						//if (obj.hit == Level.OUTSIDE_LEVEL) {
-							//trace("auto desu", this, engine.time, vectorsToString());
-							//this.death();
-							//return;
-						//}
-						//if (obj.hit != this) {
-							//collide(p, obj);
-						//}
-						//if (alive == false || kt != preCheck) return;
-					//}
-				//}
-			//}
-			//else
-			//{
-				//// Apply acceleration
-				//vx += ax * delta;
-				//vy += ay * delta;
-				//
-				//// Cap X and Y velocities
-				//if (!isNaN(cx))
-				//{
-					//vx = CustomMath.capBetween(vx, -cx, cx);
-				//}
-				//if (!isNaN(cy))
-				//{
-					//vy = CustomMath.capBetween(vy, -cy, cy);
-				//}
-				//
-				//kx = x + vx * delta;
-				//ky = y + vy * delta;
-				//
-				//// Don't do collisions?
-				//if (collisionPoints == null) return;
-				//if (collisionPoints.length == 0) return;
-				//
-				//// Check for collisions
-				////var preCheck:Number = kt;
-				////var p:HitPoint;
-				//for (i=0; i<collisionPoints.length; ++i) {
-					//p = collisionPoints[i];
-				////for each (var p:HitPoint in collisionPoints) {
-					//hit = p.getHitPath();
-					//for (j = 0; j < hit.length; ++j) {
-						//obj = hit[j];
-						//if (obj.hit is Interactable) continue;
-						//if (obj.hit == Level.OUTSIDE_LEVEL) {
-							//trace("auto desu", this, engine.time, vectorsToString());
-							//this.death();
-							//return;
-						//}
-						//if (obj.hit != this) {
-							//collide(p, obj);
-						//}
-						//if (alive == false || kt != preCheck) return;
-					//}
-				//}
-				//
-				//// If no blocking collisions: move
-				//x = kx;
-				//y = ky;
 			//}
 		}
 		
-		protected function collide(point:HitPoint, data:HitData):void
+		var collisions:Vector.<HitData>;
+		private function refreshCollisions ()
+		{
+			var i:int;
+			var p:HitPoint;
+			var check:Vector.<HitData>;
+			
+			// clear or create vector
+			if (collisions == null) collisions = new Vector.<HitData>();
+			else { for (i=collisions.length; i>0; --i) collisions.pop().destroy(); }
+			
+			// get all collisions
+			for (i=collisionPoints.length-1; i>=0; --i)
+			{
+				p = collisionPoints[i];
+				check = p.getHitPath();
+				while (check.length > 0) collisions.push( check.pop() );
+			}
+			
+			// sort them by t
+			collisions.sort(SORT_BY_T);
+		}
+		
+		private function SORT_BY_T (a:HitData, b:HitData) : Number
+		{
+			if (a.t == -1) return 1;
+			if (b.t == -1) return -1;
+			
+			if (a.t < b.t) return -1;
+			if (a.t > b.t) return 1;
+			return 0;
+		}
+		
+		protected function collide (data:HitData):void
 		{
 			throw Error("Error. No default behavior for collision defined for class " + getQualifiedClassName(this));
 		}
@@ -278,9 +220,6 @@ package iphstich.platformer.engine.entities
 		{
 			level = lev;
 			engine = level.engine;
-			
-			for each (var p:HitPoint in collisionPoints)
-				p.engine = level.engine;
 		}
 		
 		public function applyImpulse (x:Number, y:Number, time:Number) : void

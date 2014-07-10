@@ -33,12 +33,11 @@ package iphstich.platformer.engine.entities.enemies
 			vx *= -1;
 		}
 		
-		override protected function hitWall(direction:String, data:HitData):void
+		override protected function hitWall(direction:int, data:HitData):void
 		{
+			var vx:Number = this.vx;
 			super.hitWall (direction, data);
-			
-			// reverse direciton
-			vx *= -1;
+			this.vx = -1 * vx;
 		}
 	}
 }

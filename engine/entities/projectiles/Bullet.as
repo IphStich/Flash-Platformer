@@ -33,14 +33,14 @@ package iphstich.platformer.engine.entities.projectiles
 			//movement.initial (time, startX, startY, speedX, speedY);
 		}
 		
-		override protected function collide (point:HitPoint, data:HitData) : void
-		{
+		//override protected function collide (point:HitPoint, data:HitData) : void
+		//{
 			//// ignore Entities of the same team
 			////trace(target)
 			//if (data.hit is Entity) if ((data.hit as Entity).team == team) return;
 			//
 			//explode(data);
-		}
+		//}
 		
 		protected function explode (data:HitData) : void
 		{

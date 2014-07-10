@@ -60,7 +60,7 @@ package iphstich.platformer.engine.levels.parts
 			{
 				c = x1 + (bottom - y1) / (y2 - y1) * (x2 - x1);
 				if (c >= left && c <= right)
-					return HitData.hit(this, c, bottom);
+					return HitData.hit(this, c, bottom, 0, HitData.TYPE_BOTTOM);
 				//else
 					//return null;
 			}
@@ -70,7 +70,7 @@ package iphstich.platformer.engine.levels.parts
 			{
 				c = y1 + (right - x1) / (x2 - x1) * (y2 - y1);
 				if (c >= top && c <= bottom)
-					return HitData.hit(this, right, c);
+					return HitData.hit(this, right, c, 0, HitData.TYPE_RIGHT);
 				//else
 					//return null;
 			}
@@ -84,11 +84,11 @@ package iphstich.platformer.engine.levels.parts
 					var b2:Number = y1 - m2 * x1;
 					var xi:Number = (b2 - bottom) / (slope - m2);
 					
-					return HitData.hit(this, xi, getTopAt(xi));
+					return HitData.hit(this, xi, getTopAt(xi), 0, HitData.TYPE_SURFACE);
 				}
 				else
 				{
-					return HitData.hit(this, x1, getTopAt(x1));
+					return HitData.hit(this, x1, getTopAt(x1), 0, HitData.TYPE_SURFACE);
 				}
 			}
 			

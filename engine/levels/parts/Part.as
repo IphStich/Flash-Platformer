@@ -23,7 +23,11 @@ package iphstich.platformer.engine.levels.parts
 		}
 		
 		/**
-		 * this is a test;
+		 * Checks whether or not the two parts "connect".
+		 * -1 : never
+		 *  0 : not really
+		 *  1 : sure, why not
+		 *  2 : YES!
 		 * @param	other
 		 * @return
 		 */
