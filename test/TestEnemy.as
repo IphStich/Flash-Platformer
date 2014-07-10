@@ -1,5 +1,4 @@
-package iphstich.platformer.engine.entities.enemies
-{
+package iphstich.platformer.test {
 	import iphstich.platformer.engine.entities.WalkingEntity;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.levels.parts.Part;

@@ -1,11 +1,11 @@
-package iphstich.platformer.engine.entities
-{
+package iphstich.platformer.test {
 	import flash.events.Event;
 	import flash.globalization.LocaleID;
 	import flash.ui.Keyboard;
 	import flash.utils.getTimer;
 	import iphstich.library.Controls;
 	import iphstich.library.CustomMath;
+	import iphstich.platformer.test.TestWeapon;
 	//import iphstich.mcs.engine.weapons.WeapCloud;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.entities.WalkingEntity;
@@ -58,9 +58,11 @@ package iphstich.platformer.engine.entities
 			
 			// set default properties
 			team 					= 1;
-			//equipedWeapon 			= new WeapCloud();
-			//equipedWeapon.host 		= this;
+			equipedWeapon 			= new TestWeapon();
+			equipedWeapon.host 		= this;
 			setSize (40, 45);
+			
+			setDefaultMoveVariables();
 		}
 		
 		
@@ -109,7 +111,7 @@ package iphstich.platformer.engine.entities
 		//override protected function makeDecisions():void
 		override public function tickThink (style:uint, delta:Number) : void
 		{
-			var heading:int;
+			var heading:int = 0;
 			
 			// this function is all about controls, so if they are frozen return and do nothing
 			if (controlsFrozen()) return;
@@ -119,11 +121,19 @@ package iphstich.platformer.engine.entities
 			if (Controls.down("left")) heading = -1;
 			if (Controls.down("right")) heading += 1;
 			
-			ax = heading * HORIZ_ACC;
-			//if (heading == 0)
-			//{
-				//ax = CustomMath.capBetween(vx / delta, -HORIZ_ACC, HORIZ_ACC);
-			//}
+			if (heading == 0)
+			{
+				//ax = CustomMath.capBetween(vx, -HORIZ_ACC * delta, HORIZ_ACC * delta);
+				ax = HORIZ_ACC;
+				if (Math.abs(vx) <= ax * delta) ax = Math.abs(vx) / delta;
+				ax *= (vx > 0) ? -1 : 1;
+				if (vx == 0) ax = 0;
+			}
+			else
+			{
+				ax = heading * HORIZ_ACC;
+				facing = heading;
+			}
 			
 			
 			if (Controls.pressed("jump"))
@@ -138,6 +148,17 @@ package iphstich.platformer.engine.entities
 				//setCourse( { ky:getY(pressTime)-3, vy: -JUMP_VELOCITY, ay: GRAVITY, cy: JUMP_VELOCITY, ax: CustomMath.normalize(ax) * HORIZ_ACC_AIR }, pressTime );
 			}
 			
+			// weapons
+			if (equipedWeapon != null) {
+				var st:uint = Controls.button("shoot");
+				if (st & Controls.KEY_UP)		equipedWeapon.triggerUp();
+				if (st & Controls.KEY_RELEASED)	equipedWeapon.triggerRelease();
+				if (st & Controls.KEY_DOWN)		equipedWeapon.triggerDown();
+				if (st & Controls.KEY_PRESSED)	equipedWeapon.triggerPull();
+			}
+			
+			
+			//
 			//var pressTime:Number = (engine.time * 3 + engine.lastFrame) / 4
 			//
 			//if (engine.tickStyle == Engine.TICK_CALCULATED)

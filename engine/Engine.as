@@ -8,7 +8,7 @@
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	//import iphstich.mcs.engine.entities.Player;
-	import iphstich.platformer.engine.entities.enemies.TestEnemy;
+	import iphstich.platformer.test.TestEnemy;
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.levels.interactables.Door;
 	import iphstich.platformer.engine.levels.Level;

@@ -13,7 +13,7 @@ package iphstich.platformer.engine.levels
 	import iphstich.platformer.engine.levels.interactables.Door;
 	import iphstich.platformer.engine.levels.interactables.Interactable;
 	import iphstich.platformer.engine.levels.parts.*;
-	import iphstich.platformer.engine.entities.enemies.TestEnemy;
+	import iphstich.platformer.test.TestEnemy;
 	import iphstich.platformer.engine.levels.misc.Area;
 	
 	import flash.utils.getQualifiedClassName;

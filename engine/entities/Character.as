@@ -24,11 +24,16 @@ package iphstich.platformer.engine.entities
 		
 		public var health:Number;
 		
+		private var _facing:int;
+		public function get facing () : int { return _facing; }
+		public function set facing (inp:int) { _facing = inp; scaleX = inp; }
+		
 		public function Character()
 		{
 			super();
 			
-			health = 100;
+			health 	= 100;
+			facing 	= 1;
 		}
 		
 		public function dealDamage (damage:Number) : void

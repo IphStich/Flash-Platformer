@@ -26,21 +26,24 @@ package iphstich.platformer.engine.entities.projectiles
 		
 		public function shoot (startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number) : void
 		{
-			//facing = (speedX < 0) ? "left" : "right";
-			//
-			//this.scaleX = (speedX > 0) ? 1 : -1;
+			x = startX;
+			y = startY;
+			vx = speedX;
+			vy = speedY;
+			facing = (speedX < 0) ? "left" : "right";
+			
+			this.scaleX = (speedX > 0) ? 1 : -1;
 			//
 			//movement.initial (time, startX, startY, speedX, speedY);
 		}
 		
-		//override protected function collide (point:HitPoint, data:HitData) : void
-		//{
-			//// ignore Entities of the same team
-			////trace(target)
-			//if (data.hit is Entity) if ((data.hit as Entity).team == team) return;
-			//
-			//explode(data);
-		//}
+		override protected function collide (data:HitData) : void
+		{
+			// ignore Entities of the same team
+			if (data.hit is Entity) if ((data.hit as Entity).team == team) return;
+			
+			explode(data);
+		}
 		
 		protected function explode (data:HitData) : void
 		{
@@ -57,7 +60,7 @@ package iphstich.platformer.engine.entities.projectiles
 				//}
 			//}
 			//
-			//death();
+			death();
 		}
 		
 		protected function hit (time:Number, target:Character) : void
