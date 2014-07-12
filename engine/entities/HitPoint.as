@@ -1,12 +1,13 @@
 package iphstich.platformer.engine.entities
 {
+	import Math;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.HitData;
 	
 	public class HitPoint
 	{
-		public var engine:Engine;
+		//public var engine:Engine;
 		public var x:Number;
 		public var y:Number;
 		public var size:Number;
@@ -24,53 +25,52 @@ package iphstich.platformer.engine.entities
 		private var lastCheckTime:Number
 		private var lastCheckKeyTime:Number;
 		private var lastCheckResult:Vector.<HitData>
-		public function getHitPath():Vector.<HitData>
+		public function getHitPath () : Vector.<HitData>
 		{
-			var i:uint;
-			
-			// prevents the check from happening multiple times in one frame
-			if ((lastCheckTime == engine.time) && (lastCheckKeyTime == parent.kt)) return lastCheckResult;
-			lastCheckTime = engine.time;
-			lastCheckKeyTime = parent.kt;
-			
-			var lf:Number = engine.lastFrame;
-			if (lf < lastCheckKeyTime) lf = lastCheckKeyTime;
-			
-			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
-			else lastCheckResult = new Vector.<HitData>();
-			
-			if (engine.tickStyle == Engine.TICK_CALCULATED)
+			// No collision if the parent isn't moving
+			if (parent.x == parent.px && parent.y == parent.py)
 			{
-				parent.level.testHitPath
-					( lastCheckResult
-					, parent.getX(lf) + x
-					, parent.getY(lf) + y
-					, parent.getX(lastCheckTime) + x
-					, parent.getY(lastCheckTime) + y
-					, size
-					, lf
-					, lastCheckTime
-					, -1
-					, hitList
-				);
-			}
-			else
-			{
-				parent.level.testHitPath
-					( lastCheckResult
-					, parent.x
-					, parent.y
-					, parent.kx
-					, parent.ky
-				);
+				clearResultVector();
+				return lastCheckResult;
 			}
 			
-			for (i=0; i<lastCheckResult.length; ++i)
+			var i:int;
+			var hd:HitData;
+			var engine:Engine = parent.level.engine;
+			
+			// Prevents the check from happening multiple times in one frame
+			//if ((lastCheckTime == engine.time) /*&& (lastCheckKeyTime == parent.kt)*/) return lastCheckResult;
+			//lastCheckTime = engine.time;
+			
+			clearResultVector();
+			
+			// Do the collision trace
+			parent.level.testHitPath
+				( lastCheckResult
+				, x + parent.x
+				, y + parent.y
+				, x + parent.px
+				, y + parent.py
+			);
+			
+			for (i=lastCheckResult.length-1; i>=0; --i)
+			{
+				// set point to this....
+				lastCheckResult[i].point = this;
+				
+				// remove referrences to parent
 				if (lastCheckResult[i].hit == parent) {
 					lastCheckResult.splice(i, 1)[0].destroy();
 				}
+			}
 			
 			return lastCheckResult;
+		}
+		
+		private function clearResultVector ()
+		{
+			if (lastCheckResult != null) while (lastCheckResult.length > 0) lastCheckResult.pop().destroy();
+			else lastCheckResult = new Vector.<HitData>();
 		}
 	}
 

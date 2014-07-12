@@ -12,8 +12,6 @@ package iphstich.platformer
 	
 	public class Main extends MovieClip
 	{
-		public static const SCREEN_WIDTH:Number = 1024;
-		public static const SCREEN_HEIGHT:Number = 576;
 		public static const GRID_SIZE:Number = 10;
 		
 		//public static var instance:Main;

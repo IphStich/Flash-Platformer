@@ -15,22 +15,22 @@
 			
 		}
 		
-		public function triggerUp (time:Number) : void
+		public function triggerUp () : void
 		{
 			// do nothing
 		}
 		
-		public function triggerDown (time:Number) : void
+		public function triggerDown () : void
 		{
 			// do nothing
 		}
 		
-		public function triggerPull (time:Number) : void
+		public function triggerPull () : void
 		{
 			// do nothing
 		}
 		
-		public function triggerRelease (time:Number) : void
+		public function triggerRelease () : void
 		{
 			// do nothing
 		}

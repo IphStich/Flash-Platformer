@@ -13,7 +13,7 @@ package iphstich.platformer.engine.levels
 	import iphstich.platformer.engine.levels.interactables.Door;
 	import iphstich.platformer.engine.levels.interactables.Interactable;
 	import iphstich.platformer.engine.levels.parts.*;
-	import iphstich.platformer.engine.entities.enemies.TestEnemy;
+	import iphstich.platformer.test.TestEnemy;
 	import iphstich.platformer.engine.levels.misc.Area;
 	
 	import flash.utils.getQualifiedClassName;
@@ -70,6 +70,8 @@ package iphstich.platformer.engine.levels
 		
 		public var engine:Engine;
 		
+		private var markedEntities:Vector.<Entity> = new Vector.<Entity>();
+		
 		public function Level()
 		{
 			if (OUTSIDE_LEVEL == null) OUTSIDE_LEVEL = new Bitmap();
@@ -110,26 +112,6 @@ package iphstich.platformer.engine.levels
 			}
 			
 			numInteractables = interactables.length;
-			
-			// interpret the level parts
-			//numParts = parts.length;
-			//for (i = 0; i < numParts; ++i)
-			//{
-				////var p:Part = parts[i]
-				//
-				////// stretch level bounds
-				////if (top > p.top) 		top = p.top;
-				////if (left > p.left) 		left = p.left;
-				////if (right < p.right) 	right = p.right;
-				////if (bottom < p.bottom) 	bottom = p.bottom;
-				//
-				//// connect pieces by showing every piece every other piece
-				////for (j=i+1; j<numParts; ++j)
-				////{
-					//////if (j == i) continue;
-					////p.show( parts[j] );
-				////}
-			//}
 		}
 		
 		public function addPart (child:DisplayObject) : void
@@ -218,62 +200,118 @@ package iphstich.platformer.engine.levels
 		}
 		
 		public var pointResult:Vector.<HitData>;
-		public function testHitPath(result:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number, radius:Number = 0, timeFrom:Number = -1, timeTo:Number = -1, interval:Number = -1, endOnFirst:Vector.<Class> = null):Vector.<HitData>
+		public function testHitPath(results:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number) : void
 		{
-			if (pointResult == null) pointResult = new Vector.<HitData>();
+			if (x1 == x2 && y1 == y2) return;
+			
 			//this.graphics.clear();
 			//this.graphics.lineStyle(1, 0xFF0000, 1);
 			//this.graphics.moveTo(x1, y1);
-				if (pointResult.length > 0)
-					throw new Error("made new");
+			//if (pointResult == null) pointResult = new Vector.<HitData>();
+				//if (pointResult.length > 0)
+					//throw new Error("made new");
+			
 			var i:uint;
 			
-			if (timeFrom == -1) timeFrom = engine.time;
-			if (timeTo == -1) timeTo = engine.time;
-			if (interval <= 0) interval = Main.GRID_SIZE;
+			//if (timeFrom == -1) timeFrom = engine.time;
+			//if (timeTo == -1) timeTo = engine.time;
+			//if (interval <= 0) interval = Main.GRID_SIZE;
+			//
+			//var distance:Number = CustomMath.distance(x1, x2, y1, y2)
+			//var numIterations:Number = Math.floor(distance / interval);
+			//
+			//if (numIterations == 0)
+			//{
+				//return testHit(result, x2, y2, radius, timeTo);
+			//}
+			//else
+			//{
+				//interval = distance / numIterations;
+				////var ret:Vector.<HitData> = new Vector.<HitData>();
+				//var pathDirection:Point = CustomMath.normalize(new Point(x2 - x1, y2 - y1));
+				//var pathX:Number = pathDirection.x;
+				//var pathY:Number = pathDirection.y;
+				//var timeDif:Number = (timeTo - timeFrom) / numIterations;
+				//var start:Point = new Point(x1, y1);
+				//
+				//for (i=0; i<=numIterations; ++i)
+				//{
+					//var point:Point = CustomMath.multiply(pathDirection, interval * i);
+					//point = point.add(start);
+					////this.graphics.lineTo(point.x, point.y - 5);
+					////this.graphics.lineTo(point.x, point.y);
+					//testHit
+						//( result
+						//, start.x + pathX * interval * i
+						//, start.y + pathY * interval * i
+						//, radius
+						//, timeFrom + timeDif * i
+					//);
+					////while (pointResult.length > 0) {
+						////var b:HitData = result.pop();
+					////}
+					////for each (var b:HitData in pointResult) {
+						////ret.push(b);
+						////if (endOnFirst != null) for each (var c:Class in endOnFirst) if (b.hit is c) return ret;
+						////if (b.hit == Level.OUTSIDE_LEVEL) return ret;
+					////}
+				//}
+			//}
 			
-			var distance:Number = CustomMath.distance(x1, x2, y1, y2)
-			var numIterations:Number = Math.floor(distance / interval);
+			//return result;
 			
-			if (numIterations == 0)
+			
+			var hd:HitData;
+			
+			// hit test Parts
+			var p:Part;
+			for (i = 0; i < numParts; ++i)
 			{
-				return testHit(result, x2, y2, radius, timeTo);
+				p = parts[i];
+				hd = p.hitTestPath(x1, y1, x2, y2);
+				if (hd != null)
+					results.push(hd);
 			}
-			else
+			
+			// set t markers for results
+			if (results.length > 0)
 			{
-				interval = distance / numIterations;
-				//var ret:Vector.<HitData> = new Vector.<HitData>();
-				var pathDirection:Point = CustomMath.normalize(new Point(x2 - x1, y2 - y1));
-				var pathX:Number = pathDirection.x;
-				var pathY:Number = pathDirection.y;
-				var timeDif:Number = (timeTo - timeFrom) / numIterations;
-				var start:Point = new Point(x1, y1);
-				
-				for (i=0; i<=numIterations; ++i)
+				if (x1 != x2)
 				{
-					var point:Point = CustomMath.multiply(pathDirection, interval * i);
-					point = point.add(start);
-					//this.graphics.lineTo(point.x, point.y - 5);
-					//this.graphics.lineTo(point.x, point.y);
-					testHit
-						( result
-						, start.x + pathX * interval * i
-						, start.y + pathY * interval * i
-						, radius
-						, timeFrom + timeDif * i
-					);
-					//while (pointResult.length > 0) {
-						//var b:HitData = result.pop();
-					//}
-					//for each (var b:HitData in pointResult) {
-						//ret.push(b);
-						//if (endOnFirst != null) for each (var c:Class in endOnFirst) if (b.hit is c) return ret;
-						//if (b.hit == Level.OUTSIDE_LEVEL) return ret;
-					//}
+					for each (hd in results)
+						hd.t = Math.abs(hd.x - x1);
+				}
+				else if (y1 != y2)
+				{
+					for each (hd in results)
+						hd.t = Math.abs(hd.y - y1);
 				}
 			}
 			
-			return result;
+			// check for outside level
+			if (!(x2 >= left && x2 <= right && y2 >= top && y2 <= bottom))
+			{
+				hd = HitData.hit(OUTSIDE_LEVEL, x2, y2, -1)
+				results.push();
+			}
+			
+			//// hit test entities
+			//var e:Entity;
+			//for (i = 0; i < numEntities; ++i)
+			//{
+				//e = entities[i];
+				//if (e.hitTest(x, y, radius, time))
+					//ret.push(HitData.hit(entities[i], x, y, time));
+			//}
+			//
+			//// hit test interactables
+			//var r:Interactable;
+			//for (i=0; i<numInteractables; ++i)
+			//{
+				//r = interactables[i];
+				//if (r.hitTest(x, y, radius))
+					//ret.push(HitData.hit(r, x, y, time));
+			//}
 		} //testHitPath
 		
 		public function tick (style:uint, delta:Number) : void
@@ -284,26 +322,36 @@ package iphstich.platformer.engine.levels
 				e.tickThink (style, delta);
 			
 			for each (e in entities)
-				e.tickMove (style, delta);
+				e.tickMove (delta);
+			
+			for each (e in entities)
+				e.tickCollide (delta);
+			
+			for each (e in entities) {
+				e.x = e.px;
+				e.y = e.py;
+			}
+			
+			while (markedEntities.length > 0)
+				removeEntity(markedEntities.pop());
 		}
 		
 		public function addEntity(target:Entity):void
 		{
-			//trace(getQualifiedClassName(target) + " - " + target.name)
-			
-			target.addedToLevel(this);
-			//target.level = this;
 			entities.push(target)
 			addChildAt(target, entityLevel);
 			numEntities = entities.length;
+			
+			target.addedToLevel(this);
 		}
 		
 		public function removeEntity(target:Entity):void
 		{
 			entities.splice(entities.indexOf(target), 1);
 			removeChild(target);
-			target.level = null;
 			numEntities = entities.length;
+			
+			target.removedFromLevel(this);
 		}
 		
 		public function getDoor(localName:String):Door
@@ -337,6 +385,19 @@ package iphstich.platformer.engine.levels
 		public function start (inEngine:Engine) : void
 		{
 			engine = inEngine;
+			
+			var a:Area = getArea("enemies");
+			if (a == null) return;
+			var i:int;
+			for (i=0; i<40; ++i)
+			{
+				new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, 0, this);
+			}
+		}
+		
+		public function markForRemoval (entity:Entity) : void
+		{
+			markedEntities.push(entity);
 		}
 	}
 }

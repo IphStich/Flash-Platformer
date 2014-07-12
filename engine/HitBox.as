@@ -104,5 +104,49 @@ package iphstich.platformer.engine
 			
 			return true;
 		}
+		
+		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
+		{
+			var c:Number;
+			
+			// Checks if collision is even possible
+			if (x1 < left && x2 < left) return null;
+			if (x1 > right && x2 > right) return null;
+			if (y1 < top && y2 < top) return null;
+			if (y1 > bottom && y2 > bottom) return null;
+			
+			// top
+			if (y1 < top)
+			{
+				c = x1 + (top - y1) / (y2 - y1) * (x2 - x1);
+				if (c >= left && c <= right)
+					return HitData.hit(this, c, top, 0, HitData.TYPE_TOP);
+			}
+			
+			// bottom
+			if (y1 > bottom)
+			{
+				c = x1 + (bottom - y1) / (y2 - y1) * (x2 - x1);
+				if (c >= left && c <= right)
+					return HitData.hit(this, c, bottom, 0, HitData.TYPE_BOTTOM);
+			}
+			
+			// left
+			if (x1 < left)
+			{
+				c = y1 + (left - x1) / (x2 - x1) * (y2 - y1);
+				if (c >= top && c <= bottom)
+					return HitData.hit(this, left, c, 0, HitData.TYPE_LEFT);
+			}
+			
+			// right
+			if (x1 > right)
+			{
+				c = y1 + (right - x1) / (x2 - x1) * (y2 - y1);
+				if (c >= top && c <= bottom)
+					return HitData.hit(this, right, c, 0, HitData.TYPE_RIGHT);
+			}
+			return null;
+		}
 	}
 }

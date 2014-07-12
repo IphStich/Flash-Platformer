@@ -9,6 +9,7 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.entities.HitPoint;
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.engine.levels.Level;
+	import flash.utils.getTimer;
 	
 	public class WalkingEntity extends Character
 	{
@@ -42,49 +43,25 @@ package iphstich.platformer.engine.entities
 			collisionPoints = null;
 			hitCenter = null;
 			groundPoints = new Vector.<HitPoint>();
-			groundPoints.push(leftBase, rightBase, leftPoint, rightPoint);
+			groundPoints.push(leftPoint, rightPoint, leftBase, rightBase);
 			airPoints = new Vector.<HitPoint>();
-			airPoints.push(leftBase, rightBase, leftPoint, rightPoint, headLeft, headRight, upperLeft, upperRight);
-		}
-		
-		override public function addedToLevel (lev:Level) : void
-		{
-			level = lev;
-			engine = level.engine;
-			
-			var p:HitPoint;
-			for each (p in airPoints)
-				p.engine = level.engine;
-			for each (p in groundPoints)
-				p.engine = level.engine;
+			airPoints.push(headLeft, headRight, leftBase, rightBase, leftPoint, rightPoint, upperLeft, upperRight);
 		}
 		
 		private var hasFlyingHitPoints : Boolean = false;
 		protected function addFlyingHitPoints() : void
 		{
 			collisionPoints = airPoints;
-			//if (hasFlyingHitPoints) return;
-			//collisionPoints.push ( headLeft, headRight, upperLeft, upperRight );
-			//hasFlyingHitPoints = true;
 		}
 		
 		protected function removeFlyingHitPoints() : void
 		{
 			collisionPoints = groundPoints;
-			//var i:int;
-			//if (!hasFlyingHitPoints) return;
-			//var removeList:Array = new Array (headLeft, headRight, upperLeft, upperRight);
-			//i = removeList.length - 1;
-			//for (i = i; i>=0; --i)
-			//{
-				//collisionPoints.splice(collisionPoints.indexOf(removeList[i]), 1);
-			//}
-			//hasFlyingHitPoints = false;
 		}
 		
-		override public function tickMove (style:uint, delta:Number):void
+		override public function tickMove (delta:Number):void
 		{
-			super.tickMove (style, delta);
+			super.tickMove (delta);
 			
 			// If on a ground
 			if (surface != null)
@@ -93,10 +70,11 @@ package iphstich.platformer.engine.entities
 				var side:Number;
 				if (ns == null) {
 					// calculate when they hit the edge of the platform
-					side = (getX(engine.time) <= surface.left) ? surface.left : surface.right;
+					//side = (getX(engine.time) <= surface.left) ? surface.left : surface.right;
+					side = (px <= surface.left) ? surface.left : surface.right;
 					if (side == surface.left) side -= this.getBaseRight();
 					if (side == surface.right) side -= this.getBaseLeft();
-					var t:Number = getTimeX(side);
+					var t:Number = 0//getTimeX(side);
 					// perform the hit edge
 					hitEdge ( side, t );
 				} else if (ns != surface) {
@@ -105,80 +83,96 @@ package iphstich.platformer.engine.entities
 					this.surface = ns;
 				}
 			}
+			
+			if (surface != null)
+			{
+				py = surface.getTopAt (px);
+			}
 		}
 		
-		override protected function collide(point:HitPoint, data:HitData):void
+		override protected function collide (data:HitData) : void
 		{
 			var target:DisplayObject = data.hit;
+			var point:HitPoint = data.point;
+			
+			// if target is surface, do nothing
 			if (target == surface) return;
+			
+			// if target is connected to surface, do nothing
 			if (surface != null) if (surface.connections.indexOf(target) >= 0) return;
 			
 			if (target is Part) {
-				if ((point == leftPoint && !(target is RampL)) || point == upperLeft)
+				if (data.type == HitData.TYPE_SURFACE)
 				{
-					this.hitWall("left", data);
-				}
-				else if ((point == rightPoint && !(target is RampR)) || point == upperRight)
-				{
-					this.hitWall("right", data);
-				}
-				else if ((point==hitCenter || point==rightBase || point==leftBase) && (true)) { //getVY(data.time) >= 0
 					if ((point==leftBase) && (target is RampL)) return;
 					if ((point==rightBase) && (target is RampR)) return;
-					land(data);
+					
+					if (point==hitCenter || point==rightBase || point==leftBase)
+						land(data);
+					
+					// force off the edge of platforms if not 'clean'
+					if (point == leftPoint)
+						hitWall(-1, data);
+					if (point == rightPoint)
+						hitWall(1, data);
 				}
-				else if ((point == headLeft || point == headRight))
+				else if (point == leftPoint  || point == upperLeft)
+				{
+					this.hitWall(-1, data);
+				}
+				else if (point == rightPoint  || point == upperRight)
+				{
+					this.hitWall(1, data);
+				}
+				else if (point == headLeft || point == headRight)
 				{
 					this.hitHead(data);
 				}
 			}
 		}
 		
-		override public function getY (time:Number) : Number
-		{
-			if (surface == null) return super.getY(time);
-			
-			if (surface is Block) {
-				return surface.top;
-			} else if (surface is RampR) {
-				return surface.bottom + (getX(time) - surface.left) * (surface as RampR).slope
-			} else if (surface is RampL) {
-				return surface.top + (getX(time) - surface.left) * (surface as RampL).slope
-			}
-			trace("returning NaN: watch out!");
-			return NaN;
-		}
-		
 		protected function hitEdge (side:Number, time:Number) : void
 		{
-			throw Error("Error. No default behavior for edge hitting defined for class " + getQualifiedClassName(this))
+			fall();
 		}
 		
-		protected function hitWall (direction:String, data:HitData) : void
+		protected function hitWall (direction:int, data:HitData) : void
 		{
-			//throw Error("Error. No default behavior for wall hitting defined for class " + getQualifiedClassName(this))
 			var wall:Part = data.hit as Part;
-			if (direction == "left") {
-				this.setCourse( { vx: 0, ax: 0, cx: NaN, kx: wall.right - hitBox.left + 1.001 }, data.time );
-			} else if (direction == "right") {
-				this.setCourse( { vx: 0, ax: 0, cx: NaN, kx: wall.left - hitBox.right - 1.001 }, data.time );
+			
+			if (wall is RampL && direction == -1) return;
+			if (wall is RampR && direction == 1) return;
+			
+			collided = true;
+			
+			if (direction == -1) {
+				vx = 0;
+				px = wall.right - hitBox.left + 0.1;
+			} else if (direction == 1) {
+				vx = 0;
+				px = wall.left - hitBox.right - 0.1;
 			}
-			this.heading = 0;
+			this.heading = direction;
 		}
 		
 		protected function hitHead (data:HitData) : void
 		{
-			this.setCourse(
-				{ vy: 0
-				, ky: 1 + getHeight() + (data.hit as Part).bottom
-			}, data.time);
+			collided = true;
+			
+			fall();
+			py = 0.001 + getHeight() + data.y;
 		}
 		
 		protected function land (data:HitData) : void
 		{
-			setCourse( { surface: (data.hit as Part), vy: 0, cy: NaN, ay: 0 }, data.time);
-			ky = getY(data.time);
-			y = ky;
+			collided = true;
+			
+			removeFlyingHitPoints();
+			surface = data.hit as Part;
+			vy = 0;
+			ay = 0;
+			cy = NaN;
+			py = surface.getTopAt(px);
 		}
 		
 		override public function spawn (x:Number, y:Number, time:Number, lev:Level) : void
@@ -200,10 +194,12 @@ package iphstich.platformer.engine.entities
 			else removeFlyingHitPoints();
 		}
 		
-		public function fall(time:Number):void
+		public function fall(time:Number=0):void
 		{
 			addFlyingHitPoints();
-			setCourse( { vy: 0, ay: GRAVITY, cy: JUMP_VELOCITY }, time );
+			vy = 0;
+			ay = GRAVITY;
+			cy = JUMP_VELOCITY;
 			surface = null;
 		}
 		
@@ -257,29 +253,6 @@ package iphstich.platformer.engine.entities
 		public function getHeight () : Number
 		{
 			return -headLeft.y;
-		}
-		
-		override public function setCourse(props:Object, time:Number):void
-		{
-			// check if this entity is walking on a surface
-			var hasSurf:Boolean = (surface != null);
-			
-			super.setCourse(props, time);
-			
-			// remove from surface if on one
-			if (surface != null && vy < 0) {
-				surface = null;
-				ky -= 2;
-			}
-			
-			// if -was- walking on surface, and now isn't
-			if (hasSurf && (surface == null) ) {
-				addFlyingHitPoints();
-			}
-			// if -wasn't- walking on surface, and now is
-			if (!hasSurf && (surface != null) ) {
-				removeFlyingHitPoints();
-			}
 		}
 	}
 }

@@ -26,48 +26,53 @@ package iphstich.platformer.engine.entities.projectiles
 		
 		public function shoot (startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number) : void
 		{
+			x = startX;
+			y = startY;
+			vx = speedX;
+			vy = speedY;
 			facing = (speedX < 0) ? "left" : "right";
-			setP( { kx: startX, ky: startY, vx:speedX, vy: speedY, kt: time } );
 			
-			if (facing == "left") this.scaleX = -1;
+			this.scaleX = (speedX > 0) ? 1 : -1;
+			//
+			//movement.initial (time, startX, startY, speedX, speedY);
 		}
 		
-		override protected function collide(point:HitPoint, data:HitData):void
+		override protected function collide (data:HitData) : void
 		{
 			// ignore Entities of the same team
-			//trace(target)
 			if (data.hit is Entity) if ((data.hit as Entity).team == team) return;
 			
-			explode(data.time);
+			explode(data);
 		}
 		
-		protected function explode (time:Number) : void
+		protected function explode (data:HitData) : void
 		{
-			var i:int, d:DisplayObject, c:Character;
-			var hits:Vector.<HitData> = this.level.testHit(new Vector.<HitData>(), getX(time), getY(time), EXPLOSION_SIZE, time);
-			
-			for (i=hits.length-1; i>= 0; --i)
-			{
-				d = hits[i].hit;
-				if (d is Character)
-				{
-					this.hit (time, d as Character);
-				}
-			}
-			
+			//var time:Number = data.time;
+			//var i:int, d:DisplayObject, c:Character;
+			//var hits:Vector.<HitData> = this.level.testHit(new Vector.<HitData>(), getX(time), getY(time), EXPLOSION_SIZE, time);
+			//
+			//for (i=hits.length-1; i>= 0; --i)
+			//{
+				//d = hits[i].hit;
+				//if (d is Character)
+				//{
+					//this.hit (time, d as Character);
+				//}
+			//}
+			//
 			death();
 		}
 		
 		protected function hit (time:Number, target:Character) : void
 		{
-			if (target.team == this.team) return;
-			
-			target.dealDamage(this.DAMAGE);
-			target.applyImpulse
-				( (facing == "left") ? -200 : 200
-				, -600
-				, time
-			);
+			//if (target.team == this.team) return;
+			//
+			//target.dealDamage(this.DAMAGE);
+			//target.applyImpulse
+				//( (facing == "left") ? -200 : 200
+				//, -600
+				//, time
+			//);
 		}
 	}
 }

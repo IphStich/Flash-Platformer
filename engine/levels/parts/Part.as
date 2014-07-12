@@ -23,7 +23,11 @@ package iphstich.platformer.engine.levels.parts
 		}
 		
 		/**
-		 * this is a test;
+		 * Checks whether or not the two parts "connect".
+		 * -1 : never
+		 *  0 : not really
+		 *  1 : sure, why not
+		 *  2 : YES!
 		 * @param	other
 		 * @return
 		 */
@@ -45,8 +49,8 @@ package iphstich.platformer.engine.levels.parts
 			var i:uint;
 			var numC:uint = connections.length;
 			
-			var x:Number = obj.getX(obj.engine.time);
-			var y:Number = obj.getX(obj.engine.time);
+			var x:Number = obj.px;
+			var y:Number = obj.py;
 			
 			if ((x + obj.getBaseRight() >= this.left) && (x + obj.getBaseLeft() <= this.right)) ret = this;
 			
@@ -70,6 +74,11 @@ package iphstich.platformer.engine.levels.parts
 				this.connect(other);
 				other.connect(this);
 			}
+		}
+		
+		public function getTopAt (x:Number) : Number
+		{
+			throw Error ("No top function set for " + getQualifiedClassName(this));
 		}
 	}
 }
