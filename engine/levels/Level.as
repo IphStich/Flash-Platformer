@@ -5,6 +5,7 @@ package iphstich.platformer.engine.levels
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	
 	import iphstich.library.CustomMath;
 	import iphstich.platformer.Main;
 	import iphstich.platformer.engine.Engine;
@@ -15,8 +16,6 @@ package iphstich.platformer.engine.levels
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.test.TestEnemy;
 	import iphstich.platformer.engine.levels.misc.Area;
-	
-	import flash.utils.getQualifiedClassName;
 	
 	public class Level extends MovieClip
 	{
@@ -70,7 +69,8 @@ package iphstich.platformer.engine.levels
 		
 		public var engine:Engine;
 		
-		private var markedEntities:Vector.<Entity> = new Vector.<Entity>();
+		private var toAddEntities:Vector.<Entity> = new Vector.<Entity>();
+		private var toRemoveEntities:Vector.<Entity> = new Vector.<Entity>();
 		
 		public function Level()
 		{
@@ -273,6 +273,17 @@ package iphstich.platformer.engine.levels
 					results.push(hd);
 			}
 			
+			// hit test entities
+			var e:Entity;
+			for (i = 0; i < numEntities; ++i)
+			{
+				e = entities[i];
+				hd = e.hitTestPath(x1, y1, x2, y2);
+				if (hd != null)
+					results.push(hd);
+			}
+			
+			
 			// set t markers for results
 			if (results.length > 0)
 			{
@@ -295,15 +306,6 @@ package iphstich.platformer.engine.levels
 				results.push();
 			}
 			
-			//// hit test entities
-			//var e:Entity;
-			//for (i = 0; i < numEntities; ++i)
-			//{
-				//e = entities[i];
-				//if (e.hitTest(x, y, radius, time))
-					//ret.push(HitData.hit(entities[i], x, y, time));
-			//}
-			//
 			//// hit test interactables
 			//var r:Interactable;
 			//for (i=0; i<numInteractables; ++i)
@@ -314,9 +316,12 @@ package iphstich.platformer.engine.levels
 			//}
 		} //testHitPath
 		
+		private var inTick:Boolean = false;
 		public function tick (style:uint, delta:Number) : void
 		{
 			var e:Entity;
+			
+			inTick = true;
 			
 			for each (e in entities)
 				e.tickThink (style, delta);
@@ -332,12 +337,26 @@ package iphstich.platformer.engine.levels
 				e.y = e.py;
 			}
 			
-			while (markedEntities.length > 0)
-				removeEntity(markedEntities.pop());
+			inTick = false;
+			
+			postTick (style, delta);
+		}
+		
+		protected function postTick (style:uint, delta:Number) : void
+		{
+			while (toAddEntities.length > 0)
+				addEntity (toAddEntities.pop());
+			
+			while (toRemoveEntities.length > 0)
+				removeEntity(toRemoveEntities.pop());
+			
 		}
 		
 		public function addEntity(target:Entity):void
 		{
+			if (inTick) { markForAddition(target); return; }
+			
+			//trace("ADD: " + getQualifiedClassName(target), Util.getMemoryLocation(target));
 			entities.push(target)
 			addChildAt(target, entityLevel);
 			numEntities = entities.length;
@@ -347,6 +366,9 @@ package iphstich.platformer.engine.levels
 		
 		public function removeEntity(target:Entity):void
 		{
+			if (inTick) { markForRemoval(target); return; }
+			
+			//trace("REMOVE: " + getQualifiedClassName(target), Util.getMemoryLocation(target));
 			entities.splice(entities.indexOf(target), 1);
 			removeChild(target);
 			numEntities = entities.length;
@@ -395,9 +417,14 @@ package iphstich.platformer.engine.levels
 			}
 		}
 		
-		public function markForRemoval (entity:Entity) : void
+		private function markForAddition (entity:Entity) : void
 		{
-			markedEntities.push(entity);
+			toAddEntities.push (entity);
+		}
+		
+		private function markForRemoval (entity:Entity) : void
+		{
+			toRemoveEntities.push(entity);
 		}
 	}
 }

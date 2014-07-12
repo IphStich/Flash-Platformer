@@ -10,6 +10,8 @@ package iphstich.platformer.engine
 		public var right:Number;
 		public var bottom:Number;
 		
+		public var canHitInternal:Boolean = false;
+		
 		/**
 		 * args can use:
 			 * nothing: uses default size
@@ -114,6 +116,15 @@ package iphstich.platformer.engine
 			if (x1 > right && x2 > right) return null;
 			if (y1 < top && y2 < top) return null;
 			if (y1 > bottom && y2 > bottom) return null;
+			
+			// test internal collision
+			if (canHitInternal)
+			{
+				if ((x1 >= left && x1 <= right) && (y1 >= top && y1 <= bottom))
+				{
+					return HitData.hit(this, x1, y1, 0, HitData.TYPE_INTERNAL);
+				}
+			}
 			
 			// top
 			if (y1 < top)

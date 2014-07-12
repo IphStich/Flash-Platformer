@@ -1,5 +1,6 @@
 package iphstich.platformer.test
 {
+	import iphstich.platformer.engine.levels.Level;
 	import iphstich.platformer.engine.entities.projectiles.Bullet;
 	/**
 	 * ...
@@ -10,11 +11,13 @@ package iphstich.platformer.test
 		public function TestBullet() 
 		{
 			super();
+			
+			team = 1;
 		}
 		
-		override public function shoot(startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number):void
+		override public function shoot(lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number):void
 		{
-			super.shoot(startX, startY, speedX, speedY, time);
+			super.shoot(lev, startX, startY, speedX, speedY, time);
 			ax = -speedX * 3/2
 		}
 		

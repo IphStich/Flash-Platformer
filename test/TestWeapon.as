@@ -26,10 +26,7 @@ package iphstich.platformer.test
 		override public function triggerPull () : void
 		{
 			var b:Bullet = new TestBullet();
-			host.level.addEntity(b);
-			b.shoot(host.x, host.y + (host.hitBox.top + host.hitBox.bottom) / 2, host.facing * 500, 0, 0);
+			b.shoot(host.level, host.x, host.y + (host.hitBox.top + host.hitBox.bottom) / 2, host.facing * 500, 0, 0);
 		}
-		
-
 	}
 }

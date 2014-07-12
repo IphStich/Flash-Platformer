@@ -119,6 +119,8 @@ package iphstich.platformer.test {
 			
 			cx = MAX_HORIZ_SPEED;
 			
+			
+			
 			// calculate heading & target speed
 			if (Controls.down("left")) heading = -1;
 			if (Controls.down("right")) heading += 1;
@@ -138,6 +140,8 @@ package iphstich.platformer.test {
 			
 			// set facing...
 			if (heading != 0) facing = heading;
+			
+			
 			
 			// jumping
 			if (Controls.pressed("jump"))

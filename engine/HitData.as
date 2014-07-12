@@ -11,6 +11,7 @@
 		public static const TYPE_LEFT:int = 4;
 		public static const TYPE_RIGHT:int = 5;
 		public static const TYPE_BOTTOM:int = 6;
+		public static const TYPE_INTERNAL:int = 7;
 		
 		private static var instances:Vector.<HitData>;
 		private static var place:int = -1;

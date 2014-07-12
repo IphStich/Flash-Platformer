@@ -53,6 +53,7 @@ package iphstich.platformer.engine.entities
 			
 			team 		= -1;
 			hitBox 		= new HitBox( -10, -10, 10, 10);
+			hitBox.canHitInternal = true;
 			collisionPoints 	= new Vector.<HitPoint>();
 			addChild(hitBox)
 			hitCenter = new HitPoint(0, 0, this);
@@ -100,10 +101,9 @@ package iphstich.platformer.engine.entities
 				
 				for each (hd in collisions) {
 					collide (hd);
+					if (!alive) return;
 					if (collided) break;
 				}
-				
-				if (!alive) return;
 				
 				if (count++ > 2) break;
 				if (collided) continue;
@@ -195,10 +195,16 @@ package iphstich.platformer.engine.entities
 			//return this.hitBox.hitTest(x - getX(time), y - getY(time), radius);
 		}
 		
-		public function death () : void
+		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
-			alive = false;
-			this.level.markForRemoval(this);
+			// first test with current position
+			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - x);
+			if (hd != null) { hd.hit = this;  return hd; }
+			
+			// if that fails, test with predicted position
+			hd = hitBox.hitTestPath(x1 - px, y1 - py, x2 - px, y2 - px);
+			if (hd != null) hd.hit = this;
+			return hd;
 		}
 		
 		public function removedFromLevel (lev:Level) : void
@@ -236,6 +242,12 @@ package iphstich.platformer.engine.entities
 		{
 			vx = x;
 			vy = y;
+		}
+		
+		public function death () : void
+		{
+			alive = false;
+			this.level.removeEntity(this);
 		}
 		
 		public function clear () : void
