@@ -112,30 +112,34 @@ package iphstich.platformer.test {
 		override public function tickThink (style:uint, delta:Number) : void
 		{
 			var heading:int = 0;
+			var targetSpeed:Number = 0;
 			
 			// this function is all about controls, so if they are frozen return and do nothing
 			if (controlsFrozen()) return;
 			
 			cx = MAX_HORIZ_SPEED;
 			
+			// calculate heading & target speed
 			if (Controls.down("left")) heading = -1;
 			if (Controls.down("right")) heading += 1;
+			targetSpeed = heading * MAX_HORIZ_SPEED;
 			
-			if (heading == 0)
-			{
-				//ax = CustomMath.capBetween(vx, -HORIZ_ACC * delta, HORIZ_ACC * delta);
-				ax = HORIZ_ACC;
-				if (Math.abs(vx) <= ax * delta) ax = Math.abs(vx) / delta;
-				ax *= (vx > 0) ? -1 : 1;
-				if (vx == 0) ax = 0;
-			}
-			else
-			{
-				ax = heading * HORIZ_ACC;
-				facing = heading;
-			}
+			// calculate acceleration potential
+			ax = HORIZ_ACC;
+			if (surface == null) ax = HORIZ_ACC_AIR;
+			if (surface == null && heading == 0) ax = HORIZ_ACC_FEATHER;
+			if (vx == targetSpeed) ax = 0;
 			
+			// adjust acceleration if too close to target speed
+			if (Math.abs(vx - targetSpeed) < ax * delta) ax = Math.abs(vx - targetSpeed) / delta;
 			
+			// adjust acceleration based on speed
+			ax *= (vx - targetSpeed < 0) ? 1 : -1;
+			
+			// set facing...
+			if (heading != 0) facing = heading;
+			
+			// jumping
 			if (Controls.pressed("jump"))
 			{
 				addFlyingHitPoints();
