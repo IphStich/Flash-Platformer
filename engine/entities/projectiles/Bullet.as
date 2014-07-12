@@ -26,10 +26,8 @@ package iphstich.platformer.engine.entities.projectiles
 		
 		public function shoot (lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number) : void
 		{
-			lev.addEntity(this);
+			spawn(startX, startY, 0, lev);
 			
-			x = startX;
-			y = startY;
 			vx = speedX;
 			vy = speedY;
 			facing = (speedX < 0) ? "left" : "right";
@@ -49,7 +47,6 @@ package iphstich.platformer.engine.entities.projectiles
 		
 		protected function explode (data:HitData) : void
 		{
-			trace(data.type, data.hit);
 			//var time:Number = data.time;
 			//var i:int, d:DisplayObject, c:Character;
 			//var hits:Vector.<HitData> = this.level.testHit(new Vector.<HitData>(), getX(time), getY(time), EXPLOSION_SIZE, time);

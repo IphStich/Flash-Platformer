@@ -12,7 +12,7 @@ package iphstich.platformer.test
 		{
 			super();
 			
-			team = 1;
+			team = 0;
 		}
 		
 		override public function shoot(lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number):void

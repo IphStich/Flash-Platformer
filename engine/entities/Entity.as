@@ -93,6 +93,8 @@ package iphstich.platformer.engine.entities
 			var hd:HitData;
 			var count:int = 0;
 			
+			if (!alive) return;
+			
 			while (true)
 			{
 				collided = false;
@@ -197,6 +199,8 @@ package iphstich.platformer.engine.entities
 		
 		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
+			if (!alive) return null;
+			
 			// first test with current position
 			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - x);
 			if (hd != null) { hd.hit = this;  return hd; }

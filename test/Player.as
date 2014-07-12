@@ -57,7 +57,7 @@ package iphstich.platformer.test {
 			);
 			
 			// set default properties
-			team 					= 1;
+			team 					= 0;
 			equipedWeapon 			= new TestWeapon();
 			equipedWeapon.host 		= this;
 			setSize (40, 45);
