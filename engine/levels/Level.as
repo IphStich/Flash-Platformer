@@ -70,6 +70,8 @@ package iphstich.platformer.engine.levels
 		
 		public var engine:Engine;
 		
+		private var markedEntities:Vector.<Entity> = new Vector.<Entity>();
+		
 		public function Level()
 		{
 			if (OUTSIDE_LEVEL == null) OUTSIDE_LEVEL = new Bitmap();
@@ -329,25 +331,27 @@ package iphstich.platformer.engine.levels
 				e.x = e.px;
 				e.y = e.py;
 			}
+			
+			while (markedEntities.length > 0)
+				removeEntity(markedEntities.pop());
 		}
 		
 		public function addEntity(target:Entity):void
 		{
-			//trace(getQualifiedClassName(target) + " - " + target.name)
-			
-			target.addedToLevel(this);
-			//target.level = this;
 			entities.push(target)
 			addChildAt(target, entityLevel);
 			numEntities = entities.length;
+			
+			target.addedToLevel(this);
 		}
 		
 		public function removeEntity(target:Entity):void
 		{
 			entities.splice(entities.indexOf(target), 1);
 			removeChild(target);
-			target.level = null;
 			numEntities = entities.length;
+			
+			target.removedFromLevel(this);
 		}
 		
 		public function getDoor(localName:String):Door
@@ -389,6 +393,11 @@ package iphstich.platformer.engine.levels
 			{
 				new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, 0, this);
 			}
+		}
+		
+		public function markForRemoval (entity:Entity) : void
+		{
+			markedEntities.push(entity);
 		}
 	}
 }

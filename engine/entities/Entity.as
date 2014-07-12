@@ -98,8 +98,10 @@ package iphstich.platformer.engine.entities
 				
 				refreshCollisions();
 				
-				for each (hd in collisions)
+				for each (hd in collisions) {
 					collide (hd);
+					if (collided) break;
+				}
 				
 				if (!alive) return;
 				
@@ -196,8 +198,16 @@ package iphstich.platformer.engine.entities
 		public function death () : void
 		{
 			alive = false;
-			this.level.removeEntity(this);
-			this.destroy();
+			this.level.markForRemoval(this);
+		}
+		
+		public function removedFromLevel (lev:Level) : void
+		{
+			if (level == lev)
+			{
+				level = null;
+				this.destroy();
+			}
 		}
 		
 		public function spawn (x:Number, y:Number, time:Number, lev:Level) : void
