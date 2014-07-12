@@ -198,7 +198,7 @@ package iphstich.platformer.engine.levels
 		}
 		
 		public var pointResult:Vector.<HitData>;
-		public function testHitPath(results:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number, radius:Number = 0, timeFrom:Number = -1, timeTo:Number = -1, interval:Number = -1, endOnFirst:Vector.<Class> = null) : void
+		public function testHitPath(results:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number) : void
 		{
 			if (x1 == x2 && y1 == y2) return;
 			

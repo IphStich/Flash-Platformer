@@ -165,7 +165,7 @@ package iphstich.platformer.engine.entities
 			collisions.sort(SORT_BY_T);
 		}
 		
-		private function SORT_BY_T (a:HitData, b:HitData) : Number
+		private static function SORT_BY_T (a:HitData, b:HitData) : Number
 		{
 			if (a.t == -1) return 1;
 			if (b.t == -1) return -1;
