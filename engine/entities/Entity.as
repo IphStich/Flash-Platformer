@@ -13,6 +13,7 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.levels.Level;
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.engine.entities.HitPoint;
+	import iphstich.library.Util;
 	
 	public class Entity extends MovieClip
 	{
@@ -267,6 +268,11 @@ package iphstich.platformer.engine.entities
 			removeChild(hitBox);
 			hitBox = null;
 			while (collisionPoints.length > 0) collisionPoints.pop();
+		}
+		
+		public function toString():String
+		{
+			return super.toString() + Util.getMemoryLocation(this);
 		}
 	}
 }
