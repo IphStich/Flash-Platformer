@@ -5,6 +5,7 @@ package iphstich.platformer.engine.levels
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	import iphstich.platformer.engine.ICollidable;
 	
 	import iphstich.library.CustomMath;
 	import iphstich.platformer.Main;
@@ -53,14 +54,16 @@ package iphstich.platformer.engine.levels
 		protected var areas:Dictionary;
 		protected var parts:Vector.<Part>;
 		protected var numEntities:uint;
-		protected var numParts:uint;
-		protected var numInteractables:uint;
+		protected var numParts:uint = 0;
+		protected var numInteractables:uint = 0;
+		protected var numCollidables:uint = 0;
 		protected var doors:Vector.<Door>;
 		protected var entities:Vector.<Entity>;
 		protected var entityLevel:uint;
 		protected var entityPlane:EntityPlane;
 		protected var interactables:Vector.<Interactable>;
 		//private var entityToRemove:Vector.<Entity>;
+		protected var collidables:Vector.<ICollidable>;
 		
 		public var top:Number;
 		public var left:Number;
@@ -92,6 +95,7 @@ package iphstich.platformer.engine.levels
 			entities 		= new Vector.<Entity>();
 			interactables 	= new Vector.<Interactable>();
 			areas			= new Dictionary();
+			collidables 	= new Vector.<ICollidable>();
 			
 			// initialize level bounds to 'null' values
 			top 	= Number.MAX_VALUE;
@@ -121,9 +125,11 @@ package iphstich.platformer.engine.levels
 			if (child.parent != this)
 				this.addChild(child);
 			
-			// add to parts list
+			// add to lists
 			parts.push(p);
 			numParts ++;
+			collidables.push(p);
+			numCollidables ++;
 			
 			// stretch level bounds
 			if (top > p.top) 		top = p.top;
@@ -211,8 +217,6 @@ package iphstich.platformer.engine.levels
 				//if (pointResult.length > 0)
 					//throw new Error("made new");
 			
-			var i:uint;
-			
 			//if (timeFrom == -1) timeFrom = engine.time;
 			//if (timeTo == -1) timeTo = engine.time;
 			//if (interval <= 0) interval = Main.GRID_SIZE;
@@ -262,27 +266,17 @@ package iphstich.platformer.engine.levels
 			
 			
 			var hd:HitData;
+			var c:ICollidable;
+			var i:int;
 			
-			// hit test Parts
-			var p:Part;
-			for (i = 0; i < numParts; ++i)
+			// check for all collidables
+			for (i = numCollidables-1; i >= 0; --i)
 			{
-				p = parts[i];
-				hd = p.hitTestPath(x1, y1, x2, y2);
+				c = collidables[i];
+				hd = c.hitTestPath(x1, y1, x2, y2);
 				if (hd != null)
 					results.push(hd);
 			}
-			
-			// hit test entities
-			var e:Entity;
-			for (i = 0; i < numEntities; ++i)
-			{
-				e = entities[i];
-				hd = e.hitTestPath(x1, y1, x2, y2);
-				if (hd != null)
-					results.push(hd);
-			}
-			
 			
 			// set t markers for results
 			if (results.length > 0)
@@ -358,8 +352,12 @@ package iphstich.platformer.engine.levels
 			
 			//trace("ADD: " + getQualifiedClassName(target), Util.getMemoryLocation(target));
 			entities.push(target)
+			numEntities ++;
+			
+			collidables.push(target);
+			numCollidables ++;
+			
 			addChildAt(target, entityLevel);
-			numEntities = entities.length;
 			
 			target.addedToLevel(this);
 		}
@@ -370,8 +368,12 @@ package iphstich.platformer.engine.levels
 			
 			//trace("REMOVE: " + getQualifiedClassName(target), Util.getMemoryLocation(target));
 			entities.splice(entities.indexOf(target), 1);
+			numEntities --;
+			
+			collidables.splice(collidables.indexOf(target), 1);
+			numCollidables --;
+			
 			removeChild(target);
-			numEntities = entities.length;
 			
 			target.removedFromLevel(this);
 		}

@@ -3,6 +3,7 @@ package iphstich.platformer.engine.entities
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import iphstich.platformer.engine.ICollidable;
 	import Math;
 	import flash.utils.getQualifiedClassName;
 	import iphstich.library.CustomMath;
@@ -15,7 +16,7 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.entities.HitPoint;
 	import iphstich.library.Util;
 	
-	public class Entity extends MovieClip
+	public class Entity extends MovieClip implements ICollidable
 	{
 		// current position (pre-tick)
 		//public var x:Number = 0;
@@ -270,7 +271,7 @@ package iphstich.platformer.engine.entities
 			while (collisionPoints.length > 0) collisionPoints.pop();
 		}
 		
-		public function toString():String
+		override public function toString():String
 		{
 			return super.toString() + Util.getMemoryLocation(this);
 		}

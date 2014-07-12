@@ -5,8 +5,9 @@ package iphstich.platformer.engine.levels.parts
 	import iphstich.platformer.engine.entities.WalkingEntity;
 	import iphstich.platformer.engine.HitBox;
 	import iphstich.platformer.engine.Engine;
+	import iphstich.platformer.engine.ICollidable;
 	
-	public class Part extends HitBox
+	public class Part extends HitBox implements ICollidable
 	{
 		public var connections:Vector.<Part>
 		public var slope:Number;
