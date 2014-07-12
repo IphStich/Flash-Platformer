@@ -1,4 +1,7 @@
-package iphstich.platformer.test {
+package iphstich.platformer.test
+{
+	import Math;
+	
 	import iphstich.platformer.engine.entities.WalkingEntity;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.levels.parts.Part;
@@ -20,7 +23,7 @@ package iphstich.platformer.test {
 		{
 			if (surface != null)
 			{
-				if (vx == 0)
+				if (Math.abs(vx) != 250)
 				{
 					vx = 250;
 				}

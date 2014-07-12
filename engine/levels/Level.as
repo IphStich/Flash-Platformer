@@ -206,7 +206,7 @@ package iphstich.platformer.engine.levels
 		}
 		
 		public var pointResult:Vector.<HitData>;
-		public function testHitPath(results:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number) : void
+		public function testHitPath (results:Vector.<HitData>, x1:Number, y1:Number, x2:Number, y2:Number) : void
 		{
 			if (x1 == x2 && y1 == y2) return;
 			
@@ -216,54 +216,6 @@ package iphstich.platformer.engine.levels
 			//if (pointResult == null) pointResult = new Vector.<HitData>();
 				//if (pointResult.length > 0)
 					//throw new Error("made new");
-			
-			//if (timeFrom == -1) timeFrom = engine.time;
-			//if (timeTo == -1) timeTo = engine.time;
-			//if (interval <= 0) interval = Main.GRID_SIZE;
-			//
-			//var distance:Number = CustomMath.distance(x1, x2, y1, y2)
-			//var numIterations:Number = Math.floor(distance / interval);
-			//
-			//if (numIterations == 0)
-			//{
-				//return testHit(result, x2, y2, radius, timeTo);
-			//}
-			//else
-			//{
-				//interval = distance / numIterations;
-				////var ret:Vector.<HitData> = new Vector.<HitData>();
-				//var pathDirection:Point = CustomMath.normalize(new Point(x2 - x1, y2 - y1));
-				//var pathX:Number = pathDirection.x;
-				//var pathY:Number = pathDirection.y;
-				//var timeDif:Number = (timeTo - timeFrom) / numIterations;
-				//var start:Point = new Point(x1, y1);
-				//
-				//for (i=0; i<=numIterations; ++i)
-				//{
-					//var point:Point = CustomMath.multiply(pathDirection, interval * i);
-					//point = point.add(start);
-					////this.graphics.lineTo(point.x, point.y - 5);
-					////this.graphics.lineTo(point.x, point.y);
-					//testHit
-						//( result
-						//, start.x + pathX * interval * i
-						//, start.y + pathY * interval * i
-						//, radius
-						//, timeFrom + timeDif * i
-					//);
-					////while (pointResult.length > 0) {
-						////var b:HitData = result.pop();
-					////}
-					////for each (var b:HitData in pointResult) {
-						////ret.push(b);
-						////if (endOnFirst != null) for each (var c:Class in endOnFirst) if (b.hit is c) return ret;
-						////if (b.hit == Level.OUTSIDE_LEVEL) return ret;
-					////}
-				//}
-			//}
-			
-			//return result;
-			
 			
 			var hd:HitData;
 			var c:ICollidable;
@@ -299,16 +251,103 @@ package iphstich.platformer.engine.levels
 				hd = HitData.hit(OUTSIDE_LEVEL, x2, y2, -1)
 				results.push();
 			}
-			
-			//// hit test interactables
-			//var r:Interactable;
-			//for (i=0; i<numInteractables; ++i)
-			//{
-				//r = interactables[i];
-				//if (r.hitTest(x, y, radius))
-					//ret.push(HitData.hit(r, x, y, time));
-			//}
 		} //testHitPath
+		
+		public function testHitRadial (results:Vector.<HitData>, x:Number, y:Number, radius:Number, blockedBy:Vector.<Class>) : void
+		{
+			// this function checks each hit object in 'list',
+			// returning null if encountering an object in 'blockedBy',
+			// returning a HitData if 'target' is encountered
+			// and returning null if neither are encountered
+			function findBlocked (target:ICollidable, list:Vector.<HitData>, blockedBy:Vector.<Class>) : HitData
+			{
+				var count:int = list.length;
+				var i:int;
+				var hd:HitData;
+				var c:Class;
+				
+				for (i=0; i<count; ++i)
+				{
+					hd = list[i];
+					
+					if (hd.hit == target) {
+						for (i=i+1; i<count; ++i) list[i].destroy(); // discard un-used HitData
+						return hd;
+					}
+					
+					for each (c in blockedBy) if (hd.hit is c)
+					{
+						for (i=i; i<count; ++i) list[i].destroy(); // discard un-used HitData
+						return null;
+					}
+					
+					// discard un-used HitData
+					hd.destroy();
+				}
+				return null;
+			}
+			
+			var c:ICollidable;
+			var p:Point;
+			var points:Vector.<Point>;
+			var pathResult:Vector.<HitData>;
+			var blockResult:HitData;
+			
+			// get all the objects that fit within the radius
+			// we use this as the short-list when we test for collision
+			// this makes the many re-iterations execute potentially significantly faster
+			var checkList:Vector.<ICollidable> = new Vector.<ICollidable>();
+			getAllWithinRadius (checkList, x, y, radius);
+			
+			// save the default/standard collision objects
+			// so that we can set them back at the end
+			var savedCollidables:Vector.<ICollidable> = collidables;
+			var savedNum:int = numCollidables;
+			
+			// override the collision objects for the collision detection later
+			collidables = checkList;
+			numCollidables = checkList.length;
+			
+			for each (c in checkList)
+			{
+				points = c.getRadialCheckPoints(x, y);
+				
+				for each (p in points)
+				{
+					pathResult = new Vector.<HitData>()
+					
+					testHitPath (pathResult, x, y, p.x, p.y);
+					
+					pathResult.sort(Entity.SORT_BY_T);
+					
+					blockResult = findBlocked(c, pathResult, blockedBy);
+					
+					if (blockResult != null)
+					{
+						results.push(blockResult);
+						break;
+					}
+				}
+			}
+			
+			// reset the saved objects back
+			collidables = savedCollidables;
+			numCollidables = savedNum;
+		}
+		
+		public function getAllWithinRadius (results:Vector.<ICollidable>, x:Number, y:Number, radius:Number)
+		{
+			var c:ICollidable;
+			var i:int;
+			
+			// check for all collidables
+			for (i = numCollidables-1; i >= 0; --i)
+			{
+				c = collidables[i];
+				if (c.isWithinRadius(x, y, radius))
+					results.push(c);
+			}
+		}
 		
 		private var inTick:Boolean = false;
 		public function tick (style:uint, delta:Number) : void

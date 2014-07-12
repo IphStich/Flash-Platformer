@@ -48,16 +48,30 @@ package iphstich.platformer.engine.entities
 			airPoints.push(headLeft, headRight, leftBase, rightBase, leftPoint, rightPoint, upperLeft, upperRight);
 		}
 		
-		private var hasFlyingHitPoints : Boolean = false;
-		protected function addFlyingHitPoints() : void
+		protected function gotoAirMode () : void
 		{
 			collisionPoints = airPoints;
+			surface = null;
 		}
 		
-		protected function removeFlyingHitPoints() : void
+		protected function gotoSurfaceMode (inSurface:Part) : void
 		{
 			collisionPoints = groundPoints;
+			surface = inSurface
 		}
+		
+		
+		
+		//private var hasFlyingHitPoints : Boolean = false;
+		//protected function addFlyingHitPoints() : void
+		//{
+			//
+		//}
+		//
+		//protected function removeFlyingHitPoints() : void
+		//{
+			//
+		//}
 		
 		override public function tickMove (delta:Number):void
 		{
@@ -167,8 +181,7 @@ package iphstich.platformer.engine.entities
 		{
 			collided = true;
 			
-			removeFlyingHitPoints();
-			surface = data.hit as Part;
+			gotoSurfaceMode(data.hit as Part);
 			vy = 0;
 			ay = 0;
 			cy = NaN;
@@ -191,16 +204,15 @@ package iphstich.platformer.engine.entities
 			}
 			
 			if (this.surface == null) this.fall(time);
-			else removeFlyingHitPoints();
+			else gotoSurfaceMode(surface);
 		}
 		
 		public function fall(time:Number=0):void
 		{
-			addFlyingHitPoints();
+			gotoAirMode();
 			vy = 0;
 			ay = GRAVITY;
 			cy = JUMP_VELOCITY;
-			surface = null;
 		}
 		
 		public function setSize (width:Number, height:Number) : void
@@ -236,9 +248,11 @@ package iphstich.platformer.engine.entities
 			);
 		}
 		
-		override public function applyImpulse (x:Number, y:Number, time:Number) : void
+		override public function applyImpulse (x:Number, y:Number) : void
 		{
-			super.applyImpulse(x, y, time);
+			super.applyImpulse(x, y);
+			
+			if (vy < 0 && surface == null) gotoAirMode();
 		}
 		
 		public function getBaseLeft () : Number

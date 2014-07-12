@@ -41,11 +41,6 @@ package iphstich.platformer.engine.entities
 			health -= damage;
 		}
 		
-		override public function applyImpulse (x:Number, y:Number, time:Number) : void
-		{
-			//this.setCourse({vx: x, vy: y, ay: GRAVITY, cy: JUMP_VELOCITY}, time);
-		}
-		
 		/**
 		 * action / facing
 		 * @param	anim

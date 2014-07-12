@@ -1,5 +1,6 @@
 package iphstich.platformer.engine.entities.projectiles
 {
+	import classes.screens.EnterCodeScreen;
 	import flash.display.DisplayObject;
 	import iphstich.platformer.engine.entities.Character;
 	import iphstich.platformer.engine.entities.Entity;
@@ -47,32 +48,50 @@ package iphstich.platformer.engine.entities.projectiles
 		
 		protected function explode (data:HitData) : void
 		{
-			//var time:Number = data.time;
-			//var i:int, d:DisplayObject, c:Character;
-			//var hits:Vector.<HitData> = this.level.testHit(new Vector.<HitData>(), getX(time), getY(time), EXPLOSION_SIZE, time);
-			//
-			//for (i=hits.length-1; i>= 0; --i)
-			//{
-				//d = hits[i].hit;
-				//if (d is Character)
-				//{
-					//this.hit (time, d as Character);
-				//}
-			//}
-			//
+			if (EXPLOSION_SIZE == 0)
+			{
+				hit(data);
+			}
+			else
+			{
+				// get the explosion coordinates
+				var cx:Number, cy:Number;
+				if (data != null) {
+					cx = data.x;
+					cy = data.y;
+				} else {
+					cx = px;
+					cy = py;
+				}
+				
+				// find everything the explosion hits
+				var hits:Vector.<HitData> = new Vector.<HitData>();
+				level.testHitRadial (hits, cx, cy, EXPLOSION_SIZE, new <Class>[Part]);
+				
+				// fun the hit routine for every hit object
+				var hd:HitData;
+				while ((hd = hits.pop()) != null)
+				{
+					hit(hd);
+					hd.destroy();
+				}
+			}
+			
 			death();
 		}
 		
-		protected function hit (time:Number, target:Character) : void
+		protected function hit (data:HitData) : void
 		{
-			//if (target.team == this.team) return;
-			//
-			//target.dealDamage(this.DAMAGE);
-			//target.applyImpulse
-				//( (facing == "left") ? -200 : 200
-				//, -600
-				//, time
-			//);
+			var target:Character = data.hit as Character;
+			
+			if (target != null)
+			{
+				if (target.team != this.team || team == -1)
+				{
+					target.dealDamage (DAMAGE);
+					target.applyImpulse (vx / 2, -200 - Math.abs(vx));
+				}
+			}
 		}
 	}
 }

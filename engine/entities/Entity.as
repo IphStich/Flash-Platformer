@@ -3,6 +3,7 @@ package iphstich.platformer.engine.entities
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.geom.Point;
 	import iphstich.platformer.engine.ICollidable;
 	import Math;
 	import flash.utils.getQualifiedClassName;
@@ -171,7 +172,7 @@ package iphstich.platformer.engine.entities
 			collisions.sort(SORT_BY_T);
 		}
 		
-		private static function SORT_BY_T (a:HitData, b:HitData) : Number
+		public static function SORT_BY_T (a:HitData, b:HitData) : Number
 		{
 			if (a.t == -1) return 1;
 			if (b.t == -1) return -1;
@@ -205,12 +206,39 @@ package iphstich.platformer.engine.entities
 			
 			// first test with current position
 			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - x);
-			if (hd != null) { hd.hit = this;  return hd; }
+			if (hd != null) {
+				hd.hit = this;
+				hd.x += x;
+				hd.y += y;
+				return hd;
+			}
 			
 			// if that fails, test with predicted position
 			hd = hitBox.hitTestPath(x1 - px, y1 - py, x2 - px, y2 - px);
-			if (hd != null) hd.hit = this;
+			if (hd != null) {
+				hd.hit = this;
+				hd.x += x;
+				hd.y += y;
+			}
 			return hd;
+		}
+		
+		public function isWithinRadius (x1:Number, y1:Number, r:Number) : Boolean
+		{
+			if (hitBox.isWithinRadius(x1 - x, y1 - y, r)) {
+				return true;
+			} else if (hitBox.isWithinRadius(x1 - px, y1 - py, r)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		public function getRadialCheckPoints (fromX:Number, fromY:Number) : Vector.<Point>
+		{
+			var ret:Vector.<Point> = new Vector.<Point>();
+			ret.push(new Point(x + (hitBox.left + hitBox.right) / 2, y + (hitBox.top + hitBox.bottom) / 2));
+			return ret;
 		}
 		
 		public function removedFromLevel (lev:Level) : void
@@ -244,7 +272,7 @@ package iphstich.platformer.engine.entities
 			engine = level.engine;
 		}
 		
-		public function applyImpulse (x:Number, y:Number, time:Number) : void
+		public function applyImpulse (x:Number, y:Number) : void
 		{
 			vx = x;
 			vy = y;

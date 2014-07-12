@@ -146,8 +146,7 @@ package iphstich.platformer.test {
 			// jumping
 			if (Controls.pressed("jump"))
 			{
-				addFlyingHitPoints();
-				surface = null;
+				gotoAirMode();
 				//y -= 3;
 				//py -= 3;
 				vy = -JUMP_VELOCITY;

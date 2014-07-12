@@ -1,9 +1,10 @@
 package iphstich.platformer.engine
 {
 	import flash.display.MovieClip;
+	import flash.geom.Point;
 	import iphstich.platformer.Main;
 	
-	public class HitBox extends MovieClip
+	public class HitBox extends MovieClip implements ICollidable
 	{
 		public var top:Number;
 		public var left:Number;
@@ -158,6 +159,52 @@ package iphstich.platformer.engine
 					return HitData.hit(this, right, c, 0, HitData.TYPE_RIGHT);
 			}
 			return null;
+		}
+		
+		public function isWithinRadius (x:Number, y:Number, r:Number) : Boolean
+		{
+			var LEFT:Boolean = (x < left);
+			var RIGHT:Boolean = (x > right);
+			var TOP:Boolean = (y < top);
+			var BOT:Boolean = (y > bottom);
+			
+			// inside
+			if (!(LEFT || RIGHT || TOP || BOT)) return true;
+			
+			// check from left
+			if (LEFT && !(TOP || BOT)) return (r >= (left - x));
+			
+			// check from right
+			if (RIGHT && !(TOP || BOT)) return (r >= (x - right));
+			
+			// check from top
+			if (TOP && !(LEFT || RIGHT)) return (r >= (top - y));
+			
+			// check from bottom
+			if (BOT && !(LEFT || RIGHT)) return (r >= (y - bottom));
+			
+			
+			var cx:Number, cy:Number;
+			
+			// which point to use?
+			if (LEFT) cx = left;
+			if (RIGHT) cx = right;
+			if (TOP) cy = top;
+			if (BOT) cy = bottom;
+			
+			// calculate and compare distance
+			cx = cx - x;
+			cy = cy - y;
+			if (cx * cx + cy * cy <= r * r) return true;
+			
+			return false;
+		}
+		
+		public function getRadialCheckPoints (fromX:Number, fromY:Number) : Vector.<Point>
+		{
+			var ret:Vector.<Point> = new Vector.<Point>();
+			ret.push(new Point((left + right) / 2, y + (top + bottom) / 2));
+			return ret;
 		}
 	}
 }
