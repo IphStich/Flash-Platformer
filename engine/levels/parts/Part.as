@@ -81,5 +81,10 @@ package iphstich.platformer.engine.levels.parts
 		{
 			throw Error ("No getTopAt function set for " + getQualifiedClassName(this));
 		}
+		
+		public function slopeSpeed (entity:Entity) : Number
+		{
+			throw Error ("No slopeSpeed function set for " + getQualifiedClassName(this));
+		}
 	}
 }

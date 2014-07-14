@@ -1,6 +1,7 @@
 package iphstich.platformer.engine.levels.parts
 {
 	import iphstich.platformer.engine.HitData;
+	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.levels.parts.Part;
 	
 	public class Block extends Part
@@ -31,6 +32,11 @@ package iphstich.platformer.engine.levels.parts
 			}
 			
 			return hd;
+		}
+		
+		override public function slopeSpeed (entity:Entity) : Number
+		{
+			return 1;
 		}
 	}
 }

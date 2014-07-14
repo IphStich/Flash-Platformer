@@ -1,6 +1,7 @@
 package iphstich.platformer.engine.levels.parts 
 {
 	import flash.geom.Point;
+	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.levels.parts.Part;
 	
@@ -76,6 +77,11 @@ package iphstich.platformer.engine.levels.parts
 			
 			if (cx + cy <= r * r) return true;
 			else return false;
+		}
+		
+		override public function slopeSpeed (entity:Entity) : Number
+		{
+			return 1;
 		}
 	}
 }

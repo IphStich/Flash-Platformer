@@ -1,6 +1,7 @@
 package iphstich.platformer.engine.levels.parts
 {
 	import iphstich.library.CustomMath;
+	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.levels.parts.Part;
 	
@@ -93,6 +94,11 @@ package iphstich.platformer.engine.levels.parts
 			}
 			
 			return null;
+		}
+		
+		override public function slopeSpeed (entity:Entity) : Number
+		{
+			return 1 / (slope * slope / 1.5 + 1);
 		}
 	}
 }

@@ -114,39 +114,6 @@ package iphstich.platformer.engine.entities
 				if (collided) continue;
 				break;
 			}
-			
-			//var p:HitPoint;
-			//var obj:HitData;
-			//var i:uint, j:uint;
-			//var hit:Vector.<HitData>;
-			//
-			//// Don't do collisions?
-			//if (collisionPoints == null) return;
-			//if (collisionPoints.length == 0) return;
-			//
-			//// Check for collisions
-			////var preCheck:Number = kt;
-			////var p:HitPoint;
-			//collided = false;
-			//for (i=0; i<collisionPoints.length; ++i) {
-				//p = collisionPoints[i];
-			////for each (var p:HitPoint in collisionPoints) {
-				//hit = p.getHitPath();
-				//for (j = 0; j < hit.length; ++j) {
-					//obj = hit[j];
-					//if (obj.hit is Interactable) continue;
-					//if (obj.hit == Level.OUTSIDE_LEVEL) {
-						//trace("auto desu"); //, this, engine.time, vectorsToString()
-						//this.death();
-						//return;
-					//}
-					//if (obj.hit != this) {
-						//collide(p, obj);
-						//if (collided) return;
-					//}
-					//if (alive == false) return;
-				//}
-			//}
 		}
 		
 		var collisions:Vector.<HitData>;

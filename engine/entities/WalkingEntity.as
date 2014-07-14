@@ -80,6 +80,9 @@ package iphstich.platformer.engine.entities
 			// If on a ground
 			if (surface != null)
 			{
+				px = x + vx * delta * surface.slopeSpeed(this);
+				
+				// check for new surface (ns)
 				var ns:Part = this.surface.getNext(this)
 				var side:Number;
 				if (ns == null) {
