@@ -79,7 +79,7 @@ package iphstich.platformer.engine.levels.parts
 		
 		public function getTopAt (x:Number) : Number
 		{
-			throw Error ("No top function set for " + getQualifiedClassName(this));
+			throw Error ("No getTopAt function set for " + getQualifiedClassName(this));
 		}
 	}
 }

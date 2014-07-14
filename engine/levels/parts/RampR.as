@@ -33,7 +33,7 @@ package iphstich.platformer.engine.levels.parts
 			}
 			if ( (other.top == this.bottom) && ((this.left >= other.left) && (this.left <= other.right)) )
 			{
-				return 2;
+				return 1;
 			}
 			//if (other.top != this.top) return 0;
 			//if ((other.left != this.right) || (other.right != this.left)) return 0;

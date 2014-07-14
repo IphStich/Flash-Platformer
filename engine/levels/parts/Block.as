@@ -5,14 +5,10 @@ package iphstich.platformer.engine.levels.parts
 	
 	public class Block extends Part
 	{
-		public function Block()
-		{
-			super();
-			slope = 0;
-		}
-		
 		override public function checkConnection(other:Part) : int
 		{
+			if (other.bottom == this.top) return 1;
+			
 			if (other.top != this.top) return 0;
 			if ((other.left != this.right) && (other.right != this.left)) return 0;
 			

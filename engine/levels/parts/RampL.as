@@ -34,7 +34,7 @@ package iphstich.platformer.engine.levels.parts
 			}
 			if ( (other.top == this.bottom) && ((this.right >= other.left) && (this.right <= other.right)) )
 			{
-				return 2;
+				return 1;
 			}
 			if ((other is RampR) && this.bottom == other.bottom && this.right == other.left)
 			{
