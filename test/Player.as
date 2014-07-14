@@ -5,6 +5,7 @@ package iphstich.platformer.test {
 	import flash.utils.getTimer;
 	import iphstich.library.Controls;
 	import iphstich.library.CustomMath;
+	import iphstich.platformer.engine.levels.parts.Platform;
 	import iphstich.platformer.test.TestWeapon;
 	//import iphstich.mcs.engine.weapons.WeapCloud;
 	import iphstich.platformer.engine.Engine;
@@ -49,6 +50,9 @@ package iphstich.platformer.test {
 				
 				, "right",	Keyboard.D
 				, "right",	Keyboard.RIGHT
+				
+				, "down", Keyboard.DOWN
+				, "down", Keyboard.S
 				
 				//, "interact", Keyboard.S
 				//, "interact", Keyboard.DOWN
@@ -146,13 +150,20 @@ package iphstich.platformer.test {
 			// jumping
 			if (Controls.pressed("jump"))
 			{
-				gotoAirMode();
-				//y -= 3;
-				//py -= 3;
-				vy = -JUMP_VELOCITY;
-				ay = GRAVITY;
-				cy = JUMP_VELOCITY;
-				//setCourse( { ky:getY(pressTime)-3, vy: -JUMP_VELOCITY, ay: GRAVITY, cy: JUMP_VELOCITY, ax: CustomMath.normalize(ax) * HORIZ_ACC_AIR }, pressTime );
+				if (surface is Platform && Controls.down("down")) // jump through a platform
+				{
+					gotoAirMode();
+					ay = GRAVITY;
+					cy = JUMP_VELOCITY;
+					y += 1;
+				}
+				else // stnadard jump
+				{
+					gotoAirMode();
+					vy = -JUMP_VELOCITY;
+					ay = GRAVITY;
+					cy = JUMP_VELOCITY;
+				}
 			}
 			
 			// weapons
