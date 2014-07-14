@@ -386,7 +386,11 @@ package iphstich.platformer.engine.levels
 		private var inTick:Boolean = false;
 		public function tick (style:uint, delta:Number) : void
 		{
-			if (Controls.pressed("traceTest")) traceTestEnabled = !traceTestEnabled;
+			if (Controls.pressed("traceTest"))
+			{
+				traceTestEnabled = !traceTestEnabled;
+				if (!traceTestEnabled) graphics.clear();
+			}
 			
 			if (traceTestEnabled)
 			{
@@ -406,10 +410,12 @@ package iphstich.platformer.engine.levels
 			for each (e in entities)
 				e.tickCollide (delta);
 			
-			for each (e in entities) {
-				e.x = e.px;
-				e.y = e.py;
-			}
+			for each (e in entities)
+				e.tickEnd (delta);
+			//{
+				//e.x = e.px;
+				//e.y = e.py;
+			//}
 			
 			inTick = false;
 			

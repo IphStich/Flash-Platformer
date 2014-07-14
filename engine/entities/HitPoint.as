@@ -1,5 +1,6 @@
 package iphstich.platformer.engine.entities
 {
+	import flash.geom.Point;
 	import Math;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.entities.Entity;
@@ -27,25 +28,22 @@ package iphstich.platformer.engine.entities
 		private var lastCheckResult:Vector.<HitData>
 		public function getHitPath () : Vector.<HitData>
 		{
-			// No collision if the parent isn't moving
-			if (parent.x == parent.px && parent.y == parent.py)
-			{
-				clearResultVector();
-				return lastCheckResult;
-			}
-			
 			var i:int;
 			var hd:HitData;
 			
 			clearResultVector();
 			
+			// calculate new and old positions...
+			var op:Point = oldPoint();
+			var np:Point = newPoint();
+			
 			// Do the collision trace
 			parent.level.testHitPath
 				( lastCheckResult
-				, lastX()
-				, lastY()
-				, newX()
-				, newY()
+				, op.x
+				, op.y
+				, np.x
+				, np.y
 			);
 			
 			for (i=lastCheckResult.length-1; i>=0; --i)
@@ -62,36 +60,29 @@ package iphstich.platformer.engine.entities
 			return lastCheckResult;
 		}
 		
-		public function newX () : Number
+		public function oldPoint () : Point
 		{
-			return x + parent.px;
+			return parent.oldTransform.transformPoint(new Point(x, y));
 		}
 		
-		public function newY () : Number
+		public function newPoint () : Point
 		{
-			return y + parent.py
-		}
-		
-		public function lastX () : Number
-		{
-			return x + parent.x;
-		}
-		
-		public function lastY () : Number
-		{
-			return y + parent.y;
+			return parent.newTransform.transformPoint(new Point(x, y));
 		}
 		
 		public function getHitPathBetweenPoints (other:HitPoint) : Vector.<HitData>
 		{
 			var results:Vector.<HitData> = new Vector.<HitData>();
 			
+			var tp:Point = this.newPoint();
+			var op:Point = other.newPoint();
+			
 			parent.level.testHitPath
 				( results
-				, this.newX()
-				, this.newY()
-				, other.newX()
-				, other.newY()
+				, tp.x
+				, tp.y
+				, op.x
+				, op.y
 			);
 			
 			var i:int;

@@ -3,6 +3,7 @@ package iphstich.platformer.engine.entities
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import iphstich.platformer.engine.ICollidable;
 	import Math;
@@ -38,6 +39,17 @@ package iphstich.platformer.engine.entities
 		// capped velocity
 		public var cx:Number = NaN;
 		public var cy:Number = NaN;
+		
+		// rotation
+		public var canRotate:Boolean = false;
+		public var r:Number = 0; // rotation in radians
+		public var pr:Number = 0; // predicted rotation
+		public var vr:Number = 0; // rotation velocity
+		public var ar:Number = 0; // rotational acceleration
+		
+		// Transformation Matrices
+		public var oldTransform:Matrix = new Matrix();
+		public var newTransform:Matrix = new Matrix();
 		
 		protected var collided:Boolean;
 		protected var collisionPoints:Vector.<HitPoint>
@@ -102,6 +114,14 @@ package iphstich.platformer.engine.entities
 			// Calculate the 'end'
 			px = x + vx * delta;
 			py = y + vy * delta;
+			
+			
+			// Rotation...
+			if (canRotate)
+			{
+				vr += ar * delta;
+				pr = r + vr * delta;
+			}
 		}
 		
 		public function tickCollide (delta:Number) : void
@@ -129,9 +149,25 @@ package iphstich.platformer.engine.entities
 			}
 		}
 		
+		public function tickEnd (delta:Number) : void
+		{
+			// Move to predicted location
+			x = px;
+			y = py;
+			
+			// Rotation...
+			if (canRotate)
+			{
+				r = pr;
+				rotation = r / Math.PI * 180;
+			}
+		}
+		
 		protected var collisions:Vector.<HitData>;
 		protected function refreshCollisions ()
 		{
+			refreshRotaionMatrices();
+			
 			var i:int;
 			var p:HitPoint;
 			var check:Vector.<HitData>;
@@ -150,6 +186,18 @@ package iphstich.platformer.engine.entities
 			
 			// sort them by t
 			collisions.sort(HitData.SORT_BY_T);
+		}
+		
+		protected function refreshRotaionMatrices () : void
+		{
+			oldTransform.identity();
+			newTransform.identity();
+			
+			oldTransform.rotate(r);
+			newTransform.rotate(pr);
+			
+			oldTransform.translate(x, y);
+			newTransform.translate(px, py);
 		}
 		
 		protected function collide (data:HitData):void
