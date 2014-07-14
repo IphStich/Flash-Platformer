@@ -62,7 +62,7 @@ package iphstich.platformer.engine.levels
 		protected var doors:Vector.<Door>;
 		protected var entities:Vector.<Entity>;
 		protected var entityLevel:uint;
-		protected var entityPlane:EntityPlane;
+		protected var entityPlane:MovieClip;
 		protected var interactables:Vector.<Interactable>;
 		//private var entityToRemove:Vector.<Entity>;
 		protected var collidables:Vector.<ICollidable>;
@@ -119,10 +119,39 @@ package iphstich.platformer.engine.levels
 				if (child is EntityPlane) entityPlane = child as EntityPlane; // { entityLevel = i; child.visible = false;  }
 				if (child is Interactable) interactables.push(child);
 				if (child is Area) addArea(child); // areas[child.name] = child;
+				if (child is Entity) addEntity(child as Entity);
 			}
 			
 			numInteractables = interactables.length;
+			
+			// deal with the entity plane
+			var depth:int;
+			if (entityPlane != null)
+			{
+				depth = this.getChildIndex(entityPlane);
+				removeChild(entityPlane);
+			}
+			else
+			{
+				depth = this.numChildren;
+			}
+			entityPlane = new MovieClip();
+			addChildAt(entityPlane, depth);
+			for each (var e:Entity in entities) entityPlane.addChild(e);
+			
+			
+			T = new MovieClip();
+			addChild(T);
+			//{
+				//entityPlane = new MovieClip();
+				//addChild(entityPlane);
+			//}
+			//else
+			//{
+				//
+			//}
 		}
+		var T:MovieClip;
 		
 		public function addPart (child:DisplayObject) : void
 		{
@@ -218,8 +247,8 @@ package iphstich.platformer.engine.levels
 			
 			if (traceTestEnabled)
 			{
-				graphics.moveTo(x1, y1);
-				graphics.lineTo(x2, y2);
+				T.graphics.moveTo(x1, y1);
+				T.graphics.lineTo(x2, y2);
 			}
 			
 			var hd:HitData;
@@ -361,8 +390,8 @@ package iphstich.platformer.engine.levels
 			
 			if (traceTestEnabled)
 			{
-				graphics.clear();
-				graphics.lineStyle(2);
+				T.graphics.clear();
+				T.graphics.lineStyle(2);
 			}
 			var e:Entity;
 			
@@ -410,7 +439,7 @@ package iphstich.platformer.engine.levels
 			collidables.push(target);
 			numCollidables ++;
 			
-			addChildAt(target, entityLevel);
+			if (entityPlane) entityPlane.addChild(target);
 			
 			target.addedToLevel(this);
 		}
@@ -426,7 +455,7 @@ package iphstich.platformer.engine.levels
 			collidables.splice(collidables.indexOf(target), 1);
 			numCollidables --;
 			
-			removeChild(target);
+			entityPlane.removeChild(target);
 			
 			target.removedFromLevel(this);
 		}
