@@ -19,15 +19,22 @@ package iphstich.platformer.test
 			setSize (30, 30);
 		}
 		
-		override public function tickThink (style:uint, delta:Number) : void
+		//override public function tickThink (style:uint, delta:Number) : void
+		//{
+			//if (surface != null)
+			//{
+				//if (Math.abs(vx) != 250)
+				//{
+					//vx = 250;
+				//}
+			//}
+		//}
+		
+		override protected function land (data:HitData) : void
 		{
-			if (surface != null)
-			{
-				if (Math.abs(vx) != 250)
-				{
-					vx = 250;
-				}
-			}
+			super.land(data);
+			
+			vx = 250 * ((vx >= 0) ? 1 : -1)
 		}
 		
 		override protected function hitEdge(side:Number, time:Number):void

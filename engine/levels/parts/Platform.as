@@ -48,7 +48,7 @@ package iphstich.platformer.engine.levels.parts
 			
 			if (fromX < left) ret.push (new Point(left, top));
 			else if (fromX > right) ret.push(new Point(right, top));
-			else ret.push(fromX, top);
+			else ret.push(new Point(fromX, top));
 			
 			//ret.push(new Point((left + right) / 2, y + (top + bottom) / 2));
 			return ret;

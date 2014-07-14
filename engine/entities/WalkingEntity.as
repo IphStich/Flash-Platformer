@@ -252,7 +252,7 @@ package iphstich.platformer.engine.entities
 		{
 			super.applyImpulse(x, y);
 			
-			if (vy < 0 && surface == null) gotoAirMode();
+			if (vy < 0 && surface != null) gotoAirMode();
 		}
 		
 		public function getBaseLeft () : Number
