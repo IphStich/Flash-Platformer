@@ -389,7 +389,7 @@ package iphstich.platformer.engine.levels
 			if (Controls.pressed("traceTest"))
 			{
 				traceTestEnabled = !traceTestEnabled;
-				if (!traceTestEnabled) graphics.clear();
+				if (!traceTestEnabled) T.graphics.clear();
 			}
 			
 			if (traceTestEnabled)
