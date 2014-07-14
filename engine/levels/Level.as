@@ -5,18 +5,20 @@ package iphstich.platformer.engine.levels
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
-	import iphstich.platformer.engine.ICollidable;
+	import flash.ui.Keyboard;
 	
+	import iphstich.library.Controls;
 	import iphstich.library.CustomMath;
 	import iphstich.platformer.Main;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.HitData;
+	import iphstich.platformer.engine.ICollidable;
 	import iphstich.platformer.engine.levels.interactables.Door;
 	import iphstich.platformer.engine.levels.interactables.Interactable;
+	import iphstich.platformer.engine.levels.misc.Area;
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.test.TestEnemy;
-	import iphstich.platformer.engine.levels.misc.Area;
 	
 	public class Level extends MovieClip
 	{
@@ -75,6 +77,8 @@ package iphstich.platformer.engine.levels
 		private var toAddEntities:Vector.<Entity> = new Vector.<Entity>();
 		private var toRemoveEntities:Vector.<Entity> = new Vector.<Entity>();
 		
+		var traceTestEnabled:Boolean = false;
+		
 		public function Level()
 		{
 			if (OUTSIDE_LEVEL == null) OUTSIDE_LEVEL = new Bitmap();
@@ -84,6 +88,8 @@ package iphstich.platformer.engine.levels
 			numEntities = 0;
 			
 			interpretLevel();
+			
+			Controls.addKeys("traceTest", Keyboard.T);
 		}
 		
 		protected function interpretLevel () : void
@@ -210,12 +216,11 @@ package iphstich.platformer.engine.levels
 		{
 			if (x1 == x2 && y1 == y2) return;
 			
-			//this.graphics.clear();
-			//this.graphics.lineStyle(1, 0xFF0000, 1);
-			//this.graphics.moveTo(x1, y1);
-			//if (pointResult == null) pointResult = new Vector.<HitData>();
-				//if (pointResult.length > 0)
-					//throw new Error("made new");
+			if (traceTestEnabled)
+			{
+				graphics.moveTo(x1, y1);
+				graphics.lineTo(x2, y2);
+			}
 			
 			var hd:HitData;
 			var c:ICollidable;
@@ -352,6 +357,13 @@ package iphstich.platformer.engine.levels
 		private var inTick:Boolean = false;
 		public function tick (style:uint, delta:Number) : void
 		{
+			if (Controls.pressed("traceTest")) traceTestEnabled = !traceTestEnabled;
+			
+			if (traceTestEnabled)
+			{
+				graphics.clear();
+				graphics.lineStyle(2);
+			}
 			var e:Entity;
 			
 			inTick = true;
@@ -449,13 +461,13 @@ package iphstich.platformer.engine.levels
 		{
 			engine = inEngine;
 			
-			var a:Area = getArea("enemies");
-			if (a == null) return;
-			var i:int;
-			for (i=0; i<40; ++i)
-			{
-				new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, 0, this);
-			}
+			//var a:Area = getArea("enemies");
+			//if (a == null) return;
+			//var i:int;
+			//for (i=0; i<40; ++i)
+			//{
+				//new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, 0, this);
+			//}
 		}
 		
 		private function markForAddition (entity:Entity) : void
