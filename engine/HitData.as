@@ -44,6 +44,16 @@
 				instances[++place] = target;
 		}
 		
+		public static function SORT_BY_T (a:HitData, b:HitData) : Number
+		{
+			if (a.t == -1) return 1;
+			if (b.t == -1) return -1;
+			
+			if (a.t < b.t) return -1;
+			if (a.t > b.t) return 1;
+			return 0;
+		}
+		
 		public var hit:DisplayObject;
 		public var x:Number;
 		public var y:Number;

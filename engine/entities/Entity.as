@@ -169,17 +169,7 @@ package iphstich.platformer.engine.entities
 			}
 			
 			// sort them by t
-			collisions.sort(SORT_BY_T);
-		}
-		
-		public static function SORT_BY_T (a:HitData, b:HitData) : Number
-		{
-			if (a.t == -1) return 1;
-			if (b.t == -1) return -1;
-			
-			if (a.t < b.t) return -1;
-			if (a.t > b.t) return 1;
-			return 0;
+			collisions.sort(HitData.SORT_BY_T);
 		}
 		
 		protected function collide (data:HitData):void

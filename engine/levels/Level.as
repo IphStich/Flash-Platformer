@@ -318,7 +318,7 @@ package iphstich.platformer.engine.levels
 					
 					testHitPath (pathResult, x, y, p.x, p.y);
 					
-					pathResult.sort(Entity.SORT_BY_T);
+					pathResult.sort(HitData.SORT_BY_T);
 					
 					blockResult = findBlocked(c, pathResult, blockedBy);
 					
