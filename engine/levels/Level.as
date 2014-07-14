@@ -119,7 +119,7 @@ package iphstich.platformer.engine.levels
 				if (child is EntityPlane) entityPlane = child as EntityPlane; // { entityLevel = i; child.visible = false;  }
 				if (child is Interactable) interactables.push(child);
 				if (child is Area) addArea(child); // areas[child.name] = child;
-				if (child is Entity) addEntity(child as Entity);
+				if (child is Entity) (child as Entity).spawn(child.x, child.y, 0, this);
 			}
 			
 			numInteractables = interactables.length;

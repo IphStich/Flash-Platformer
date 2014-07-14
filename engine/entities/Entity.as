@@ -61,6 +61,19 @@ package iphstich.platformer.engine.entities
 			addChild(hitBox)
 			hitCenter = new HitPoint(0, 0, this);
 			collisionPoints.push(hitCenter);
+			
+			
+			var i:int;
+			var child:DisplayObject;
+			for (i=numChildren-1; i>=0; --i)
+			{
+				child = this.getChildAt(i);
+				if (child is HitPointMC) {
+					removeChild(child);
+					collisionPoints.push(new HitPoint(child.x, child.y, this));
+				}
+				//for each (var c:DisplayObject in this.children
+			}
 		}
 		
 		//-----------------------------------------------------------//
@@ -162,7 +175,7 @@ package iphstich.platformer.engine.entities
 			if (!alive) return null;
 			
 			// first test with current position
-			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - x);
+			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - y);
 			if (hd != null) {
 				hd.hit = this;
 				hd.x += x;
@@ -171,7 +184,7 @@ package iphstich.platformer.engine.entities
 			}
 			
 			// if that fails, test with predicted position
-			hd = hitBox.hitTestPath(x1 - px, y1 - py, x2 - px, y2 - px);
+			hd = hitBox.hitTestPath(x1 - px, y1 - py, x2 - px, y2 - py);
 			if (hd != null) {
 				hd.hit = this;
 				hd.x += x;

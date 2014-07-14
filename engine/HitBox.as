@@ -203,7 +203,7 @@ package iphstich.platformer.engine
 		public function getRadialCheckPoints (fromX:Number, fromY:Number) : Vector.<Point>
 		{
 			var ret:Vector.<Point> = new Vector.<Point>();
-			ret.push(new Point((left + right) / 2, y + (top + bottom) / 2));
+			ret.push(new Point((left + right) / 2, (top + bottom) / 2));
 			return ret;
 		}
 	}

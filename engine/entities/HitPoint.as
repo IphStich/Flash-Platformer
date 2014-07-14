@@ -42,10 +42,10 @@ package iphstich.platformer.engine.entities
 			// Do the collision trace
 			parent.level.testHitPath
 				( lastCheckResult
-				, x + parent.x
-				, y + parent.y
-				, x + parent.px
-				, y + parent.py
+				, lastX()
+				, lastY()
+				, newX()
+				, newY()
 			);
 			
 			for (i=lastCheckResult.length-1; i>=0; --i)
@@ -62,16 +62,36 @@ package iphstich.platformer.engine.entities
 			return lastCheckResult;
 		}
 		
+		public function newX () : Number
+		{
+			return x + parent.px;
+		}
+		
+		public function newY () : Number
+		{
+			return y + parent.py
+		}
+		
+		public function lastX () : Number
+		{
+			return x + parent.x;
+		}
+		
+		public function lastY () : Number
+		{
+			return y + parent.y;
+		}
+		
 		public function getHitPathBetweenPoints (other:HitPoint) : Vector.<HitData>
 		{
 			var results:Vector.<HitData> = new Vector.<HitData>();
 			
 			parent.level.testHitPath
 				( results
-				, parent.px + this.x
-				, parent.py + this.y
-				, parent.px + other.x
-				, parent.py + other.y
+				, this.newX()
+				, this.newY()
+				, other.newX()
+				, other.newY()
 			);
 			
 			var i:int;
