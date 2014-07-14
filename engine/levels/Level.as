@@ -389,6 +389,8 @@ package iphstich.platformer.engine.levels
 		
 		protected function postTick (style:uint, delta:Number) : void
 		{
+			if (style == Engine.TICK_DISTINCT) Controls.manualReset();
+			
 			while (toAddEntities.length > 0)
 				addEntity (toAddEntities.pop());
 			

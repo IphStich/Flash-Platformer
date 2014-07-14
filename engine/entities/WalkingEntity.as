@@ -14,64 +14,39 @@ package iphstich.platformer.engine.entities
 	public class WalkingEntity extends Character
 	{
 		public var surface:Part;
-		protected var leftPoint:HitPoint;
-		protected var rightPoint:HitPoint;
-		protected var leftBase:HitPoint;
-		protected var rightBase:HitPoint;
-		protected var headLeft:HitPoint;
-		protected var headRight:HitPoint;
-		protected var upperLeft:HitPoint;
-		protected var upperRight:HitPoint;
-		protected var heading:Number = 0;
-		protected var groundPoints:Vector.<HitPoint>;
-		protected var airPoints:Vector.<HitPoint>;
+		
+		protected var topLeft:HitPoint;
+		protected var topRight:HitPoint;
+		protected var lowerLeft:HitPoint;
+		protected var lowerRight:HitPoint;
+		protected var baseLeft:HitPoint;
+		protected var baseRight:HitPoint;
 		
 		public function WalkingEntity()
 		{
 			super();
 			
-			leftBase = new HitPoint(10, 0, this);
-			rightBase = new HitPoint( 10, 0, this);
-			leftPoint = new HitPoint( -20, -15, this);
-			rightPoint = new HitPoint( 20, -15, this);
-			headLeft = new HitPoint(0, 0, this);
-			headRight = new HitPoint(0, 0, this);
-			upperLeft = new HitPoint(0, 0, this);
-			upperRight = new HitPoint(0, 0, this);
-			//collisionPoints.push(leftBase, rightBase, leftPoint, rightPoint);
-			//collisionPoints.splice(collisionPoints.indexOf(hitCenter), 1);
-			collisionPoints = null;
+			topLeft 	= new HitPoint(-1, -1, this);
+			topRight 	= new HitPoint(1, -1, this);
+			lowerLeft 	= new HitPoint(-1, 0, this);
+			lowerRight 	= new HitPoint(1, 0, this);
+			baseLeft 	= new HitPoint(-1, 1, this);
+			baseRight 	= new HitPoint(1, 1, this);
+			
+			collisionPoints.pop();
 			hitCenter = null;
-			groundPoints = new Vector.<HitPoint>();
-			groundPoints.push(leftPoint, rightPoint, leftBase, rightBase);
-			airPoints = new Vector.<HitPoint>();
-			airPoints.push(headLeft, headRight, leftBase, rightBase, leftPoint, rightPoint, upperLeft, upperRight);
+			collisionPoints.push(topLeft, topRight, lowerLeft, lowerRight, baseLeft, baseRight);
 		}
 		
 		protected function gotoAirMode () : void
 		{
-			collisionPoints = airPoints;
 			surface = null;
 		}
 		
 		protected function gotoSurfaceMode (inSurface:Part) : void
 		{
-			collisionPoints = groundPoints;
 			surface = inSurface
 		}
-		
-		
-		
-		//private var hasFlyingHitPoints : Boolean = false;
-		//protected function addFlyingHitPoints() : void
-		//{
-			//
-		//}
-		//
-		//protected function removeFlyingHitPoints() : void
-		//{
-			//
-		//}
 		
 		override public function tickMove (delta:Number):void
 		{
@@ -118,32 +93,50 @@ package iphstich.platformer.engine.entities
 			// if target is connected to surface, do nothing
 			if (surface != null) if (surface.connections.indexOf(target) >= 0) return;
 			
-			if (target is Part) {
+			if (target is Part)
+			{
+				var tPart = target as Part;
+				
+				// landing
+				if (point == baseLeft || point == baseRight)
+				{
+					land(data);
+					return;
+				}
+				
+				// if not 'landing', and is a platform, do nothing
+				if (target is Platform) return;
+				
+				// force off the edge of platforms if not 'clean'
 				if (data.type == HitData.TYPE_SURFACE)
 				{
-					if ((point==leftBase) && (target is RampL)) return;
-					if ((point==rightBase) && (target is RampR)) return;
-					
-					if (point==hitCenter || point==rightBase || point==leftBase)
-						land(data);
-					
-					// force off the edge of platforms if not 'clean'
-					if (point == leftPoint)
+					if (point == lowerLeft) {
 						hitWall(-1, data);
-					if (point == rightPoint)
+						return;
+					}
+					if (point == lowerRight) {
 						hitWall(1, data);
+						return;
+					}
 				}
-				else if (point == leftPoint  || point == upperLeft)
+				
+				// hitting a wall
+				if (data.type == HitData.TYPE_LEFT)
 				{
-					this.hitWall(-1, data);
+					hitWall(1, data);
+					return;
 				}
-				else if (point == rightPoint  || point == upperRight)
+				if (data.type == HitData.TYPE_RIGHT)
 				{
-					this.hitWall(1, data);
+					hitWall(-1, data);
+					return;
 				}
-				else if (point == headLeft || point == headRight)
+				
+				// hitting a roof
+				if (data.type == HitData.TYPE_BOTTOM)
 				{
-					this.hitHead(data);
+					hitHead(data);
+					return;
 				}
 			}
 		}
@@ -169,7 +162,6 @@ package iphstich.platformer.engine.entities
 				vx = 0;
 				px = wall.left - hitBox.right - 0.1;
 			}
-			this.heading = direction;
 		}
 		
 		protected function hitHead (data:HitData) : void
@@ -221,32 +213,29 @@ package iphstich.platformer.engine.entities
 		public function setSize (width:Number, height:Number) : void
 		{
 			// calculate half width & height
-			var hWidth:Number = width / 2;
-			var hHeight:Number = height / 2
+			var h_width:Number = width / 2;
+			var h_height:Number = height / 2
 			
-			// adjust lower points
-			leftBase.x = -hWidth * 1/4;
-			rightBase.x = hWidth * 1/4;
-			leftPoint.x = -hWidth;
-			leftPoint.y = -height * 1/4;
-			rightPoint.x = hWidth;
-			rightPoint.y = -height * 1/4;
+			topLeft.x = -h_width;
+			topLeft.y = -height;
+			topRight.x = h_width;
+			topRight.y = -height;
 			
-			// adjust upper points
-			headLeft.x = -hWidth * 1/4;
-			headLeft.y = -height;
-			headRight.x = hWidth * 1/4;
-			headRight.y = -height;
-			upperLeft.x = -hWidth;
-			upperLeft.y = -height * 3/4;
-			upperRight.x = hWidth;
-			upperRight.y = -height * 3/4;
+			lowerLeft.x = -h_width;
+			lowerLeft.y = -height / 4;
+			lowerRight.x = h_width;
+			lowerRight.y = -height / 4;
+			
+			baseLeft.x = -h_width / 4;
+			baseLeft.y = 0;
+			baseRight.x = h_width / 4;
+			baseRight.y = 0;
 			
 			// adjust hit box
 			hitBox.setDimensions
-				( -hWidth
+				( -h_width
 				, -height
-				, hWidth
+				, h_width
 				, 0
 			);
 		}
@@ -260,16 +249,16 @@ package iphstich.platformer.engine.entities
 		
 		public function getBaseLeft () : Number
 		{
-			return leftBase.x;
+			return baseLeft.x;
 		}
 		public function getBaseRight () : Number
 		{
-			return rightBase.x;
+			return baseRight.x;
 		}
 		
 		public function getHeight () : Number
 		{
-			return -headLeft.y;
+			return -topLeft.y;
 		}
 	}
 }
