@@ -36,11 +36,6 @@ package iphstich.platformer.engine.entities
 			
 			var i:int;
 			var hd:HitData;
-			var engine:Engine = parent.level.engine;
-			
-			// Prevents the check from happening multiple times in one frame
-			//if ((lastCheckTime == engine.time) /*&& (lastCheckKeyTime == parent.kt)*/) return lastCheckResult;
-			//lastCheckTime = engine.time;
 			
 			clearResultVector();
 			
@@ -65,6 +60,30 @@ package iphstich.platformer.engine.entities
 			}
 			
 			return lastCheckResult;
+		}
+		
+		public function getHitPathBetweenPoints (other:HitPoint) : Vector.<HitData>
+		{
+			var results:Vector.<HitData> = new Vector.<HitData>();
+			
+			parent.level.testHitPath
+				( results
+				, parent.px + this.x
+				, parent.py + this.y
+				, parent.px + other.x
+				, parent.py + other.y
+			);
+			
+			var i:int;
+			var hd:HitData;
+			for (i=results.length-1; i>=0; --i)
+			{
+				hd = results[i];
+				hd.t = -1;
+				hd.point = this;
+			}
+			
+			return results;
 		}
 		
 		private function clearResultVector ()

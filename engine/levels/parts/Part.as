@@ -11,6 +11,7 @@ package iphstich.platformer.engine.levels.parts
 	{
 		public var connections:Vector.<Part>
 		public var slope:Number;
+		protected var numC:int;
 		
 		public function Part()
 		{
@@ -42,13 +43,14 @@ package iphstich.platformer.engine.levels.parts
 		{
 			if (connections.indexOf(con) == -1)
 				connections.push(con);
+			
+			numC = connections.length;
 		}
 		
 		public function getNext(obj:WalkingEntity):Part
 		{
 			var ret:Part = null;
 			var i:uint;
-			var numC:uint = connections.length;
 			
 			var x:Number = obj.px;
 			var y:Number = obj.py;
@@ -58,11 +60,11 @@ package iphstich.platformer.engine.levels.parts
 			var con:Part;
 			for (i = 0; i < numC; ++i) {
 				con = connections[i];
-				if ((x + obj.getBaseRight() >= con.left)
-					&& (obj.x + obj.getBaseLeft() <= con.right))
+				if ((x >= con.left)
+					&& (x <= con.right))
 				{
 					if (ret == null) ret = con;
-					if (ret.top > con.top) ret = con;
+					if (ret.top >= con.top) ret = con;
 				}
 			}
 			return ret;

@@ -82,6 +82,33 @@ package iphstich.platformer.engine.entities
 			}
 		}
 		
+		override protected function refreshCollisions ()
+		{
+			super.refreshCollisions();
+			
+			var check:Vector.<HitData>;
+			
+			check = topLeft.getHitPathBetweenPoints(topRight);
+			while (check.length > 0) collisions.push(check.pop());
+			
+			check = lowerLeft.getHitPathBetweenPoints(topLeft);
+			while (check.length > 0) collisions.push(check.pop());
+			
+			check = lowerRight.getHitPathBetweenPoints(topRight);
+			while (check.length > 0) collisions.push(check.pop());
+			
+			check = lowerLeft.getHitPathBetweenPoints(lowerRight);
+			var hd:HitData;
+			while (check.length > 0)
+			{
+				hd = check.pop();
+				if (hd.x > px) hd.point = lowerRight;
+				collisions.push(hd);
+			}
+			
+			collisions.sort(HitData.SORT_BY_T);
+		}
+		
 		override protected function collide (data:HitData) : void
 		{
 			var target:DisplayObject = data.hit;

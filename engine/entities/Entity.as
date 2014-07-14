@@ -116,8 +116,8 @@ package iphstich.platformer.engine.entities
 			}
 		}
 		
-		var collisions:Vector.<HitData>;
-		private function refreshCollisions ()
+		protected var collisions:Vector.<HitData>;
+		protected function refreshCollisions ()
 		{
 			var i:int;
 			var p:HitPoint;
