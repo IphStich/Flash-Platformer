@@ -440,6 +440,17 @@ package iphstich.platformer.engine.levels
 			return areas[name] as Area;
 		}
 		
+		public function getEntityByType (type:Class) : Entity
+		{
+			var e:Entity;
+			
+			for each (e in entities)
+			{
+				if (e is type) return e;
+			}
+			return null;
+		}
+		
 		public function clear () : void
 		{
 			var i:int;

@@ -46,6 +46,8 @@
 		public var view:MovieClip;
 		public var viewport:Rectangle;
 		
+		public var camera:Camera;
+		
 		
 		
 		public function Engine (stage:MovieClip)
@@ -87,12 +89,20 @@
 			
 			view.x = viewport.x + viewport.width / 2;
 			view.y = viewport.y + viewport.height / 2;
+			
+			if (camera != null) camera.viewport  = vp;
 		}
 		
 		public function setTickStyle (style:uint, frequency:Number = 32) : void
 		{
 			tickStyle = style;
 			tickDelta = 1.0 / frequency;
+		}
+		
+		public function setCamera (camera:Camera)
+		{
+			this.camera = camera;
+			camera.engine = this;
 		}
 		
 		public function start () : void
@@ -112,6 +122,12 @@
 			if (level == null) {
 				throw Error("The engine requires a level to start.");
 			}
+			
+			if (camera == null) {
+				throw Error("The engine requires a camera to start.");
+			}
+			
+			camera.start();
 			
 			lastFrame 	= getTimer() / 1000;
 			time 		= getTimer() / 1000;
@@ -153,17 +169,13 @@
 				//time = getTimer() / 1000;
 				//tickDelta = time;
 			//}
-			
-			
-			// keep the level centered
-			// todo: move this stuff to a camera of sorts
-			level.x = (level.left + level.right) / -2;
-			level.y = (level.top + level.bottom) / -2;
 		}
 		
 		protected function tick ()
 		{
 			level.tick (tickStyle, tickDelta);
+			
+			camera.tick (tickDelta);
 		}
 		
 		public function spawnEntity (target:Entity, spawnPoint:Point) : void
