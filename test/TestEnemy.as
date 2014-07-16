@@ -37,7 +37,7 @@ package iphstich.platformer.test
 			vx = 250 * ((vx >= 0) ? 1 : -1)
 		}
 		
-		override protected function hitEdge(side:Number, time:Number):void
+		override protected function hitEdge (side:Number) : void
 		{
 			px = side;
 			vx *= -1;

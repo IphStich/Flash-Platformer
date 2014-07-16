@@ -82,28 +82,6 @@ package iphstich.platformer.test {
 			level.removeEntity(this);
 		}
 		
-		//protected function endDashLength (time:Number) : void
-		//{
-			//trace("END DASH!");
-			//currentAction = "walk";
-			//playAnim();
-		//}
-		
-		//override public function fall (time:Number=0) : void
-		//{
-			//super.fall(time);
-			//
-			//if (currentAction == "walk")
-				//playAnim("leap")
-			//else
-				//playAnim("hop")
-		//}
-		
-		//override protected function hitEdge(side:Number, time:Number):void
-		//{
-			//fall(time);
-		//}
-		
 		override protected function land (data:HitData) : void
 		{
 			// ignore platforms if the down key is help down
@@ -113,15 +91,6 @@ package iphstich.platformer.test {
 			}
 			
 			super.land(data);
-			
-			//var d:Boolean = currentFacing == "right";
-			//var m:Boolean = currentAction == "leap";
-			//
-			//playAnim((m ? "walk " : "stand ") + currentFacing);
-			//
-			//if (ax) {
-				//setCourse( { cx: cx, ax: HORIZ_ACC * (d ? 1 : -1) * (m ? 1 : -1) }, data.time );
-			//}
 		}
 		
 		//override protected function makeDecisions():void
@@ -178,54 +147,6 @@ package iphstich.platformer.test {
 			
 			super.tickThink(style, delta);
 		} //makeDecisions
-		
-		//private function pcLoaded (e:Event) : void
-		//{
-			//pc.content.scaleX = -1 * PC_SCALE;
-			//pc.content.scaleY = PC_SCALE;
-			//this.dispatchEvent(e);
-		//}
-		//public static const PC_SCALE = 1 / 8;
-		
-		//override protected function playAnim (anim:String = "") : void
-		//{
-			//super.playAnim(anim);
-			//
-			//////return;
-			////
-			////switch (currentAction)
-			////{
-				////case "stand":
-					////pc.animateTo( pc.convertPoseCode("000000000000000000000000000000000000000000000000"), getTimer(), getTimer() + 250);
-					////break;
-				////case "walk":
-					////pc.animateTo( pc.convertPoseCode("000000000070000335000000000316000000032000336025"), getTimer(), getTimer() + 250);
-					////break;
-				////case "leap":
-					////pc.animateTo( pc.convertPoseCode("000000000086000000091000000317000000324011332036"), getTimer(), getTimer() + 250);
-					////break;
-				////case "hop":
-					////pc.animateTo( pc.convertPoseCode("000257073339295050000000336314000340327045321000"), getTimer(), getTimer() + 250);
-					////break;
-				////case "dash":
-					////pc.animateTo( pc.convertPoseCode("000294262088333351038276310023313339019344336333"), getTimer(), getTimer() + 250);
-					////break;
-				////default:
-					////throw new Error("Unrecognised animation \"" + currentAction + "\"");
-			////}
-			////
-			////switch (currentFacing)
-			////{
-				////case "left":
-					////pc.scaleX = -1;
-					////break;
-				////case "right":
-					////pc.scaleX = 1;
-					////break;
-				////default:
-					////throw new Error("Unrecognised facing \"" + currentFacing + "\"");
-			////}
-		//} //playAnim
 		
 		public function setDefaultMoveVariables() : void
 		{

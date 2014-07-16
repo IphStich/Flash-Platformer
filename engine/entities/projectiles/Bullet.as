@@ -25,17 +25,15 @@ package iphstich.platformer.engine.entities.projectiles
 			hitCenter.hitList.push(Entity, Part);
 		}
 		
-		public function shoot (lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number) : void
+		public function shoot (lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number) : void
 		{
-			spawn(startX, startY, 0, lev);
+			spawn(startX, startY, lev);
 			
 			vx = speedX;
 			vy = speedY;
 			facing = (speedX < 0) ? "left" : "right";
 			
 			this.scaleX = (speedX > 0) ? 1 : -1;
-			//
-			//movement.initial (time, startX, startY, speedX, speedY);
 		}
 		
 		override protected function collide (data:HitData) : void
@@ -82,6 +80,8 @@ package iphstich.platformer.engine.entities.projectiles
 		
 		protected function hit (data:HitData) : void
 		{
+			if (data == null) return;
+			
 			var target:Character = data.hit as Character;
 			
 			if (target != null)

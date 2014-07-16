@@ -54,18 +54,21 @@ package iphstich.platformer.engine.levels
 		public static var OUTSIDE_LEVEL:DisplayObject;
 		
 		protected var areas:Dictionary;
-		protected var parts:Vector.<Part>;
-		protected var numEntities:uint;
-		protected var numParts:uint = 0;
-		protected var numInteractables:uint = 0;
-		protected var numCollidables:uint = 0;
 		protected var doors:Vector.<Door>;
-		protected var entities:Vector.<Entity>;
 		protected var entityLevel:uint;
 		protected var entityPlane:MovieClip;
+		
+		protected var entities:Vector.<Entity>;
+		protected var numEntities:uint;
+		
+		protected var parts:Vector.<Part>;
+		protected var numParts:uint = 0;
+		
 		protected var interactables:Vector.<Interactable>;
-		//private var entityToRemove:Vector.<Entity>;
+		protected var numInteractables:uint = 0;
+		
 		protected var collidables:Vector.<ICollidable>;
+		protected var numCollidables:uint = 0;
 		
 		public var top:Number;
 		public var left:Number;
@@ -79,6 +82,8 @@ package iphstich.platformer.engine.levels
 		
 		var traceTestEnabled:Boolean = false;
 		
+		var T:MovieClip;
+		
 		public function Level()
 		{
 			if (OUTSIDE_LEVEL == null) OUTSIDE_LEVEL = new Bitmap();
@@ -90,6 +95,10 @@ package iphstich.platformer.engine.levels
 			interpretLevel();
 			
 			Controls.addKeys("traceTest", Keyboard.T);
+			
+			
+			T = new MovieClip();
+			addChild(T);
 		}
 		
 		protected function interpretLevel () : void
@@ -119,7 +128,7 @@ package iphstich.platformer.engine.levels
 				if (child is EntityPlane) entityPlane = child as EntityPlane; // { entityLevel = i; child.visible = false;  }
 				if (child is Interactable) interactables.push(child);
 				if (child is Area) addArea(child); // areas[child.name] = child;
-				if (child is Entity) (child as Entity).spawn(child.x, child.y, 0, this);
+				if (child is Entity) (child as Entity).spawn(child.x, child.y, this);
 			}
 			
 			numInteractables = interactables.length;
@@ -138,20 +147,7 @@ package iphstich.platformer.engine.levels
 			entityPlane = new MovieClip();
 			addChildAt(entityPlane, depth);
 			for each (var e:Entity in entities) entityPlane.addChild(e);
-			
-			
-			T = new MovieClip();
-			addChild(T);
-			//{
-				//entityPlane = new MovieClip();
-				//addChild(entityPlane);
-			//}
-			//else
-			//{
-				//
-			//}
 		}
-		var T:MovieClip;
 		
 		public function addPart (child:DisplayObject) : void
 		{
@@ -191,53 +187,6 @@ package iphstich.platformer.engine.levels
 			if (left > a.left) 		left = a.left;
 			if (right < a.right) 	right = a.right;
 			if (bottom < a.bottom) 	bottom = a.bottom;
-		}
-		
-		public function testHit(result:Vector.<HitData>, x:Number, y:Number, radius:Number=0, time:Number=-1):Vector.<HitData>
-		{
-			var obj:Object;
-			var ret:Vector.<HitData>; var i:uint;
-			
-			ret = result;
-			
-			if (time == -1) time = engine.time;
-			//if (radius == 0) radius = 1;
-			
-			// test level bounds
-			if (!(x >= left - radius && x <= right + radius && y >= top - radius && y <= bottom + radius))
-			{
-				ret.push(HitData.hit(OUTSIDE_LEVEL, x, y, time));
-				return ret;
-			}
-			
-			// hit test Parts
-			var p:Part;
-			for (i = 0; i < numParts; ++i)
-			{
-				p = parts[i];
-				if (p.hitTest(x, y, radius))
-					ret.push(HitData.hit(p, x, y, time));
-			}
-			
-			// hit test entities
-			var e:Entity;
-			for (i = 0; i < numEntities; ++i)
-			{
-				e = entities[i];
-				if (e.hitTest(x, y, radius, time))
-					ret.push(HitData.hit(entities[i], x, y, time));
-			}
-			
-			// hit test interactables
-			var r:Interactable;
-			for (i=0; i<numInteractables; ++i)
-			{
-				r = interactables[i];
-				if (r.hitTest(x, y, radius))
-					ret.push(HitData.hit(r, x, y, time));
-			}
-			
-			return ret;
 		}
 		
 		public var pointResult:Vector.<HitData>;
@@ -289,7 +238,9 @@ package iphstich.platformer.engine.levels
 		
 		public function testHitRadial (results:Vector.<HitData>, x:Number, y:Number, radius:Number, blockedBy:Vector.<Class>) : void
 		{
-			// this function checks each hit object in 'list',
+			
+			
+			// this sub-function checks each hit object in 'list',
 			// returning null if encountering an object in 'blockedBy',
 			// returning a HitData if 'target' is encountered
 			// and returning null if neither are encountered
@@ -320,6 +271,7 @@ package iphstich.platformer.engine.levels
 				}
 				return null;
 			}
+			
 			
 			var c:ICollidable;
 			var p:Point;
@@ -412,10 +364,6 @@ package iphstich.platformer.engine.levels
 			
 			for each (e in entities)
 				e.tickEnd (delta);
-			//{
-				//e.x = e.px;
-				//e.y = e.py;
-			//}
 			
 			inTick = false;
 			
@@ -450,6 +398,11 @@ package iphstich.platformer.engine.levels
 			target.addedToLevel(this);
 		}
 		
+		private function markForAddition (entity:Entity) : void
+		{
+			toAddEntities.push (entity);
+		}
+		
 		public function removeEntity(target:Entity):void
 		{
 			if (inTick) { markForRemoval(target); return; }
@@ -464,6 +417,12 @@ package iphstich.platformer.engine.levels
 			entityPlane.removeChild(target);
 			
 			target.removedFromLevel(this);
+		}
+		
+		private function markForRemoval (entity:Entity) : void
+		{
+			if (toRemoveEntities.indexOf(entity) != -1) throw Error("Cannot remove an entity twice!");
+			toRemoveEntities.push(entity);
 		}
 		
 		public function getDoor(localName:String):Door
@@ -505,17 +464,6 @@ package iphstich.platformer.engine.levels
 			//{
 				//new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, 0, this);
 			//}
-		}
-		
-		private function markForAddition (entity:Entity) : void
-		{
-			toAddEntities.push (entity);
-		}
-		
-		private function markForRemoval (entity:Entity) : void
-		{
-			if (toRemoveEntities.indexOf(entity) != -1) throw Error("Cannot remove an entity twice!");
-			toRemoveEntities.push(entity);
 		}
 	}
 }

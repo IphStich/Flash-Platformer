@@ -88,19 +88,16 @@ package iphstich.platformer.engine.entities
 				
 				// check for new surface (ns)
 				var ns:Part = this.surface.getNext(this)
-				var side:Number;
-				if (ns == null) {
-					// calculate when they hit the edge of the platform
-					//side = (getX(engine.time) <= surface.left) ? surface.left : surface.right;
-					side = (px <= surface.left) ? surface.left : surface.right;
-					if (side == surface.left) side -= this.getBaseRight();
-					if (side == surface.right) side -= this.getBaseLeft();
-					var t:Number = 0//getTimeX(side);
-					// perform the hit edge
-					hitEdge ( side, t );
-				} else if (ns != surface) {
-					//side = (getVX(Engine.time) < 0) ? ns.right : ns.left;
-					//this.setCourse({kx: side }, getTimeX(side))
+				
+				if (ns == null)
+				{
+					var side:Number = (px <= surface.left)
+						? surface.left - getBaseRight()
+						: surface.right - getBaseLeft();
+					hitEdge ( side );
+				}
+				else if (ns != surface)
+				{
 					this.surface = ns;
 				}
 			}
@@ -163,7 +160,7 @@ package iphstich.platformer.engine.entities
 				// if not 'landing', and is a platform, do nothing
 				if (target is Platform) return;
 				
-				// force off the edge of platforms if not 'clean'
+				// force off the edge of Parts if not 'clean'
 				if (data.type == HitData.TYPE_SURFACE)
 				{
 					if (point == lowerLeft) {
@@ -197,7 +194,7 @@ package iphstich.platformer.engine.entities
 			}
 		}
 		
-		protected function hitEdge (side:Number, time:Number) : void
+		protected function hitEdge (side:Number) : void
 		{
 			fall();
 		}
@@ -239,14 +236,15 @@ package iphstich.platformer.engine.entities
 			py = surface.getTopAt(px);
 		}
 		
-		override public function spawn (x:Number, y:Number, time:Number, lev:Level) : void
+		override public function spawn (x:Number, y:Number, lev:Level) : void
 		{
-			super.spawn(x, y, time, lev);
+			super.spawn(x, y, lev);
+			
+			this.surface = null;
 			
 			// check for ground
-			this.surface = null;
 			var ground:Vector.<HitData> = new Vector.<HitData>();
-			this.level.testHit(ground, x, y, 0, -1);
+			this.level.testHitPath(ground, x, y - getHeight(), x, y + 10);
 			for each (var h:HitData in ground) {
 				if (h.hit is Part) {
 					this.surface = h.hit as Part;
@@ -254,11 +252,11 @@ package iphstich.platformer.engine.entities
 				}
 			}
 			
-			if (this.surface == null) this.fall(time);
+			if (this.surface == null) this.fall();
 			else gotoSurfaceMode(surface);
 		}
 		
-		public function fall(time:Number=0):void
+		public function fall():void
 		{
 			gotoAirMode();
 			vy = 0;

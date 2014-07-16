@@ -15,9 +15,9 @@ package iphstich.platformer.test
 			team = 0;
 		}
 		
-		override public function shoot(lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number, time:Number):void
+		override public function shoot(lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number):void
 		{
-			super.shoot(lev, startX, startY, speedX, speedY, time);
+			super.shoot(lev, startX, startY, speedX, speedY);
 			ax = -speedX * 3/2
 		}
 		

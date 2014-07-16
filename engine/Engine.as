@@ -27,8 +27,8 @@
 		public static const TICK_DELTA:uint = 2; 		// ignore framerate and tick each frame regardless, using delta-time
 		// 												// probably the best option, this is what the majority of multiplayer games out there use
 		
-		public static const TICK_CALCULATED:uint = 3;	// isntead of using deltatime, simply calculate vectoral movement and tick based on predictions
-		//												// this probably uses the most processing power
+		//public static const TICK_CALCULATED:uint = 3;	// isntead of using deltatime, simply calculate vectoral movement and tick based on predictions
+		////												// this probably uses the most processing power
 		
 		public var lastFrame:Number;
 		//public static var instance:Engine;
@@ -86,7 +86,6 @@
 			viewport = vp;
 			
 			view.x = viewport.x + viewport.width / 2;
-			//view.x = viewport. / 2;
 			view.y = viewport.y + viewport.height / 2;
 		}
 		
@@ -106,9 +105,9 @@
 				throw Error("The engine does not have a tick style set.");
 			}
 			
-			if (tickStyle == TICK_CALCULATED) {
-				throw Error("The calculated tick-style is not currently supported.");
-			}
+			//if (tickStyle == TICK_CALCULATED) {
+				//throw Error("The calculated tick-style is not currently supported.");
+			//}
 			
 			if (level == null) {
 				throw Error("The engine requires a level to start.");
@@ -122,26 +121,6 @@
 			enterFrameHandler();
 		}
 		
-		public function startGame_deprecated () : void
-		{
-			//spawnHero();
-			
-			start();
-		}
-		
-		private function spawnHero () : void
-		{
-			// move player to the spawn
-			//var d:Door = level.getDoor("spawn1");
-			//var pl:Player = Player.instance;
-			//pl.spawn
-				//( (d.right + d.left) / 2
-				//, d.bottom
-				//, time
-				//, level
-			//);
-		}
-		
 		private function enterFrameHandler(e:Event = null):void
 		{
 			// do nothing if idle
@@ -150,11 +129,14 @@
 			
 			if (tickStyle == TICK_DISTINCT)
 			{
-				if (getTimer() / 1000 <= time)
-					return;
+				time = getTimer() / 1000;
 				
-				lastFrame = time;
-				time += tickDelta;
+				while (time > lastFrame)
+				{
+					lastFrame += tickDelta;
+					
+					tick ();
+				}
 			}
 			
 			else if (tickStyle == TICK_DELTA)
@@ -162,17 +144,15 @@
 				lastFrame = time;
 				time = getTimer() / 1000;
 				tickDelta = time - lastFrame;
+				
+				tick ();
 			}
 			
-			else if (tickStyle == TICK_CALCULATED)
-			{
-				time = getTimer() / 1000;
-				tickDelta = time;
-			}
-			
-			
-			// tick the level, and as a result all the contained entities
-			level.tick (tickStyle, tickDelta);
+			//else if (tickStyle == TICK_CALCULATED)
+			//{
+				//time = getTimer() / 1000;
+				//tickDelta = time;
+			//}
 			
 			
 			// keep the level centered
@@ -181,12 +161,14 @@
 			level.y = (level.top + level.bottom) / -2;
 		}
 		
+		protected function tick ()
+		{
+			level.tick (tickStyle, tickDelta);
+		}
+		
 		public function spawnEntity (target:Entity, spawnPoint:Point) : void
 		{
-			target.spawn (spawnPoint.x, spawnPoint.y, time, level);
-			//target.x = spawnPoint.x;
-			//target.y = spawnPoint.y;
-			//level.addEntity (target);
+			target.spawn (spawnPoint.x, spawnPoint.y, level);
 		}
 	}
 }

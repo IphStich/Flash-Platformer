@@ -207,17 +207,6 @@ package iphstich.platformer.engine.entities
 		
 		//-----------------------------------------------------------------------//
 		
-		public function hitTest(x:Number, y:Number, radius:Number, time:Number=-1):Boolean
-		{
-			return false;
-			//// dead entities cannot be hit
-			//if (alive == false) return false;
-			//
-			//if (time == -1) time = engine.time;
-			//
-			//return this.hitBox.hitTest(x - getX(time), y - getY(time), radius);
-		}
-		
 		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
 			if (!alive) return null;
@@ -268,7 +257,7 @@ package iphstich.platformer.engine.entities
 			}
 		}
 		
-		public function spawn (x:Number, y:Number, time:Number, lev:Level) : void
+		public function spawn (x:Number, y:Number, lev:Level) : void
 		{
 			alive 	= true;
 			level 	= lev;
@@ -277,11 +266,6 @@ package iphstich.platformer.engine.entities
 			this.level.addEntity(this);
 			this.x = x;
 			this.y = y;
-			//this.setP(
-				//{ kt: time
-				//, kx: x
-				//, ky: y
-			//});
 		}
 		
 		public function addedToLevel (lev:Level) : void

@@ -37,7 +37,6 @@
 				caller.spawn
 					( (targetDoor.left + targetDoor.right) / 2
 					, targetDoor.bottom
-					, time
 					, nextLevel
 				);
 			}

@@ -74,9 +74,11 @@ package iphstich.platformer.engine.entities
 		{
 			var results:Vector.<HitData> = new Vector.<HitData>();
 			
+			// get positions of points
 			var tp:Point = this.newPoint();
 			var op:Point = other.newPoint();
 			
+			// do actual trace test
 			parent.level.testHitPath
 				( results
 				, tp.x
@@ -85,12 +87,13 @@ package iphstich.platformer.engine.entities
 				, op.y
 			);
 			
+			
 			var i:int;
 			var hd:HitData;
 			for (i=results.length-1; i>=0; --i)
 			{
 				hd = results[i];
-				hd.t = -1;
+				hd.t = -1; // set t values to -1 (meaning "indefinitely last")
 				hd.point = this;
 			}
 			

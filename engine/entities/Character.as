@@ -20,7 +20,6 @@ package iphstich.platformer.engine.entities
 		protected var JUMP_VELOCITY:Number = 0;
 		
 		public var currentAction:String = "stand"
-		public var currentFacing:String = "right"
 		
 		public var health:Number;
 		
@@ -39,18 +38,6 @@ package iphstich.platformer.engine.entities
 		public function dealDamage (damage:Number) : void
 		{
 			health -= damage;
-		}
-		
-		/**
-		 * action / facing
-		 * @param	anim
-		 */
-		protected function playAnim (anim:String = "") : void
-		{
-			//if (anim == "") return;
-			//var act:Array = anim.split(" ")
-			//if (act[0].length > 0) currentAction = act[0];
-			//if (act.length > 1) if (act[1].length > 0) currentFacing = act[1];
 		}
 		
 		public function updateMoveVariables () : void

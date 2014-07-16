@@ -7,9 +7,5 @@ package iphstich.platformer.engine.entities
 	 */
 	public class HitPointMC extends MovieClip
 	{
-		public function HitPointMC() 
-		{
-			
-		}
 	}
 }
