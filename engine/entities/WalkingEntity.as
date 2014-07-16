@@ -22,6 +22,8 @@ package iphstich.platformer.engine.entities
 		protected var baseLeft:HitPoint;
 		protected var baseRight:HitPoint;
 		
+		protected var targetSpeed:Number = 0;
+		
 		public function WalkingEntity()
 		{
 			super();
@@ -40,12 +42,39 @@ package iphstich.platformer.engine.entities
 		
 		protected function gotoAirMode () : void
 		{
+			ay = GRAVITY;
+			cy = JUMP_VELOCITY;
 			surface = null;
 		}
 		
 		protected function gotoSurfaceMode (inSurface:Part) : void
 		{
+			ay = 0;
+			cy = NaN;
 			surface = inSurface
+		}
+		
+		override public function tickThink (style:uint, delta:Number) : void 
+		{
+			if (HORIZ_ACC != 0)
+			{
+				// calculate acceleration potential
+				ax = HORIZ_ACC;
+				if (surface == null) ax = HORIZ_ACC_AIR;
+				if (surface == null && targetSpeed == 0) ax = HORIZ_ACC_FEATHER;
+				if (vx == targetSpeed) ax = 0;
+				
+				// adjust acceleration if too close to target speed
+				if (Math.abs(vx - targetSpeed) < ax * delta) ax = Math.abs(vx - targetSpeed) / delta;
+				
+				// adjust acceleration based on speed
+				ax *= (vx - targetSpeed < 0) ? 1 : -1;
+			}
+			else
+			{
+				vx = targetSpeed;
+			}
+			
 		}
 		
 		override public function tickMove (delta:Number):void
@@ -286,6 +315,14 @@ package iphstich.platformer.engine.entities
 		public function getHeight () : Number
 		{
 			return -topLeft.y;
+		}
+		
+		protected function doJump () : void
+		{
+			gotoAirMode();
+			vy = -JUMP_VELOCITY;
+			ay = GRAVITY;
+			cy = JUMP_VELOCITY;
 		}
 	}
 }

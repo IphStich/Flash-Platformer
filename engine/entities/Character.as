@@ -5,19 +5,19 @@ package iphstich.platformer.engine.entities
 	
 	public class Character extends Entity
 	{
-		public var JUMP_HEIGHT:Number = 120 + 9;
-		public var JUMP_ARC_TIME:Number = 1.1//1.15;
-		public var JUMP_ARC_DISTANCE:Number = 330 + 20;
-		public var TIME_TO_MAX_SPEED:Number = 0.15;
-		public var AIR_ACC_PENALTY:Number = 0.5;
-		public var AIR_ACC_FEATHER:Number = 0.1;
+		protected var JUMP_HEIGHT:Number = 0;
+		protected var JUMP_ARC_TIME:Number = 0;
+		protected var JUMP_ARC_DISTANCE:Number = 0;
+		protected var TIME_TO_MAX_SPEED:Number = 0;
+		protected var AIR_ACC_PENALTY:Number = 0;
+		protected var AIR_ACC_FEATHER:Number = 0;
 		
-		public var MAX_HORIZ_SPEED:Number = JUMP_ARC_DISTANCE / JUMP_ARC_TIME;
-		public var HORIZ_ACC:Number = MAX_HORIZ_SPEED / TIME_TO_MAX_SPEED;
-		public var HORIZ_ACC_AIR:Number = HORIZ_ACC * AIR_ACC_PENALTY;
-		public var HORIZ_ACC_FEATHER:Number = HORIZ_ACC * AIR_ACC_FEATHER;
-		public var GRAVITY:Number = 2 * JUMP_HEIGHT / JUMP_ARC_TIME / JUMP_ARC_TIME * 4;
-		public var JUMP_VELOCITY:Number = GRAVITY * JUMP_ARC_TIME / 2;
+		protected var MAX_HORIZ_SPEED:Number = 0;
+		protected var HORIZ_ACC:Number = 0;
+		protected var HORIZ_ACC_AIR:Number = 0;
+		protected var HORIZ_ACC_FEATHER:Number = 0;
+		protected var GRAVITY:Number = 0;
+		protected var JUMP_VELOCITY:Number = 0;
 		
 		public var currentAction:String = "stand"
 		public var currentFacing:String = "right"
