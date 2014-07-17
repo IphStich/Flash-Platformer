@@ -25,7 +25,7 @@ package iphstich.platformer.engine.entities
 		
 		private var _facing:int;
 		public function get facing () : int { return _facing; }
-		public function set facing (inp:int) { _facing = inp; scaleX = inp; }
+		public function set facing (inp:int) { _facing = inp; }
 		
 		public function Character()
 		{
@@ -33,6 +33,13 @@ package iphstich.platformer.engine.entities
 			
 			health 	= 100;
 			facing 	= 1;
+		}
+		
+		override public function tickEnd(delta:Number):void 
+		{
+			super.tickEnd(delta);
+			
+			playAnim (animationLogic());
 		}
 		
 		public function dealDamage (damage:Number) : void
@@ -48,6 +55,19 @@ package iphstich.platformer.engine.entities
 			HORIZ_ACC_FEATHER 	= HORIZ_ACC * AIR_ACC_FEATHER;
 			GRAVITY 			= 2 * JUMP_HEIGHT / JUMP_ARC_TIME / JUMP_ARC_TIME * 4;
 			JUMP_VELOCITY 		= GRAVITY * JUMP_ARC_TIME / 2;
+		}
+		
+		public function playAnim (anim:String) : void
+		{
+			if (anim == "")
+				gotoAndStop(1);
+			else if (currentLabel != anim)
+				gotoAndStop(anim);
+		}
+		
+		protected function animationLogic () : String
+		{
+			return "";
 		}
 	}
 }

@@ -66,6 +66,8 @@ package iphstich.platformer.engine.entities
 		{
 			super();
 			
+			stop();
+			
 			team 		= -1;
 			hitBox 		= new HitBox( -10, -10, 10, 10);
 			hitBox.canHitInternal = true;
