@@ -11,7 +11,7 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.levels.Level;
 	import flash.utils.getTimer;
 	
-	public class WalkingEntity extends Character
+	public class WalkingCharacter extends Character
 	{
 		public var surface:Part;
 		
@@ -24,7 +24,7 @@ package iphstich.platformer.engine.entities
 		
 		protected var targetSpeed:Number = 0;
 		
-		public function WalkingEntity()
+		public function WalkingCharacter()
 		{
 			super();
 			
@@ -221,7 +221,7 @@ package iphstich.platformer.engine.entities
 		{
 			collided = true;
 			
-			fall();
+			//vy = 0;
 			py = 0.001 + getHeight() + data.y;
 		}
 		
