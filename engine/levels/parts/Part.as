@@ -2,7 +2,7 @@ package iphstich.platformer.engine.levels.parts
 {
 	import flash.utils.getQualifiedClassName;
 	import iphstich.platformer.engine.entities.Entity;
-	import iphstich.platformer.engine.entities.WalkingEntity;
+	import iphstich.platformer.engine.entities.WalkingCharacter;
 	import iphstich.platformer.engine.HitBox;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.ICollidable;
@@ -47,7 +47,7 @@ package iphstich.platformer.engine.levels.parts
 			numC = connections.length;
 		}
 		
-		public function getNext(obj:WalkingEntity):Part
+		public function getNext(obj:WalkingCharacter):Part
 		{
 			var ret:Part = null;
 			var i:uint;

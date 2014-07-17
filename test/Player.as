@@ -1,4 +1,5 @@
 package iphstich.platformer.test {
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.globalization.LocaleID;
 	import flash.ui.Keyboard;
@@ -9,14 +10,14 @@ package iphstich.platformer.test {
 	import iphstich.platformer.test.TestWeapon;
 	//import iphstich.mcs.engine.weapons.WeapCloud;
 	import iphstich.platformer.engine.Engine;
-	import iphstich.platformer.engine.entities.WalkingEntity;
+	import iphstich.platformer.engine.entities.WalkingCharacter;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.levels.interactables.Interactable;
 	import iphstich.platformer.engine.weapons.Weapon;
 	//import iphstich.ponycreator.PonyCreator;
 	//import iphstich.mcs.gui.Chat;
 	
-	public class Player extends WalkingEntity
+	public class Player extends WalkingCharacter
 	{
 		public static var instance:Player;
 		public static var freezeControls:Boolean = false;

@@ -2,7 +2,7 @@ package iphstich.platformer.test
 {
 	import Math;
 	
-	import iphstich.platformer.engine.entities.WalkingEntity;
+	import iphstich.platformer.engine.entities.WalkingCharacter;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.levels.parts.Part;
 	import iphstich.platformer.engine.Engine;
@@ -10,7 +10,7 @@ package iphstich.platformer.test
 	/**
 	 * The TestEnemy simply walks back and forth along whatever platform it lands on.
 	 */
-	public class TestEnemy extends WalkingEntity
+	public class TestEnemy extends WalkingCharacter
 	{
 		public function TestEnemy()
 		{

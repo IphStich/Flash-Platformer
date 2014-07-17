@@ -1,13 +1,13 @@
 package iphstich.platformer.engine.entities.bosses
 {
-	import iphstich.platformer.engine.entities.WalkingEntity;
+	import iphstich.platformer.engine.entities.WalkingCharacter;
 	import iphstich.platformer.engine.levels.Level;
 	
 	/**
 	 * ...
 	 * @author
 	 */
-	public class Boss extends WalkingEntity
+	public class Boss extends WalkingCharacter
 	{
 		public var pattern:String;
 		
