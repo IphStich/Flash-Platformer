@@ -10,26 +10,39 @@ package iphstich.platformer.test
 	{
 		public var player:Player;
 		
+		private var shiftX:Number = 0;
+		private var shiftY:Number = 0;
+		
 		override public function updateCameraProperties (delta:Number) : void
 		{
 			if (player == null || player.level != level) {
 				player = (level.getEntityByType(Player) as Player);
 			}
 			
-			var targetX:Number = player.x;
-			var targetY:Number = (player.y - player.getHeight()/2);
+			var targetX:Number = 0;
+			var targetY:Number = 0; //(player.y - player.getHeight()/2);
 			
-			targetX += player.vx * 1.5;
-			targetY += player.vy / 2;
+			targetX += player.facing * 200 / scale();
+			targetY += player.vy / 2 / scale();
 			
-			viewX = (viewX + targetX * delta) / (1+delta);
-			viewY = (viewY + targetY * delta) / (1+delta);
+			delta *= scale() * 3 / 4;
 			
-			if (viewX >= level.left && viewX <= level.right
-				&& viewY >= level.top && viewY <= level.bottom)
+			shiftX = (shiftX + targetX * delta) / (1+delta);
+			shiftY = (shiftY + targetY * delta) / (1+delta);
+			
+			viewX = player.x + shiftX;
+			viewY = (player.y - player.getHeight()/2) + shiftY;
+			
+			if (player.x >= level.left && player.x <= level.right
+				&& player.y >= level.top && player.y <= level.bottom)
 			{
 				restrictViewToLevel();
 			}
 		}
+		
+		//override protected function scale():Number 
+		//{
+			//return 2;
+		//}
 	}
 }

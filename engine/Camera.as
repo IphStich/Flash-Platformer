@@ -33,8 +33,11 @@ package iphstich.platformer.engine
 			
 			updateCameraProperties(delta);
 			
-			engine.level.x = -viewX;
-			engine.level.y = -viewY;
+			level.x = -viewX;
+			level.y = -viewY;
+			
+			engine.view.scaleX = scale();
+			engine.view.scaleY = engine.view.scaleX;
 		}
 		
 		public function updateCameraProperties (delta:Number) : void
@@ -45,8 +48,13 @@ package iphstich.platformer.engine
 		
 		protected function restrictViewToLevel () : void
 		{
-			viewX = CustomMath.capBetween(viewX, level.left + viewport.width/2, level.right - viewport.width/2);
-			viewY = CustomMath.capBetween(viewY, level.top + viewport.height/2, level.bottom - viewport.height/2);
+			viewX = CustomMath.capBetween(viewX, level.left + viewport.width/2 / scale(), level.right - viewport.width/2 / scale());
+			viewY = CustomMath.capBetween(viewY, level.top + viewport.height/2 / scale(), level.bottom - viewport.height/2 / scale());
+		}
+		
+		protected function scale () : Number
+		{
+			return 1;
 		}
 	}
 }
