@@ -72,7 +72,7 @@ package iphstich.platformer.engine.entities
 			hitBox 		= new HitBox( -10, -10, 10, 10);
 			hitBox.canHitInternal = true;
 			collisionPoints 	= new Vector.<HitPoint>();
-			addChild(hitBox)
+			addChildAt(hitBox, 0)
 			hitCenter = new HitPoint(0, 0, this);
 			collisionPoints.push(hitCenter);
 			

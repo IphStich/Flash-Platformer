@@ -216,16 +216,14 @@ package iphstich.platformer.engine.levels
 			// set t markers for results
 			if (results.length > 0)
 			{
-				if (x1 != x2)
+				if (Math.abs(x1 - x2) > Math.abs(y1 - y2))
 				{
 					for each (hd in results)
 						hd.t = Math.abs(hd.x - x1);
 				}
-				else if (y1 != y2)
-				{
+				else
 					for each (hd in results)
 						hd.t = Math.abs(hd.y - y1);
-				}
 			}
 			
 			// check for outside level

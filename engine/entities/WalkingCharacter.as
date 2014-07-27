@@ -22,7 +22,7 @@ package iphstich.platformer.engine.entities
 		protected var baseLeft:HitPoint;
 		protected var baseRight:HitPoint;
 		
-		protected var targetSpeed:Number = 0;
+		protected var targetSpeed:Number = NaN;
 		
 		public function WalkingCharacter()
 		{
@@ -56,25 +56,27 @@ package iphstich.platformer.engine.entities
 		
 		override public function tickThink (style:uint, delta:Number) : void 
 		{
-			if (HORIZ_ACC != 0)
+			if (!isNaN(targetSpeed))
 			{
-				// calculate acceleration potential
-				ax = HORIZ_ACC;
-				if (surface == null) ax = HORIZ_ACC_AIR;
-				if (surface == null && targetSpeed == 0) ax = HORIZ_ACC_FEATHER;
-				if (vx == targetSpeed) ax = 0;
-				
-				// adjust acceleration if too close to target speed
-				if (Math.abs(vx - targetSpeed) < ax * delta) ax = Math.abs(vx - targetSpeed) / delta;
-				
-				// adjust acceleration based on speed
-				ax *= (vx - targetSpeed < 0) ? 1 : -1;
+				if (HORIZ_ACC == 0)
+				{
+					vx = targetSpeed;
+				}
+				else
+				{
+					// calculate acceleration potential
+					ax = HORIZ_ACC;
+					if (surface == null) ax = HORIZ_ACC_AIR;
+					if (surface == null && targetSpeed == 0) ax = HORIZ_ACC_FEATHER;
+					if (vx == targetSpeed) ax = 0;
+					
+					// adjust acceleration if too close to target speed
+					if (Math.abs(vx - targetSpeed) < ax * delta) ax = Math.abs(vx - targetSpeed) / delta;
+					
+					// adjust acceleration based on speed
+					ax *= (vx - targetSpeed < 0) ? 1 : -1;
+				}
 			}
-			else
-			{
-				vx = targetSpeed;
-			}
-			
 		}
 		
 		override public function tickMove (delta:Number):void
@@ -106,6 +108,16 @@ package iphstich.platformer.engine.entities
 			{
 				py = surface.getTopAt (px);
 			}
+		}
+		
+		override public function tickEnd(delta:Number):void 
+		{
+			if (surface != null)
+			{
+				py = surface.getTopAt(px);
+			}
+			
+			super.tickEnd(delta);
 		}
 		
 		override protected function refreshCollisions ()

@@ -14,6 +14,7 @@ package iphstich.platformer.engine.entities
 		
 		protected var MAX_HORIZ_SPEED:Number = 0;
 		protected var HORIZ_ACC:Number = 0;
+		protected var HORIZ_ACC_GROUND:Number = 0;
 		protected var HORIZ_ACC_AIR:Number = 0;
 		protected var HORIZ_ACC_FEATHER:Number = 0;
 		protected var GRAVITY:Number = 0;
@@ -33,6 +34,8 @@ package iphstich.platformer.engine.entities
 			
 			health 	= 100;
 			facing 	= 1;
+			
+			setDefaultMoveVariables();
 		}
 		
 		override public function tickEnd(delta:Number):void 
@@ -47,17 +50,31 @@ package iphstich.platformer.engine.entities
 			health -= damage;
 		}
 		
-		public function updateMoveVariables () : void
+		protected function setDefaultMoveVariables() : void
+		{
+			JUMP_HEIGHT = 120 + 9;
+			JUMP_ARC_TIME = 1.1;
+			JUMP_ARC_DISTANCE = 330 + 20;
+			TIME_TO_MAX_SPEED = 0.15;
+			AIR_ACC_PENALTY = 0.5;
+			AIR_ACC_FEATHER = 0.1;
+			
+			calculateMoveVariables();
+		}
+		
+		protected function calculateMoveVariables () : void
 		{
 			MAX_HORIZ_SPEED 	= JUMP_ARC_DISTANCE / JUMP_ARC_TIME;
-			HORIZ_ACC 			= MAX_HORIZ_SPEED / TIME_TO_MAX_SPEED;
+			HORIZ_ACC_GROUND 	= MAX_HORIZ_SPEED / TIME_TO_MAX_SPEED;
 			HORIZ_ACC_AIR 		= HORIZ_ACC * AIR_ACC_PENALTY;
 			HORIZ_ACC_FEATHER 	= HORIZ_ACC * AIR_ACC_FEATHER;
 			GRAVITY 			= 2 * JUMP_HEIGHT / JUMP_ARC_TIME / JUMP_ARC_TIME * 4;
 			JUMP_VELOCITY 		= GRAVITY * JUMP_ARC_TIME / 2;
+			
+			HORIZ_ACC 			= HORIZ_ACC_GROUND;
 		}
 		
-		public function playAnim (anim:String) : void
+		protected function playAnim (anim:String) : void
 		{
 			if (anim == "")
 				gotoAndStop(1);

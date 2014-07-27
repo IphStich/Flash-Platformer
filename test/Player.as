@@ -149,7 +149,7 @@ package iphstich.platformer.test {
 			super.tickThink(style, delta);
 		} //makeDecisions
 		
-		public function setDefaultMoveVariables() : void
+		override protected function calculateMoveVariables():void 
 		{
 			JUMP_HEIGHT = 120 + 9;
 			JUMP_ARC_TIME = 1.1;
@@ -158,7 +158,7 @@ package iphstich.platformer.test {
 			AIR_ACC_PENALTY = 0.5;
 			AIR_ACC_FEATHER = 0.1;
 			
-			updateMoveVariables();
+			super.calculateMoveVariables();
 			
 			SPRINT_SPEED = MAX_HORIZ_SPEED * 1.75;
 		}

@@ -153,7 +153,7 @@ package iphstich.platformer.engine.levels.parts
 			var x:Number = obj.px;
 			var y:Number = obj.py;
 			
-			if ((x + obj.getBaseRight() >= this.left) && (x + obj.getBaseLeft() <= this.right)) ret = this;
+			if ((x >= this.left) && (x <= this.right)) ret = this;
 			
 			var con:Part;
 			for (i = 0; i < numC; ++i) {
@@ -165,6 +165,10 @@ package iphstich.platformer.engine.levels.parts
 					if (ret.top >= con.top) ret = con;
 				}
 			}
+			
+			if (ret == null)
+				if ((x + obj.getBaseRight() >= this.left) && (x + obj.getBaseLeft() <= this.right)) ret = this;
+			
 			return ret;
 		}
 		
