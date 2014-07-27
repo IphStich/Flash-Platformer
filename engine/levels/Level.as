@@ -270,6 +270,11 @@ package iphstich.platformer.engine.levels
 				return null;
 			}
 			
+			if (traceTestEnabled)
+			{
+				T.graphics.drawCircle(x, y, radius);
+			}
+			
 			
 			var c:ICollidable;
 			var p:Point;
