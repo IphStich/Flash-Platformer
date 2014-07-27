@@ -11,21 +11,6 @@ package iphstich.platformer.engine.levels.parts
 	 */
 	public class Platform extends Part
 	{
-		override public function checkConnection ( other:Part ) : int
-		{
-			if (other.bottom == this.top) return 1;
-			
-			if (other.top != this.top) return 0;
-			if ((other.left != this.right) && (other.right != this.left)) return 0;
-			
-			return 1;
-		}
-		
-		override public function getTopAt (x:Number) : Number
-		{
-			return top;
-		}
-		
 		override public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
 			// collision only works when going down onto the surface/top
@@ -77,11 +62,6 @@ package iphstich.platformer.engine.levels.parts
 			
 			if (cx + cy <= r * r) return true;
 			else return false;
-		}
-		
-		override public function slopeSpeed (entity:Entity) : Number
-		{
-			return 1;
 		}
 	}
 }

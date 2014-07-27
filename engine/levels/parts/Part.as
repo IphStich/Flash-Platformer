@@ -10,7 +10,7 @@ package iphstich.platformer.engine.levels.parts
 	public class Part extends HitBox
 	{
 		public var connections:Vector.<Part>
-		public var slope:Number;
+		public var slope:Number = 0;
 		protected var numC:int;
 		
 		public function Part()
@@ -35,8 +35,106 @@ package iphstich.platformer.engine.levels.parts
 		 */
 		public function checkConnection ( other:Part ) : int
 		{
-			throw new Error( "Error. No default connection check behaviour defined for " + getQualifiedClassName(this) );
-			return -1;
+			//throw new Error( "Error. No default connection check behaviour defined for " + getQualifiedClassName(this) );
+			//return -1;
+			
+			if (this.slope == 0)
+			{
+				if (other.slope == 0)
+				{
+					if (other.top == this.top)
+					{
+						if ((other.left == this.right) || (other.right == this.left))
+						{
+							return 1;
+						}
+					}
+				}
+				
+				else if (other.slope < 0)
+				{
+					if (other.right == this.left)
+					{
+						if (other.top == this.top)
+						{
+							return 1;
+						}
+					}
+					
+					else if (other.bottom == this.top)
+					{
+						if ((other.left >= this.left) && (other.left <= this.right))
+						{
+							return 1;
+						}
+					}
+				}
+				
+				else if (other.slope > 0)
+				{
+					if (other.left == this.right)
+					{
+						if (other.top == this.top)
+						{
+							return 1;
+						}
+					}
+					
+					else if (other.bottom == this.top)
+					{
+						if ((other.right >= this.left) && (other.right <= this.right))
+						{
+							return 1;
+						}
+					}
+				}
+			}
+			
+			else if (this.slope < 0)
+			{
+				if (other.left == this.right)
+				{
+					if (other.slope >= 0)
+					{
+						if (other.top == this.top)
+						{
+							return 1;
+						}
+					}
+					
+					else if (other.slope < 0)
+					{
+						if (other.bottom == this.top)
+						{
+							return 1;
+						}
+					}
+				}
+				
+				else if (other.slope > 0)
+				{
+					if (other.right == this.left)
+					{
+						return 1;
+					}
+				}
+			}
+			
+			else if (this.slope > 0)
+			{
+				if (other.slope > 0)
+				{
+					if (other.left == this.right)
+					{
+						if (other.top == this.bottom)
+						{
+							return 1;
+						}
+					}
+				}
+			}
+			
+			return 0;
 		}
 		
 		public function connect (con:Part) : void
@@ -72,7 +170,8 @@ package iphstich.platformer.engine.levels.parts
 		
 		public function show(other:Part):void
 		{
-			if ( this.checkConnection(other) + other.checkConnection(this) >= 2 )
+			//if ( this.checkConnection(other) + other.checkConnection(this) >= 2 )
+			if (this.checkConnection(other) || other.checkConnection(this))
 			{
 				this.connect(other);
 				other.connect(this);
@@ -81,12 +180,34 @@ package iphstich.platformer.engine.levels.parts
 		
 		public function getTopAt (x:Number) : Number
 		{
-			throw Error ("No getTopAt function set for " + getQualifiedClassName(this));
+			if (slope == 0)
+			{
+				return top;
+			}
+			
+			if (slope < 0)
+			{
+				return bottom + (x - left) * slope;
+			}
+			
+			if (slope > 0)
+			{
+				return top + (x - left) * slope;
+			}
+			
+			return NaN;
 		}
 		
 		public function slopeSpeed (entity:Entity) : Number
 		{
-			throw Error ("No slopeSpeed function set for " + getQualifiedClassName(this));
+			if (slope == 0)
+			{
+				return 1;
+			}
+			else
+			{
+				return 1 / (slope * slope / 1.5 + 1);
+			}
 		}
 	}
 }
