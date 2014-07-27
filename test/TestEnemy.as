@@ -16,7 +16,7 @@ package iphstich.platformer.test
 		{
 			super();
 			
-			setSize (30, 30);
+			setSize (40, 40);
 		}
 		
 		//override public function tickThink (style:uint, delta:Number) : void

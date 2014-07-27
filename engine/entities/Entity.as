@@ -207,6 +207,11 @@ package iphstich.platformer.engine.entities
 			throw Error("Error. No default behavior for collision defined for class " + getQualifiedClassName(this));
 		}
 		
+		protected function otherCollide (label:String, data:HitData) : void
+		{
+			throw Error("Error. No default behavior for other collision defined for class " + getQualifiedClassName(this));
+		}
+		
 		//-----------------------------------------------------------------------//
 		
 		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
@@ -306,6 +311,71 @@ package iphstich.platformer.engine.entities
 		override public function toString():String
 		{
 			return super.toString() + Util.getMemoryLocation(this);
+		}
+		
+		public function animatedCollision (target:MovieClip, label:String) : void
+		{
+			var list:Vector.<HitPointAnimated> = new Vector.<HitPointAnimated>();
+			
+			var hpa:HitPointAnimated;
+			var a:HitPointAnimated, b:HitPointAnimated;
+			var results:Vector.<HitData> = new Vector.<HitData>(); //, check:Vector.<HitData>
+			var hd:HitData;
+			
+			// get the collision points we should use
+			var i:int;
+			for (i=target.numChildren-1; i>=0; --i)
+			{
+				hpa = target.getChildAt(i) as HitPointAnimated;
+				if (hpa != null) if (hpa.label == label)
+				{
+					list.push(hpa);
+				}
+			}
+			
+			if (list.length <= 1) throw Error("Unable to find 2 or more appropriate collision points")
+			
+			list.sort(HitPointAnimated.SORT_BY_INDEX);
+			
+			for each (a in list) a.calculatePosition();
+			
+			// perform the actual collision check
+			var j:int = list.length;
+			for (i=0; i<=j-2; ++i)
+			{
+				a = list[i];
+				b = list[i+1];
+				
+				level.testHitPath (results, a.x, a.y, b.x, b.y);
+			}
+			
+			// and check results for deuplicates and references to self
+			for (i=results.length-1; i>=0; --i)
+			{
+				hd = results[i];
+				
+				if (hd.hit == this) // <-- self check
+				{
+					results.splice(i, 1);
+					hd.destroy();
+					continue;
+				}
+				
+				for (j=i-1; j>=0; --j) // <-- duplicate check
+				{
+					if (results[j].hit == hd.hit)
+					results.splice(i, 1);
+					hd.destroy();
+					break;
+				}
+			}
+			
+			// perform collision logic
+			for each (hd in results)
+				otherCollide(label, hd);
+			
+			// discard the hit data results
+			while ((hd = results.pop()) != null) hd.destroy();
 		}
 	}
 }

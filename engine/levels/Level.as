@@ -471,13 +471,13 @@ package iphstich.platformer.engine.levels
 		{
 			engine = inEngine;
 			
-			//var a:Area = getArea("enemies");
-			//if (a == null) return;
-			//var i:int;
-			//for (i=0; i<10; ++i)
-			//{
-				//new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, this);
-			//}
+			var a:Area = getArea("enemies");
+			if (a == null) return;
+			var i:int;
+			for (i=0; i<10; ++i)
+			{
+				new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, this);
+			}
 		}
 	}
 }
