@@ -46,6 +46,7 @@
 		
 		public static function SORT_BY_T (a:HitData, b:HitData) : Number
 		{
+			if (a.t == -1 && b.t == -1) return 0;
 			if (a.t == -1) return 1;
 			if (b.t == -1) return -1;
 			

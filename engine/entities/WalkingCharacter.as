@@ -125,21 +125,65 @@ package iphstich.platformer.engine.entities
 			super.refreshCollisions();
 			
 			var check:Vector.<HitData>;
-			
-			check = topLeft.getHitPathBetweenPoints(topRight);
-			while (check.length > 0) collisions.push(check.pop());
-			
-			check = lowerLeft.getHitPathBetweenPoints(topLeft);
-			while (check.length > 0) collisions.push(check.pop());
-			
-			check = lowerRight.getHitPathBetweenPoints(topRight);
-			while (check.length > 0) collisions.push(check.pop());
-			
-			check = lowerLeft.getHitPathBetweenPoints(lowerRight);
 			var hd:HitData;
+			
+			// top box
+			check = topLeft.getHitPathBetweenPoints(topRight);
+			while (check.length > 0) 
+			{
+				hd = check.pop();
+				
+				if (!(hd.hit is Part)) {
+					hd.destroy();
+					continue;
+				}
+				
+				hd.type = HitData.TYPE_BOTTOM;
+				hd.y = (hd.hit as Part).bottom;
+				collisions.push(hd);
+			}
+			
+			// left box
+			check = lowerLeft.getHitPathBetweenPoints(topLeft);
+			while (check.length > 0) 
+			{
+				hd = check.pop();
+				
+				if (!(hd.hit is Part)) {
+					hd.destroy();
+					continue;
+				}
+				hd.type = HitData.TYPE_RIGHT;
+				hd.y = (hd.hit as Part).right;
+				collisions.push(hd);
+			}
+			
+			// right box
+			check = lowerRight.getHitPathBetweenPoints(topRight);
+			while (check.length > 0) 
+			{
+				hd = check.pop();
+				
+				if (!(hd.hit is Part)) {
+					hd.destroy();
+					continue;
+				}
+				hd.type = HitData.TYPE_LEFT;
+				hd.y = (hd.hit as Part).left;
+				collisions.push(hd);
+			}
+			
+			// bottom
+			check = lowerLeft.getHitPathBetweenPoints(lowerRight);
 			while (check.length > 0)
 			{
 				hd = check.pop();
+				
+				if (!(hd.hit is Part)) {
+					hd.destroy();
+					continue;
+				}
+				
 				if (hd.x > px) hd.point = lowerRight;
 				collisions.push(hd);
 			}
@@ -162,19 +206,19 @@ package iphstich.platformer.engine.entities
 			{
 				var tPart = target as Part;
 				
-				// landing
-				if (point == baseLeft || point == baseRight)
-				{
-					land(data);
-					return;
-				}
-				
-				// if not 'landing', and is a platform, do nothing
-				if (target is Platform) return;
-				
-				// force off the edge of Parts if not 'clean'
 				if (data.type == HitData.TYPE_SURFACE)
 				{
+					// landing
+					if (point == baseLeft || point == baseRight)
+					{
+						land(data);
+						return;
+					}
+					
+					// if not 'landing', and is a platform, do nothing
+					if (target is Platform) return;
+					
+					// force off the edge of Parts if not 'clean'
 					if (point == lowerLeft) {
 						hitWall(-1, data);
 						return;
@@ -200,6 +244,17 @@ package iphstich.platformer.engine.entities
 				// hitting a roof
 				if (data.type == HitData.TYPE_BOTTOM)
 				{
+					if (px > tPart.right)
+					{
+						hitWall(-1, data);
+						return;
+					}
+					else if (px < tPart.left)
+					{
+						hitWall(1, data);
+						return;
+					}
+					
 					hitHead(data);
 					return;
 				}
@@ -215,8 +270,14 @@ package iphstich.platformer.engine.entities
 		{
 			var wall:Part = data.hit as Part;
 			
-			if (wall is RampL && direction == -1) return;
-			if (wall is RampR && direction == 1) return;
+			if (wall.slope > 0 && direction == -1)
+			{
+				if (px < wall.right || y < wall.bottom) return;
+			}
+			if (wall.slope < 0 && direction == 1)
+			{
+				if (px > wall.left || y < wall.bottom) return;
+			}
 			
 			collided = true;
 			
@@ -234,7 +295,7 @@ package iphstich.platformer.engine.entities
 			collided = true;
 			
 			//vy = 0;
-			py = 0.001 + getHeight() + data.y;
+			py = 0.1 + getHeight() + data.y;
 		}
 		
 		protected function land (data:HitData) : void
