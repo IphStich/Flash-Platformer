@@ -45,8 +45,8 @@ package iphstich.platformer.test {
 				, "jump",	Keyboard.K
 				, "jump",	Keyboard.Z
 				
-				, "shoot",	Keyboard.J
-				, "shoot",	Keyboard.X
+				, "attack",	Keyboard.J
+				, "attack",	Keyboard.X
 				
 				, "left",	Keyboard.A
 				, "left",	Keyboard.LEFT
@@ -97,53 +97,53 @@ package iphstich.platformer.test {
 		//override protected function makeDecisions():void
 		override public function tickThink (style:uint, delta:Number) : void
 		{
-			var heading:int = 0;
-			//var targetSpeed:Number = 0;
 			
-			// this function is all about controls, so if they are frozen return and do nothing
-			if (controlsFrozen()) return;
-			
-			//cx = MAX_HORIZ_SPEED;
-			
-			
-			
-			// calculate heading & target speed
-			if (Controls.down("left")) heading = -1;
-			if (Controls.down("right")) heading += 1;
-			targetSpeed = heading * ((isSprinting()) ? SPRINT_SPEED : MAX_HORIZ_SPEED);
-			
-			// set facing...
-			if (heading != 0) facing = heading;
-			
-			
-			// fall through platform
-			if (Controls.pressed("down") && surface is Platform)
+			if (!controlsFrozen())
 			{
-				gotoAirMode();
-				y += 1;
+				
+				var heading:int = 0;
+				//var targetSpeed:Number = 0;
+				
+				
+				
+				// calculate heading & target speed
+				if (Controls.down("left")) heading = -1;
+				if (Controls.down("right")) heading += 1;
+				targetSpeed = heading * ((isSprinting()) ? SPRINT_SPEED : MAX_HORIZ_SPEED);
+				
+				// set facing...
+				if (heading != 0) facing = heading;
+				
+				
+				// fall through platform
+				if (Controls.pressed("down") && surface is Platform)
+				{
+					gotoAirMode();
+					y += 1;
+				}
+				
+				// jumping
+				if (Controls.pressed("jump") && canJump())
+				{
+					doJump();
+				}
+				
+				// controlled jumping
+				if (Controls.released("jump") && canSoftenJump())
+				{
+					vy *= 2 / 4;
+				}
+				
+				// weapons
+				if (equipedWeapon != null) {
+					var st:uint = Controls.button("attack");
+					if (st & Controls.KEY_UP)		equipedWeapon.triggerUp();
+					if (st & Controls.KEY_RELEASED)	equipedWeapon.triggerRelease();
+					if (st & Controls.KEY_DOWN)		equipedWeapon.triggerDown();
+					if (st & Controls.KEY_PRESSED)	equipedWeapon.triggerPull();
+				}
+				
 			}
-			
-			// jumping
-			if (Controls.pressed("jump") && canJump())
-			{
-				doJump();
-			}
-			
-			// controlled jumping
-			if (Controls.released("jump") && canSoftenJump())
-			{
-				vy *= 2 / 4;
-			}
-			
-			// weapons
-			if (equipedWeapon != null) {
-				var st:uint = Controls.button("shoot");
-				if (st & Controls.KEY_UP)		equipedWeapon.triggerUp();
-				if (st & Controls.KEY_RELEASED)	equipedWeapon.triggerRelease();
-				if (st & Controls.KEY_DOWN)		equipedWeapon.triggerDown();
-				if (st & Controls.KEY_PRESSED)	equipedWeapon.triggerPull();
-			}
-			
 			
 			
 			super.tickThink(style, delta);

@@ -20,7 +20,7 @@ package iphstich.platformer.engine.entities
 		protected var GRAVITY:Number = 0;
 		protected var JUMP_VELOCITY:Number = 0;
 		
-		public var currentAction:String = "stand"
+		public var currentAction:String = ""
 		
 		public var health:Number;
 		
