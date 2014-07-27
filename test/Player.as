@@ -132,7 +132,7 @@ package iphstich.platformer.test {
 			// controlled jumping
 			if (Controls.released("jump") && canSoftenJump())
 			{
-				vy /= 2;
+				vy *= 2 / 4;
 			}
 			
 			// weapons
@@ -151,7 +151,7 @@ package iphstich.platformer.test {
 		
 		override protected function calculateMoveVariables():void 
 		{
-			JUMP_HEIGHT = 120 + 9;
+			JUMP_HEIGHT = 160 + 9;
 			JUMP_ARC_TIME = 1.1;
 			JUMP_ARC_DISTANCE = 330 + 20;
 			TIME_TO_MAX_SPEED = 0.15;

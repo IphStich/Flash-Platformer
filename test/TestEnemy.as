@@ -34,7 +34,7 @@ package iphstich.platformer.test
 		{
 			super.land(data);
 			
-			vx = 250 * ((vx >= 0) ? 1 : -1)
+			vx = 250 * ((vx >= 0) ? 1 : -1);
 		}
 		
 		override protected function hitEdge (side:Number) : void
