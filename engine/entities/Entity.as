@@ -333,7 +333,7 @@ package iphstich.platformer.engine.entities
 				}
 			}
 			
-			if (list.length <= 1) throw Error("Unable to find 2 or more appropriate collision points")
+			//if (list.length <= 1) throw Error("Unable to find 2 or more appropriate collision points")
 			
 			list.sort(HitPointAnimated.SORT_BY_INDEX);
 			
@@ -346,7 +346,7 @@ package iphstich.platformer.engine.entities
 				a = list[i];
 				b = list[i+1];
 				
-				level.testHitPath (results, a.x, a.y, b.x, b.y);
+				level.testHitPath (results, a.cx, a.cy, b.cx, b.cy);
 			}
 			
 			// and check results for deuplicates and references to self
@@ -376,6 +376,11 @@ package iphstich.platformer.engine.entities
 			
 			// discard the hit data results
 			while ((hd = results.pop()) != null) hd.destroy();
+		}
+		
+		public function hitBy (other:*) : void
+		{
+			
 		}
 	}
 }

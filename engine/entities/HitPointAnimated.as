@@ -14,7 +14,8 @@ package iphstich.platformer.engine.entities
 		public var label:String;
 		public var index:int;
 		
-		protected var hasCalculatedPosition:Boolean = false;
+		public var cx:Number;
+		public var cy:Number;
 		
 		public function HitPointAnimated() 
 		{
@@ -37,8 +38,6 @@ package iphstich.platformer.engine.entities
 		
 		public function calculatePosition () : void
 		{
-			if (hasCalculatedPosition) return;
-			
 			var oldX:Number;
 			var oldY:Number;
 			var newX:Number = x;
@@ -62,10 +61,8 @@ package iphstich.platformer.engine.entities
 				newY = oldX * m.b + oldY * m.d + m.ty;
 			}
 			
-			x = newX;
-			y = newY;
-			
-			hasCalculatedPosition = true;
+			cx = newX;
+			cy = newY;
 		}
 	}
 }

@@ -4,6 +4,7 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.entities.projectiles.Bullet;
 	import iphstich.platformer.engine.misc.Attack;
+	import iphstich.platformer.engine.misc.TrapAttack;
 	
 	public class Character extends Entity
 	{
@@ -104,7 +105,14 @@ package iphstich.platformer.engine.entities
 			if (attack)
 			{
 				this.dealDamage (attack.DAMAGE);
-				this.applyImpulse (attack.owner.facing * 200, -400);
+				this.applyImpulse (other.owner.facing * 200, -400);
+			}
+			
+			var trapAttack:TrapAttack = other as TrapAttack;
+			if (trapAttack)
+			{
+				this.dealDamage (trapAttack.DAMAGE);
+				this.applyImpulse (facing * -200, -400);
 			}
 		}
 	}
