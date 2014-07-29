@@ -13,9 +13,9 @@ package iphstich.platformer.engine.entities.projectiles
 	public class Bullet extends Entity
 	{
 		private const EXPLOSION_SIZE:Number = 30;
-		private const DAMAGE:Number = 5;
+		public var DAMAGE:Number = 5;
 		
-		protected var facing:String;
+		protected var facing:int;
 		
 		public function Bullet()
 		{
@@ -31,9 +31,9 @@ package iphstich.platformer.engine.entities.projectiles
 			
 			vx = speedX;
 			vy = speedY;
-			facing = (speedX < 0) ? "left" : "right";
+			facing = (speedX < 0) ? -1 : 1;
 			
-			this.scaleX = (speedX > 0) ? 1 : -1;
+			this.scaleX = facing;
 		}
 		
 		override protected function collide (data:HitData) : void
@@ -44,7 +44,7 @@ package iphstich.platformer.engine.entities.projectiles
 			explode(data);
 		}
 		
-		protected function explode (data:HitData) : void
+		protected function explode (data:HitData = null) : void
 		{
 			if (EXPLOSION_SIZE == 0)
 			{
@@ -82,15 +82,10 @@ package iphstich.platformer.engine.entities.projectiles
 		{
 			if (data == null) return;
 			
-			var target:Character = data.hit as Character;
-			
+			var target:Entity = data.hit as Entity;
 			if (target != null)
 			{
-				if (target.team != this.team || team == -1)
-				{
-					target.dealDamage (DAMAGE);
-					target.applyImpulse (vx / 2, -200 - Math.abs(vx));
-				}
+				target.hitBy(this);
 			}
 		}
 	}

@@ -2,6 +2,8 @@ package iphstich.platformer.engine.entities
 {
 	import flash.utils.getQualifiedClassName;
 	import iphstich.platformer.engine.entities.Entity;
+	import iphstich.platformer.engine.entities.projectiles.Bullet;
+	import iphstich.platformer.engine.misc.Attack;
 	
 	public class Character extends Entity
 	{
@@ -85,6 +87,25 @@ package iphstich.platformer.engine.entities
 		protected function animationLogic () : String
 		{
 			return "";
+		}
+		
+		override public function hitBy(other:*):void 
+		{
+			super.hitBy(other);
+			
+			var bullet:Bullet = other as Bullet;
+			if (bullet)
+			{
+				this.dealDamage (bullet.DAMAGE);
+				this.applyImpulse (bullet.vx / 2, -400);
+			}
+			
+			var attack:Attack = other as Attack;
+			if (attack)
+			{
+				this.dealDamage (attack.DAMAGE);
+				this.applyImpulse (attack.owner.facing * 200, -400);
+			}
 		}
 	}
 }

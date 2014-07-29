@@ -18,6 +18,8 @@ package iphstich.platformer.test
 		override public function shoot(lev:Level, startX:Number, startY:Number, speedX:Number, speedY:Number):void
 		{
 			super.shoot(lev, startX, startY, speedX, speedY);
+			
+			// accelerate it backwards
 			ax = -speedX * 3/2
 		}
 		
