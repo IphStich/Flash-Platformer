@@ -35,7 +35,7 @@ package iphstich.platformer.engine
 				
 				graphics.beginFill(0x888888, 0.2);
 				graphics.drawRect(0, 0, 100, 100);
-				//this.visible = false;
+				this.visible = false;
 			}
 			
 			//this.visible = false;

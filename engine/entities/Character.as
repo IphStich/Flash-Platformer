@@ -105,14 +105,14 @@ package iphstich.platformer.engine.entities
 			if (attack)
 			{
 				this.dealDamage (attack.DAMAGE);
-				this.applyImpulse (other.owner.facing * 200, -400);
+				this.applyImpulse (other.owner.facing * 400, -400);
 			}
 			
 			var trapAttack:TrapAttack = other as TrapAttack;
 			if (trapAttack)
 			{
 				this.dealDamage (trapAttack.DAMAGE);
-				this.applyImpulse (facing * -200, -400);
+				this.applyImpulse (facing * -400, -400);
 			}
 		}
 	}
