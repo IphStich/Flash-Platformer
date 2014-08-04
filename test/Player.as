@@ -148,7 +148,7 @@ package iphstich.platformer.test {
 			else
 			
 			{
-				targetSpeed = 0;
+				targetSpeed = NaN;
 			}
 			
 			

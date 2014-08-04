@@ -56,6 +56,10 @@ package iphstich.platformer.engine.entities
 		
 		override public function tickThink (style:uint, delta:Number) : void 
 		{
+		}
+		
+		override public function tickMove (delta:Number):void
+		{
 			if (!isNaN(targetSpeed))
 			{
 				if (HORIZ_ACC == 0)
@@ -77,10 +81,7 @@ package iphstich.platformer.engine.entities
 					ax *= (vx - targetSpeed < 0) ? 1 : -1;
 				}
 			}
-		}
-		
-		override public function tickMove (delta:Number):void
-		{
+			
 			super.tickMove (delta);
 			
 			// If on a ground
