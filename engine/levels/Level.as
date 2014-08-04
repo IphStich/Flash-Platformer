@@ -6,6 +6,7 @@ package iphstich.platformer.engine.levels
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import flash.ui.Keyboard;
+	import iphstich.platformer.engine.effects.Effect;
 	
 	import iphstich.library.Controls;
 	import iphstich.library.CustomMath;
@@ -399,6 +400,11 @@ package iphstich.platformer.engine.levels
 			if (entityPlane) entityPlane.addChild(target);
 			
 			target.addedToLevel(this);
+		}
+		
+		public function addEffect (target:Effect) : void
+		{
+			if (entityPlane) entityPlane.addChild(target);
 		}
 		
 		private function markForAddition (entity:Entity) : void
