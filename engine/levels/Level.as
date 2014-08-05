@@ -20,6 +20,7 @@ package iphstich.platformer.engine.levels
 	import iphstich.platformer.engine.levels.misc.Area;
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.test.TestEnemy;
+	import iphstich.platformer.engine.levels.misc.EntityPlane;
 	
 	public class Level extends MovieClip
 	{

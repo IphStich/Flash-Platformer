@@ -84,11 +84,17 @@ package iphstich.platformer.engine.entities
 			
 			super.tickMove (delta);
 			
+			if (surface != null)
+				px = x + vx * delta * surface.slopeSpeed(this);
+			
+			updateSurface();
+		}
+		
+		protected final function updateSurface ()
+		{
 			// If on a ground
 			if (surface != null)
 			{
-				px = x + vx * delta * surface.slopeSpeed(this);
-				
 				// check for new surface (ns)
 				var ns:Part = this.surface.getNext(this)
 				
@@ -123,6 +129,8 @@ package iphstich.platformer.engine.entities
 		
 		override protected function refreshCollisions ()
 		{
+			updateSurface();
+			
 			super.refreshCollisions();
 			
 			var check:Vector.<HitData>;
@@ -201,7 +209,13 @@ package iphstich.platformer.engine.entities
 			if (target == surface) return;
 			
 			// if target is connected to surface, do nothing
-			if (surface != null) if (surface.connections.indexOf(target) >= 0) return;
+			if (surface != null) {
+				if (data.point == lowerLeft || data.point == lowerRight || data.point == baseLeft || data.point == baseRight) {
+					if (surface.connections.indexOf(target) >= 0) {
+						return;
+					}
+				}
+			}
 			
 			if (target is Part)
 			{
@@ -220,24 +234,34 @@ package iphstich.platformer.engine.entities
 					if (target is Platform) return;
 					
 					// force off the edge of Parts if not 'clean'
-					if (point == lowerLeft) {
+					if (px >= tPart.right && tPart.slope <= 0) {
 						hitWall(-1, data);
 						return;
 					}
-					if (point == lowerRight) {
+					if (px <= tPart.left && tPart.slope >= 0) {
 						hitWall(1, data);
 						return;
 					}
+				}
+				else if (data.point == baseLeft || data.point == baseRight)
+				{
+					return;
 				}
 				
 				// hitting a wall
 				if (data.type == HitData.TYPE_LEFT)
 				{
+					if (data.point == topLeft || data.point == lowerLeft) return;
+					if (data.point == lowerRight && tPart.slope < 0) return;
+					
 					hitWall(1, data);
 					return;
 				}
 				if (data.type == HitData.TYPE_RIGHT)
 				{
+					if (data.point == topRight || data.point == lowerRight) return;
+					if (data.point == lowerLeft && tPart.slope > 0) return;
+					
 					hitWall(-1, data);
 					return;
 				}
@@ -245,16 +269,16 @@ package iphstich.platformer.engine.entities
 				// hitting a roof
 				if (data.type == HitData.TYPE_BOTTOM)
 				{
-					if (px > tPart.right)
-					{
-						hitWall(-1, data);
-						return;
-					}
-					else if (px < tPart.left)
-					{
-						hitWall(1, data);
-						return;
-					}
+					//if (px > tPart.right)
+					//{
+						//hitWall(-1, data);
+						//return;
+					//}
+					//else if (px < tPart.left)
+					//{
+						//hitWall(1, data);
+						//return;
+					//}
 					
 					hitHead(data);
 					return;
@@ -270,15 +294,6 @@ package iphstich.platformer.engine.entities
 		protected function hitWall (direction:int, data:HitData) : void
 		{
 			var wall:Part = data.hit as Part;
-			
-			if (wall.slope > 0 && direction == -1)
-			{
-				if (px < wall.right || y < wall.bottom) return;
-			}
-			if (wall.slope < 0 && direction == 1)
-			{
-				if (px > wall.left || y < wall.bottom) return;
-			}
 			
 			collided = true;
 			

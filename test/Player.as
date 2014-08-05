@@ -116,7 +116,7 @@ package iphstich.platformer.test {
 				
 				
 				// fall through platform
-				if (Controls.pressed("down") && surface is Platform)
+				if (Controls.down("down") && surface is Platform)
 				{
 					gotoAirMode();
 					y += 1;
