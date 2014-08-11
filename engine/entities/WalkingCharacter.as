@@ -284,6 +284,9 @@ package iphstich.platformer.engine.entities
 					return;
 				}
 			}
+			
+			
+			super.collide(data);
 		}
 		
 		protected function hitEdge (side:Number) : void

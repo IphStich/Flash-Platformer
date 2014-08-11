@@ -5,18 +5,20 @@ package iphstich.platformer.engine.entities
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import iphstich.platformer.engine.ICollidable;
-	import Math;
 	import flash.utils.getQualifiedClassName;
+	import Math;
+	
 	import iphstich.library.CustomMath;
+	import iphstich.library.Util;
 	import iphstich.platformer.engine.Engine;
 	import iphstich.platformer.engine.HitBox;
 	import iphstich.platformer.engine.HitData;
+	import iphstich.platformer.engine.ICollidable;
 	import iphstich.platformer.engine.levels.interactables.Interactable;
 	import iphstich.platformer.engine.levels.Level;
+	import iphstich.platformer.engine.levels.misc.Trigger;
 	import iphstich.platformer.engine.levels.parts.*;
 	import iphstich.platformer.engine.entities.HitPoint;
-	import iphstich.library.Util;
 	
 	public class Entity extends MovieClip implements ICollidable
 	{
@@ -145,7 +147,7 @@ package iphstich.platformer.engine.entities
 					if (collided) break;
 				}
 				
-				if (count++ > 2) break;
+				if (count++ > 10) { trace("saved from crash"); break; }
 				if (collided) continue;
 				break;
 			}
@@ -204,7 +206,11 @@ package iphstich.platformer.engine.entities
 		
 		protected function collide (data:HitData):void
 		{
-			throw Error("Error. No default behavior for collision defined for class " + getQualifiedClassName(this));
+			var trigger:Trigger = data.hit as Trigger;
+			if (trigger != null) if (trigger.canBeActivated)
+			{
+				level.activateTrigger(trigger, this);
+			}
 		}
 		
 		protected function otherCollide (label:String, data:HitData) : void

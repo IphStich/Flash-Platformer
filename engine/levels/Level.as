@@ -7,6 +7,7 @@ package iphstich.platformer.engine.levels
 	import flash.utils.Dictionary;
 	import flash.ui.Keyboard;
 	import iphstich.platformer.engine.effects.Effect;
+	import iphstich.platformer.engine.levels.misc.Trigger;
 	
 	import iphstich.library.Controls;
 	import iphstich.library.CustomMath;
@@ -131,6 +132,7 @@ package iphstich.platformer.engine.levels
 				if (child is Interactable) interactables.push(child);
 				if (child is Area) addArea(child); // areas[child.name] = child;
 				if (child is Entity) (child as Entity).spawn(child.x, child.y, this);
+				if (child is Trigger) addTrigger (child);
 			}
 			
 			numInteractables = interactables.length;
@@ -189,6 +191,36 @@ package iphstich.platformer.engine.levels
 			if (left > a.left) 		left = a.left;
 			if (right < a.right) 	right = a.right;
 			if (bottom < a.bottom) 	bottom = a.bottom;
+		}
+		
+		public function addTrigger (child:DisplayObject) : void
+		{
+			var t:Trigger = child as Trigger;
+			
+			collidables.push(t);
+			numCollidables ++;
+		}
+		
+		public function activateTrigger (trigger:Trigger, other:Entity) : void
+		{
+			//trace("TRIGGER", trigger.label);
+			trigger.canBeActivated = false;
+			
+			if (trigger.label == "spawn")
+			{
+				if (trigger.params[1] == "at")
+				{
+					var spawnArea:Area = getArea(trigger.params[2]);
+					if (spawnArea)
+					{
+						var i:int;
+						for (i=0; i<10; ++i)
+						{
+							new TestEnemy().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
+						}
+					}
+				}
+			}
 		}
 		
 		public var pointResult:Vector.<HitData>;
@@ -478,13 +510,13 @@ package iphstich.platformer.engine.levels
 		{
 			engine = inEngine;
 			
-			var a:Area = getArea("enemies");
-			if (a == null) return;
-			var i:int;
-			for (i=0; i<10; ++i)
-			{
-				new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, this);
-			}
+			//var a:Area = getArea("enemies");
+			//if (a == null) return;
+			//var i:int;
+			//for (i=0; i<10; ++i)
+			//{
+				//new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, this);
+			//}
 		}
 	}
 }
