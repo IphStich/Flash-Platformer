@@ -29,7 +29,7 @@ package iphstich.platformer.engine.entities
 		
 		private var _facing:int;
 		public function get facing () : int { return _facing; }
-		public function set facing (inp:int) { _facing = inp; }
+		public function set facing (inp:int) { this.scaleX = inp; _facing = inp; }
 		
 		public function Character()
 		{

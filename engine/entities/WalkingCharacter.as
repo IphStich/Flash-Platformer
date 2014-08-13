@@ -54,10 +54,6 @@ package iphstich.platformer.engine.entities
 			surface = inSurface
 		}
 		
-		override public function tickThink (style:uint, delta:Number) : void 
-		{
-		}
-		
 		override public function tickMove (delta:Number):void
 		{
 			if (!isNaN(targetSpeed))
