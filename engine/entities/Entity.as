@@ -266,7 +266,7 @@ package iphstich.platformer.engine.entities
 			if (level == lev)
 			{
 				level = null;
-				this.destroy();
+				this.clear();
 			}
 		}
 		

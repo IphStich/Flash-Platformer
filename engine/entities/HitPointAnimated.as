@@ -24,6 +24,7 @@ package iphstich.platformer.engine.entities
 			visible = false;
 			
 			var str:Array = this.name.split("_");
+			if (str.length != 2) throw Error("Animated Hit Points require to follow the Label_Index format.");
 			label = str[0];
 			index = int(str[1]);
 		}
