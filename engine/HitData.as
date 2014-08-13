@@ -17,32 +17,43 @@
 		private static var place:int = -1;
 		public static function hit (hit:DisplayObject, x:Number, y:Number, time:Number=0, type:int=TYPE_OTHER) : HitData
 		{
+			var hd:HitData;
+			
 			if (instances == null) instances = new Vector.<HitData>(50);
 			
 			if (place == -1) {
-				return new HitData(hit, x, y, time, type);
-				
+				hd = new HitData();
 			} else {
-				var inst:HitData = instances[place--];
-				
-				inst.hit 	= hit;
-				inst.x 		= x;
-				inst.y 		= y;
-				inst.t 		= time;
-				inst.type 	= type;
-				inst.point 	= null;
-				
-				return inst;
+				hd = instances[place--];
 			}
+			
+			hd.hit = hit;
+			hd.x = x;
+			hd.y = y;
+			hd.t = time;
+			hd.type = type;
+			
+			return hd;
 		}
 		public static function old (target:HitData)
 		{
+			//var i = instances.indexOf(target);
+			//if (i <= place && i != -1)
+				//throw Error("DOUBLE OLD " + i + " "  + place + oldRecords[i] + "\n\n");
+			
+			target.reset();
+			
 			if (place >= instances.length) {
+				//oldRecords.push (Error("").getStackTrace());
 				instances.push(target);
 				++place;
-			} else
+			} else {
+				//oldRecords[place+1] = (Error("").getStackTrace());
 				instances[++place] = target;
+			}
 		}
+		
+		//static var oldRecords:Array = new Array();
 		
 		public static function SORT_BY_T (a:HitData, b:HitData) : Number
 		{
@@ -62,14 +73,9 @@
 		public var type:int;
 		public var point:HitPoint;
 		
-		public function HitData (hit:DisplayObject, x:Number, y:Number, time:Number, type:int)
+		public function HitData ()
 		{
-			this.hit 	= hit;
-			this.x 		= x;
-			this.y 		= y;
-			this.t 		= time;
-			this.type 	= type
-			this.point 	= null;
+			this.reset();
 		}
 		
 		public function toString():String
@@ -80,6 +86,16 @@
 		public function destroy () : void
 		{
 			old(this);
+		}
+		
+		public function reset () : void
+		{
+			hit = null;
+			x = 0;
+			y = 0;
+			t = 0;
+			type = 0;
+			point = null;
 		}
 	}
 }

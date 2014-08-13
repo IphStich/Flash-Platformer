@@ -129,68 +129,114 @@ package iphstich.platformer.engine.entities
 			
 			super.refreshCollisions();
 			
+			return;
+			
 			var check:Vector.<HitData>;
 			var hd:HitData;
 			
 			// top box
-			check = topLeft.getHitPathBetweenPoints(topRight);
-			while (check.length > 0) 
+			if (py < y)
 			{
-				hd = check.pop();
-				
-				if (!(hd.hit is Part)) {
-					hd.destroy();
-					continue;
+				check = topLeft.getHitPathBetweenPoints(topRight);
+				while (check.length > 0) 
+				{
+					hd = check.pop();
+					
+					if (!(hd.hit is Part)) {
+						hd.destroy();
+						continue;
+					}
+					
+					hd.y = (hd.hit as Part).bottom;
+					
+					//if (y < hd.y) {
+						//hd.destroy();
+						//continue;
+					//}
+					
+					hd.t = -1;
+					hd.point = topRight;
+					hd.type = HitData.TYPE_BOTTOM;
+					collisions.push(hd);
 				}
-				
-				hd.type = HitData.TYPE_BOTTOM;
-				hd.y = (hd.hit as Part).bottom;
-				collisions.push(hd);
 			}
 			
 			// left box
-			check = lowerLeft.getHitPathBetweenPoints(topLeft);
-			while (check.length > 0) 
+			if (px < x)
 			{
-				hd = check.pop();
-				
-				if (!(hd.hit is Part)) {
-					hd.destroy();
-					continue;
+				check = lowerLeft.getHitPathBetweenPoints(topLeft);
+				while (check.length > 0) 
+				{
+					hd = check.pop();
+					
+					if (!(hd.hit is Part)) {
+						hd.destroy();
+						continue;
+					}
+					
+					hd.x = (hd.hit as Part).right;
+					
+					//if (x < hd.x) {
+						//hd.destroy();
+						//continue;
+					//}
+					
+					hd.t = -1;
+					hd.point = lowerLeft;
+					hd.type = HitData.TYPE_RIGHT;
+					collisions.push(hd);
 				}
-				hd.type = HitData.TYPE_RIGHT;
-				hd.y = (hd.hit as Part).right;
-				collisions.push(hd);
 			}
 			
+			
 			// right box
-			check = lowerRight.getHitPathBetweenPoints(topRight);
-			while (check.length > 0) 
+			if (px > x)
 			{
-				hd = check.pop();
-				
-				if (!(hd.hit is Part)) {
-					hd.destroy();
-					continue;
+				check = lowerRight.getHitPathBetweenPoints(topRight);
+				while (check.length > 0) 
+				{
+					hd = check.pop();
+					
+					if (!(hd.hit is Part)) {
+						hd.destroy();
+						continue;
+					}
+					
+					hd.x = (hd.hit as Part).left;
+					
+					//if (x > hd.x) {
+						//hd.destroy();
+						//continue;
+					//}
+					
+					hd.t = -1;
+					hd.point = lowerRight;
+					hd.type = HitData.TYPE_LEFT;
+					collisions.push(hd);
 				}
-				hd.type = HitData.TYPE_LEFT;
-				hd.y = (hd.hit as Part).left;
-				collisions.push(hd);
 			}
 			
 			// bottom
-			check = lowerLeft.getHitPathBetweenPoints(lowerRight);
-			while (check.length > 0)
+			if (py > y)
 			{
-				hd = check.pop();
-				
-				if (!(hd.hit is Part)) {
-					hd.destroy();
-					continue;
+				check = lowerLeft.getHitPathBetweenPoints(lowerRight);
+				while (check.length > 0)
+				{
+					hd = check.pop();
+					
+					if (!(hd.hit is Part)) {
+						hd.destroy();
+						continue;
+					}
+					
+					//if (y > hd.y) {
+						//hd.destroy();
+						//continue;
+					//}
+					
+					if (hd.x > px) hd.point = lowerRight;
+					collisions.push(hd);
 				}
-				
-				if (hd.x > px) hd.point = lowerRight;
-				collisions.push(hd);
 			}
 			
 			collisions.sort(HitData.SORT_BY_T);
@@ -386,7 +432,9 @@ package iphstich.platformer.engine.entities
 		{
 			super.applyImpulse(x, y);
 			
-			if (vy < 0 && surface != null) gotoAirMode();
+			ax = 0;
+			
+			if (vy != 0 && surface != null) gotoAirMode();
 		}
 		
 		public function getBaseLeft () : Number
