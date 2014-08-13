@@ -370,9 +370,11 @@ package iphstich.platformer.engine.entities
 				for (j=i-1; j>=0; --j) // <-- duplicate check
 				{
 					if (results[j].hit == hd.hit)
-					results.splice(i, 1);
-					hd.destroy();
-					break;
+					{
+						results.splice(i, 1);
+						hd.destroy();
+						break;
+					}
 				}
 			}
 			
