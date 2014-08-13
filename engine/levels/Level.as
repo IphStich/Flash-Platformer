@@ -6,6 +6,7 @@ package iphstich.platformer.engine.levels
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import flash.ui.Keyboard;
+	import iphstich.pips.EnemyUnicorn;
 	import iphstich.platformer.engine.effects.Effect;
 	import iphstich.platformer.engine.levels.misc.Trigger;
 	
@@ -216,7 +217,7 @@ package iphstich.platformer.engine.levels
 						var i:int;
 						for (i=0; i<10; ++i)
 						{
-							new TestEnemy().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
+							new EnemyUnicorn().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
 						}
 					}
 				}
