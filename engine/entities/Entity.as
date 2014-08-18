@@ -170,6 +170,8 @@ package iphstich.platformer.engine.entities
 		protected var collisions:Vector.<HitData>;
 		protected function refreshCollisions ()
 		{
+			
+			if (level == null) trace("WARNING: NO Level")
 			refreshRotaionMatrices();
 			
 			var i:int;
@@ -309,7 +311,7 @@ package iphstich.platformer.engine.entities
 			stop();
 			// garbage collection
 			if (level != null) level.removeEntity(this);
-			level = null;
+			//level = null;
 			removeChild(hitBox);
 			hitBox = null;
 			while (collisionPoints.length > 0) collisionPoints.pop();
