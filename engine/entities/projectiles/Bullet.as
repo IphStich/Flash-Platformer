@@ -85,7 +85,10 @@ package iphstich.platformer.engine.entities.projectiles
 			var target:Entity = data.hit as Entity;
 			if (target != null)
 			{
-				target.hitBy(this);
+				if (target.team != this.team)
+				{
+					target.hitBy(this);
+				}
 			}
 		}
 	}
