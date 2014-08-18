@@ -468,8 +468,8 @@ package iphstich.platformer.engine.levels
 		
 		private function markForRemoval (entity:Entity) : void
 		{
-			if (toRemoveEntities.indexOf(entity) != -1) throw Error("Cannot remove an entity twice!");
-			toRemoveEntities.push(entity);
+			if (toRemoveEntities.indexOf(entity) != -1) trace("Cannot remove an entity twice!");
+			else toRemoveEntities.push(entity);
 		}
 		
 		public function getDoor(localName:String):Door

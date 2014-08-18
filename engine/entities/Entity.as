@@ -58,11 +58,12 @@ package iphstich.platformer.engine.entities
 		protected var hitCenter:HitPoint;
 		
 		public var level:Level;
-		public var engine:Engine;
 		
 		public var alive:Boolean = false;
 		public var hitBox:HitBox;
 		public var team:int;
+		
+		protected var DestroyOnClear:Boolean = true;
 		
 		public function Entity()
 		{
@@ -171,7 +172,7 @@ package iphstich.platformer.engine.entities
 		protected function refreshCollisions ()
 		{
 			
-			if (level == null) trace("WARNING: NO Level")
+			if (level == null) trace("WARNING: NO Level", getQualifiedClassName(this))
 			refreshRotaionMatrices();
 			
 			var i:int;
@@ -268,7 +269,7 @@ package iphstich.platformer.engine.entities
 			if (level == lev)
 			{
 				level = null;
-				this.clear();
+				//this.clear();
 			}
 		}
 		
@@ -286,7 +287,6 @@ package iphstich.platformer.engine.entities
 		public function addedToLevel (lev:Level) : void
 		{
 			level = lev;
-			engine = level.engine;
 		}
 		
 		public function applyImpulse (x:Number, y:Number) : void
@@ -298,20 +298,20 @@ package iphstich.platformer.engine.entities
 		public function death () : void
 		{
 			alive = false;
-			this.level.removeEntity(this);
+			clear();
 		}
 		
 		public function clear () : void
 		{
-			this.destroy();
+			if (DestroyOnClear) this.destroy();
+			else if (level != null) level.removeEntity(this);
 		}
 		
 		public function destroy () : void
 		{
 			stop();
-			// garbage collection
 			if (level != null) level.removeEntity(this);
-			//level = null;
+			// garbage collection
 			removeChild(hitBox);
 			hitBox = null;
 			while (collisionPoints.length > 0) collisionPoints.pop();
