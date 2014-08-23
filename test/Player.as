@@ -86,7 +86,7 @@ package iphstich.platformer.test {
 		override protected function land (data:HitData) : void
 		{
 			// ignore platforms if the down key is help down
-			if (data.hit is Platform && Controls.down("down"))
+			if (data.hit is Platform && Controls.down("down")) if ((data.hit as Platform).canFallThrough)
 			{
 				return;
 			}
@@ -116,7 +116,7 @@ package iphstich.platformer.test {
 				
 				
 				// fall through platform
-				if (Controls.down("down") && surface is Platform)
+				if (Controls.down("down") && surface is Platform) if ((surface as Platform).canFallThrough)
 				{
 					gotoAirMode();
 					y += 1;

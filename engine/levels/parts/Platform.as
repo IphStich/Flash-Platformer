@@ -11,6 +11,8 @@ package iphstich.platformer.engine.levels.parts
 	 */
 	public class Platform extends Part
 	{
+		public var canFallThrough:Boolean = true;
+		
 		override public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
 			// collision only works when going down onto the surface/top
