@@ -27,9 +27,9 @@ package iphstich.platformer.engine.entities
 		{
 			super.tickThink(style, delta);
 			
-			vx = Math.random() * 400 - 200;
+			//vx = Math.random() * 400 - 200;
 			
-			moveBy(vx * delta, 0);
+			//moveBy(vx * delta, 0);
 			//adjustPlatform();
 		}
 		
