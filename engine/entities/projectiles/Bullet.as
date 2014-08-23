@@ -13,7 +13,7 @@ package iphstich.platformer.engine.entities.projectiles
 	public class Bullet extends Entity
 	{
 		private const EXPLOSION_SIZE:Number = 30;
-		public var DAMAGE:Number = 5;
+		public var DAMAGE:Number = 1;
 		
 		protected var facing:int;
 		
