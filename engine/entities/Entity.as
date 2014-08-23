@@ -283,6 +283,8 @@ package iphstich.platformer.engine.entities
 			r = 0;
 			ar = 0;
 			vr = 0;
+			px = x;
+			py = y;
 			
 			
 			if (level != lev)

@@ -12,6 +12,7 @@ package iphstich.platformer.engine.levels.parts
 		public var connections:Vector.<Part> = new Vector.<Part>();
 		public var slope:Number = 0;
 		protected var numC:int;
+		public var attachedEntities:Vector.<Entity> = new Vector.<Entity>();
 		
 		public function Part()
 		{
@@ -207,6 +208,16 @@ package iphstich.platformer.engine.levels.parts
 			{
 				return 1 / (slope * slope / 1.5 + 1);
 			}
+		}
+		
+		public function attach (entity:Entity) : void
+		{
+			attachedEntities.push(entity);
+		}
+		
+		public function unattach (entity:Entity) : void
+		{
+			attachedEntities.splice(attachedEntities.indexOf(entity), 1);
 		}
 	}
 }

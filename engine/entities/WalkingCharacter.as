@@ -13,7 +13,14 @@ package iphstich.platformer.engine.entities
 	
 	public class WalkingCharacter extends Character
 	{
-		public var surface:Part;
+		//public var surface:Part;
+		private var _surface:Part;
+		public function get surface () { return _surface; }
+		public function set surface (inp:Part) {
+			if (_surface != null) _surface.unattach(this);
+			_surface = inp;
+			if (_surface != null) _surface.attach(this);
+		}
 		
 		protected var topLeft:HitPoint;
 		protected var topRight:HitPoint;
