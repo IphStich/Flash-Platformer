@@ -9,7 +9,7 @@ package iphstich.platformer.engine.levels.parts
 	
 	public class Part extends HitBox
 	{
-		public var connections:Vector.<Part>
+		public var connections:Vector.<Part> = new Vector.<Part>();
 		public var slope:Number = 0;
 		protected var numC:int;
 		
@@ -19,17 +19,12 @@ package iphstich.platformer.engine.levels.parts
 			
 			// snap the bounds to the grid
 			snapDimensions();
-			
-			// set default properties
-			connections 	= new Vector.<Part>();
 		}
 		
 		/**
-		 * Checks whether or not the two parts "connect".
-		 * -1 : never
+		 * Checks whether or not the two parts "connect". Only one of the two parts needs to have this return 1.
 		 *  0 : not really
-		 *  1 : sure, why not
-		 *  2 : YES!
+		 *  1 : yes, absolutely
 		 * @param	other
 		 * @return
 		 */
