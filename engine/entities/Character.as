@@ -3,6 +3,7 @@ package iphstich.platformer.engine.entities
 	import flash.utils.getQualifiedClassName;
 	import iphstich.platformer.engine.entities.Entity;
 	import iphstich.platformer.engine.entities.projectiles.Bullet;
+	import iphstich.platformer.engine.levels.Level;
 	import iphstich.platformer.engine.misc.Attack;
 	import iphstich.platformer.engine.misc.TrapAttack;
 	
