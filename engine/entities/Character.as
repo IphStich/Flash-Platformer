@@ -51,6 +51,10 @@ package iphstich.platformer.engine.entities
 		public function dealDamage (damage:Number) : void
 		{
 			health -= damage;
+			if (health <= 0)
+			{
+				death();
+			}
 		}
 		
 		protected function setDefaultMoveVariables() : void
@@ -97,23 +101,30 @@ package iphstich.platformer.engine.entities
 			var bullet:Bullet = other as Bullet;
 			if (bullet)
 			{
-				this.dealDamage (bullet.DAMAGE);
 				this.applyImpulse (bullet.vx / 2, -400);
+				this.dealDamage (bullet.DAMAGE);
 			}
 			
 			var attack:Attack = other as Attack;
 			if (attack)
 			{
-				this.dealDamage (attack.DAMAGE);
 				this.applyImpulse (other.owner.facing * 400, -400);
+				this.dealDamage (attack.DAMAGE);
 			}
 			
 			var trapAttack:TrapAttack = other as TrapAttack;
 			if (trapAttack)
 			{
-				this.dealDamage (trapAttack.DAMAGE);
 				this.applyImpulse (facing * -400, -400);
+				this.dealDamage (trapAttack.DAMAGE);
 			}
+		}
+		
+		override public function spawn(x:Number, y:Number, lev:Level):void 
+		{
+			super.spawn(x, y, lev);
+			
+			currentAction = "";
 		}
 	}
 }

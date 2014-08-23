@@ -39,7 +39,7 @@ package iphstich.platformer
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject
 		{
-			return addChildAt(child, 0);
+			return addChildAt(child, numChildren-1);
 		}
 	}
 }

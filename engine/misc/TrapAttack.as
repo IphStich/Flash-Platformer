@@ -7,7 +7,7 @@ package iphstich.platformer.engine.misc
 	 */
 	public class TrapAttack 
 	{
-		public var DAMAGE:Number = 5;
+		public var DAMAGE:Number = 1;
 		public var owner:Entity;
 		
 		public function TrapAttack (owner:Entity)

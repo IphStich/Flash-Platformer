@@ -276,10 +276,26 @@ package iphstich.platformer.engine.entities
 		public function spawn (x:Number, y:Number, lev:Level) : void
 		{
 			alive 	= true;
-			level 	= lev;
+			vx = 0;
+			ax = 0;
+			vy = 0;
+			ay = 0;
+			r = 0;
+			ar = 0;
+			vr = 0;
+			
+			
+			if (level != lev)
+			{
+				// remove from old level
+				if (level != null) level.removeEntity(this);
+				
+				// add to new level
+				level = lev;
+				level.addEntity(this);
+			}
 			
 			// add to level and set defaults
-			this.level.addEntity(this);
 			this.x = x;
 			this.y = y;
 		}
