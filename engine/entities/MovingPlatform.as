@@ -23,22 +23,8 @@ package iphstich.platformer.engine.entities
 			setDimensions(x, y, x + scaleX * 100, y + scaleY * 100);
 		}
 		
-		override public function tickThink(style:uint, delta:Number):void 
-		{
-			super.tickThink(style, delta);
-			
-			//vx = Math.random() * 400 - 200;
-			
-			//moveBy(vx * delta, 0);
-			//adjustPlatform();
-		}
-		
 		public function setDimensions (l:Number, t:Number, r:Number, b:Number) : void
 		{
-			//baseLeft = l;
-			//baseTop = t;
-			//baseRight = r;
-			//baseBottom = b;
 			platform.setDimensions(l, t, r, b);
 		}
 		
@@ -49,16 +35,7 @@ package iphstich.platformer.engine.entities
 		
 		protected function moveBy (x:Number, y:Number) : void
 		{
-			moveAttachedBy(x, y);
-			
-			platform.left += x;
-			platform.right += x;
-			platform.top += y;
-			platform.bottom += y;
-		}
-		
-		protected function moveAttachedBy (x:Number, y:Number) : void
-		{
+			// move attached
 			var e:Entity;
 			for each (e in platform.attachedEntities)
 			{
@@ -67,16 +44,12 @@ package iphstich.platformer.engine.entities
 				e.y += y;
 				e.py += y;
 			}
+			
+			// move platform
+			platform.left += x;
+			platform.right += x;
+			platform.top += y;
+			platform.bottom += y;
 		}
-		
-		//private function adjustPlatform () : void
-		//{
-			//platform.setDimensions
-				//( baseLeft + dispX
-				//, baseTop + dispY
-				//, baseRight + dispX
-				//, baseBottom + dispY
-			//);
-		//}
 	}
 }
