@@ -15,6 +15,9 @@ package iphstich.platformer.engine.entities
 		private var movedX:Number = 0;
 		private var movedY:Number = 0;
 		
+		private var dx:Number = 0;
+		private var dy:Number = 0;
+		
 		public function MovingPlatform() 
 		{
 			super();
@@ -36,11 +39,18 @@ package iphstich.platformer.engine.entities
 		
 		override public function hitTestPath(x1:Number, y1:Number, x2:Number, y2:Number):HitData 
 		{
-			return platform.hitTestPath(x1, y1, x2, y2);
+			var hd:HitData = platform.hitTestPath(x1, y1, x2, y2);
+			if (hd == null)
+			{
+				hd = platform.hitTestPath(x1 + dx, y1 + dy, x2 + dx, y2 + dy);
+			}
+			return hd;
 		}
 		
 		protected function moveBy (x:Number, y:Number) : void
 		{
+			dx = x;
+			dy = y;
 			movedX += x;
 			movedY += y;
 			
