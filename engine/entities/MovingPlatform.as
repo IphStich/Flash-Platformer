@@ -12,20 +12,26 @@ package iphstich.platformer.engine.entities
 	{
 		public var platform:Part;
 		
+		private var movedX:Number = 0;
+		private var movedY:Number = 0;
+		
 		public function MovingPlatform() 
 		{
 			super();
 			
 			collisionPoints.pop();
 			
+			movedX = x;
+			movedY = y;
+			
 			platform = new Platform();
 			//platform = new Block();
-			setDimensions(x, y, x + scaleX * 100, y + scaleY * 100);
+			setDimensions(0, 0, scaleX * 100, scaleY * 100);
 		}
 		
 		public function setDimensions (l:Number, t:Number, r:Number, b:Number) : void
 		{
-			platform.setDimensions(l, t, r, b);
+			platform.setDimensions(movedX + l, movedY + t, movedX + r, movedY + b);
 		}
 		
 		override public function hitTestPath(x1:Number, y1:Number, x2:Number, y2:Number):HitData 
@@ -35,6 +41,9 @@ package iphstich.platformer.engine.entities
 		
 		protected function moveBy (x:Number, y:Number) : void
 		{
+			movedX += x;
+			movedY += y;
+			
 			// move attached
 			var e:Entity;
 			for each (e in platform.attachedEntities)
