@@ -435,7 +435,7 @@ package iphstich.platformer.engine.levels
 			collidables.push(target);
 			numCollidables ++;
 			
-			if (entityPlane) entityPlane.addChild(target);
+			if (entityPlane) if (!(entityPlane is EntityPlane)) entityPlane.addChild(target);
 			
 			target.addedToLevel(this);
 		}
