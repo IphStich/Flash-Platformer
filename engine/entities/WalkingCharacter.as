@@ -136,7 +136,7 @@ package iphstich.platformer.engine.entities
 			
 			super.refreshCollisions();
 			
-			return;
+			//return;
 			
 			var check:Vector.<HitData>;
 			var hd:HitData;
@@ -279,9 +279,6 @@ package iphstich.platformer.engine.entities
 						return;
 					}
 					
-					// if not 'landing', and is a platform, do nothing
-					if (target is Platform) return;
-					
 					// force off the edge of Parts if not 'clean'
 					if (px >= tPart.right && tPart.slope <= 0) {
 						hitWall(-1, data);
@@ -292,10 +289,13 @@ package iphstich.platformer.engine.entities
 						return;
 					}
 				}
-				else if (data.point == baseLeft || data.point == baseRight)
-				{
-					return;
-				}
+				//else if (data.point == baseLeft || data.point == baseRight)
+				//{
+					//return;
+				//}
+				
+				// if not 'landing', and is a platform, do nothing
+				if (target is Platform) return;
 				
 				// hitting a wall
 				if (data.type == HitData.TYPE_LEFT)
