@@ -7,9 +7,10 @@ package iphstich.platformer.engine.levels.parts
 	
 	public class RampL extends Part
 	{
-		public function RampL()
+		override public function setDimensions(l:Number, t:Number, r:Number, b:Number):void 
 		{
-			super();
+			super.setDimensions(l, t, r, b);
+			
 			slope = (bottom - top) / (right - left);
 		}
 		
