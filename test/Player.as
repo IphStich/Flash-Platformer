@@ -71,6 +71,7 @@ package iphstich.platformer.test {
 			team 					= 0;
 			equipedWeapon 			= new TestWeapon();
 			equipedWeapon.host 		= this;
+			depthPriority 			= 10;
 			setSize (40, 45);
 			
 			setDefaultMoveVariables();

@@ -1,12 +1,12 @@
 package iphstich.platformer.engine.effects 
 {
-	import flash.display.MovieClip;
 	import flash.events.Event;
+	import iphstich.platformer.engine.Renderable;
 	/**
 	 * ...
 	 * @author IphStich
 	 */
-	public class Effect extends MovieClip
+	public class Effect extends Renderable
 	{
 		public function Effect() 
 		{

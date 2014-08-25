@@ -10,6 +10,7 @@ package iphstich.platformer.engine.levels
 	import iphstich.pips.EnemyPegasus;
 	import iphstich.pips.EnemyEarth;
 	import iphstich.platformer.engine.effects.Effect;
+	import iphstich.platformer.engine.Renderable;
 	import iphstich.platformer.engine.levels.misc.Trigger;
 	
 	import iphstich.library.Controls;
@@ -154,6 +155,7 @@ package iphstich.platformer.engine.levels
 			entityPlane = new MovieClip();
 			addChildAt(entityPlane, depth);
 			for each (var e:Entity in entities) entityPlane.addChild(e);
+			sortRenderables();
 		}
 		
 		public function addPart (child:DisplayObject) : void
@@ -438,11 +440,39 @@ package iphstich.platformer.engine.levels
 			if (entityPlane) if (!(entityPlane is EntityPlane)) entityPlane.addChild(target);
 			
 			target.addedToLevel(this);
+			
+			sortRenderables();
+		}
+		
+		public function sortRenderables () : void
+		{
+			// do not sort if in the interp level stage
+			if (entityPlane == null) return;
+			if (entityPlane is EntityPlane) return;
+			
+			var i:int, j:int;
+			var r:Renderable, s:Renderable;
+			
+			var numC:int = entityPlane.numChildren;
+			for (i=1; i<numC; ++i)
+			{
+				r = entityPlane.getChildAt(i) as Renderable;
+				
+				for (j=i-1; j>=0; --j)
+				{
+					s = entityPlane.getChildAt(j) as Renderable;
+					if (s.depthPriority <= r.depthPriority) break;
+				}
+				j += 1;
+				
+				entityPlane.setChildIndex(r, j);
+			}
 		}
 		
 		public function addEffect (target:Effect) : void
 		{
 			if (entityPlane) entityPlane.addChild(target);
+			sortRenderables();
 		}
 		
 		private function markForAddition (entity:Entity) : void

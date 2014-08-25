@@ -6,11 +6,11 @@ package iphstich.platformer.engine.entities
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.utils.getQualifiedClassName;
-	import Math;
 	
 	import iphstich.library.CustomMath;
 	import iphstich.library.Util;
 	import iphstich.platformer.engine.Engine;
+	import iphstich.platformer.engine.entities.HitPoint;
 	import iphstich.platformer.engine.HitBox;
 	import iphstich.platformer.engine.HitData;
 	import iphstich.platformer.engine.ICollidable;
@@ -18,9 +18,9 @@ package iphstich.platformer.engine.entities
 	import iphstich.platformer.engine.levels.Level;
 	import iphstich.platformer.engine.levels.misc.Trigger;
 	import iphstich.platformer.engine.levels.parts.*;
-	import iphstich.platformer.engine.entities.HitPoint;
+	import iphstich.platformer.engine.Renderable;
 	
-	public class Entity extends MovieClip implements ICollidable
+	public class Entity extends Renderable implements ICollidable
 	{
 		// current position (pre-tick)
 		//public var x:Number = 0;
@@ -134,7 +134,7 @@ package iphstich.platformer.engine.entities
 			var hd:HitData;
 			var count:int = 0;
 			
-			if (!alive) return;
+			//if (!alive) return;
 			
 			while (true)
 			{
