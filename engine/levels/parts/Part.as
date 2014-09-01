@@ -9,6 +9,7 @@ package iphstich.platformer.engine.levels.parts
 	
 	public class Part extends HitBox
 	{
+		public var params:Array;
 		public var connections:Vector.<Part> = new Vector.<Part>();
 		public var slope:Number = 0;
 		protected var numC:int;
@@ -20,6 +21,9 @@ package iphstich.platformer.engine.levels.parts
 			
 			// snap the bounds to the grid
 			snapDimensions();
+			
+			// get the parameters
+			params = name.split("_");
 		}
 		
 		/**
