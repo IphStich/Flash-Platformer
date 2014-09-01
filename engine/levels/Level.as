@@ -10,6 +10,7 @@ package iphstich.platformer.engine.levels
 	import iphstich.pips.EnemyPegasus;
 	import iphstich.pips.EnemyEarth;
 	import iphstich.platformer.engine.effects.Effect;
+	import iphstich.platformer.engine.levels.misc.POI;
 	import iphstich.platformer.engine.Renderable;
 	import iphstich.platformer.engine.levels.misc.Trigger;
 	
@@ -61,6 +62,7 @@ package iphstich.platformer.engine.levels
 		public static var OUTSIDE_LEVEL:DisplayObject;
 		
 		protected var areas:Dictionary;
+		protected var POIs:Dictionary;
 		protected var doors:Vector.<Door>;
 		protected var entityLevel:uint;
 		protected var entityPlane:MovieClip;
@@ -117,6 +119,7 @@ package iphstich.platformer.engine.levels
 			entities 		= new Vector.<Entity>();
 			interactables 	= new Vector.<Interactable>();
 			areas			= new Dictionary();
+			POIs 			= new Dictionary();
 			collidables 	= new Vector.<ICollidable>();
 			
 			// initialize level bounds to 'null' values
@@ -135,6 +138,7 @@ package iphstich.platformer.engine.levels
 				if (child is EntityPlane) entityPlane = child as EntityPlane; // { entityLevel = i; child.visible = false;  }
 				if (child is Interactable) interactables.push(child);
 				if (child is Area) addArea(child); // areas[child.name] = child;
+				if (child is POI) addPOI (child);
 				if (child is Entity) (child as Entity).spawn(child.x, child.y, this);
 				if (child is Trigger) addTrigger (child);
 			}
@@ -198,6 +202,11 @@ package iphstich.platformer.engine.levels
 			if (bottom < a.bottom) 	bottom = a.bottom;
 		}
 		
+		public function addPOI (child:DisplayObject) : void
+		{
+			POIs[child.name] = child;
+		}
+		
 		public function addTrigger (child:DisplayObject) : void
 		{
 			var t:Trigger = child as Trigger;
@@ -208,26 +217,47 @@ package iphstich.platformer.engine.levels
 		
 		public function activateTrigger (trigger:Trigger, other:Entity) : void
 		{
+			var i:int;
+			
 			//trace("TRIGGER", trigger.label);
 			trigger.canBeActivated = false;
 			
 			if (trigger.label == "spawn")
 			{
-				if (trigger.params[1] == "at")
+				var q:Number = Number(trigger.params[1] as String);
+				var searchName:String = trigger.params[3];
+				var type:String = (trigger.params[2] as String).toLowerCase();
+				var spawnClass:Class = getClassFromSimpleString(type);
+				
+				var spawnArea:Area = getArea(searchName);
+				if (spawnArea)
 				{
-					var spawnArea:Area = getArea(trigger.params[2]);
-					if (spawnArea)
+					for (i=0; i<q; ++i)
 					{
-						var i:int;
-						for (i=0; i<2; ++i)
-						{
-							new EnemyEarth().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
-							new EnemyPegasus().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
-							new EnemyUnicorn().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
-						}
+						new spawnClass().spawn(CustomMath.randomBetween(spawnArea.left, spawnArea.right), spawnArea.bottom, this);
 					}
+					
+					return;
 				}
+				
+				var poi:POI = getPOI(searchName);
+				if (poi)
+				{
+					for (i=0; i<q; ++i)
+					{
+						new spawnClass().spawn(poi.x, poi.y, this);
+					}
+					
+					return;
+				}
+				
+				throw Error("Cannot find appropriate spawn point " + searchName);
 			}
+		}
+		
+		public function getClassFromSimpleString (string:String) : Class
+		{
+			return null;
 		}
 		
 		public var pointResult:Vector.<HitData>;
@@ -514,7 +544,16 @@ package iphstich.platformer.engine.levels
 		
 		public function getArea (name:String) : Area
 		{
+			if (areas[name] == undefined) return null;
+			
 			return areas[name] as Area;
+		}
+		
+		public function getPOI (name:String) : POI
+		{
+			if (POIs[name] == undefined) return null;
+			
+			return POIs[name];
 		}
 		
 		public function getEntityByType (type:Class) : Entity
