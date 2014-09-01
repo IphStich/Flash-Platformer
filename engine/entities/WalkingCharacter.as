@@ -399,10 +399,16 @@ package iphstich.platformer.engine.entities
 		
 		public function fall():void
 		{
+			if (surface)
+			{
+				vx *= surface.slopeSpeed(this);
+				vy = vx * surface.slope;
+			}
+			else
+			{
+				vy = 0;
+			}
 			gotoAirMode();
-			vy = 0;
-			ay = GRAVITY;
-			cy = JUMP_VELOCITY;
 		}
 		
 		public function setSize (width:Number, height:Number) : void
