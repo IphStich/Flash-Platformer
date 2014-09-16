@@ -62,6 +62,7 @@ package iphstich.platformer.engine.entities
 		public var alive:Boolean = false;
 		public var hitBox:HitBox;
 		public var team:int;
+		public var canActivateTriggers:Boolean = true;
 		
 		protected var DestroyOnClear:Boolean = true;
 		
@@ -210,7 +211,7 @@ package iphstich.platformer.engine.entities
 		protected function collide (data:HitData):void
 		{
 			var trigger:Trigger = data.hit as Trigger;
-			if (trigger != null) if (trigger.canBeActivated)
+			if (trigger != null) if (trigger.canBeActivated) if (this.canActivateTriggers)
 			{
 				level.activateTrigger(trigger, this);
 			}
@@ -226,6 +227,7 @@ package iphstich.platformer.engine.entities
 		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
 			if (!alive) return null;
+			if (!hitBox) return null;
 			
 			// first test with current position
 			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - y);

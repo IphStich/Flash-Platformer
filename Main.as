@@ -12,7 +12,7 @@ package iphstich.platformer
 	
 	public class Main extends MovieClip
 	{
-		public static const GRID_SIZE:Number = 10;
+		public static const GRID_SIZE:Number = 2.5;
 		
 		//public static var instance:Main;
 		

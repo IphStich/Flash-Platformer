@@ -51,6 +51,10 @@ package iphstich.platformer.engine.entities
 		{
 			dx = x;
 			dy = y;
+			
+			// don't bother doing anything if its not actually moving
+			if (x == 0 && y == y) return;
+			
 			movedX += x;
 			movedY += y;
 			

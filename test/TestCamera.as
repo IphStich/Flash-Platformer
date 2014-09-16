@@ -40,9 +40,10 @@ package iphstich.platformer.test
 			}
 		}
 		
-		//override protected function scale():Number 
-		//{
-			//return 2;
-		//}
+		override protected function scale():Number 
+		{
+			//return 1.3;
+			return 1.5;
+		}
 	}
 }
