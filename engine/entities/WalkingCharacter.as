@@ -15,7 +15,7 @@ package iphstich.platformer.engine.entities
 	{
 		//public var surface:Part;
 		private var _surface:Part;
-		public function get surface () { return _surface; }
+		public function get surface () : Part { return _surface; }
 		public function set surface (inp:Part) {
 			if (_surface != null) _surface.unattach(this);
 			_surface = inp;
@@ -354,9 +354,11 @@ package iphstich.platformer.engine.entities
 			if (direction == -1) {
 				vx = 0;
 				px = wall.right - hitBox.left + 0.1;
+				x = px;
 			} else if (direction == 1) {
 				vx = 0;
 				px = wall.left - hitBox.right - 0.1;
+				x = px;
 			}
 		}
 		

@@ -317,6 +317,32 @@ package iphstich.platformer.engine.levels
 			}
 		} //testHitPath
 		
+		private var shadowCheck:Vector.<HitData> = new Vector.<HitData>();
+		public function testHitShadow (fromX:Number, fromY:Number, maxDistance:Number = NaN) : Number
+		{
+			if (isNaN(maxDistance)) maxDistance = bottom;
+			//else maxDistance += fromY;
+			
+			testHitPath (shadowCheck, fromX, fromY, fromX, maxDistance);
+			shadowCheck.sort(HitData.SORT_BY_T);
+			
+			var point:Number = NaN;
+			//level.testHitPath(shadowCheck, x, y, x, level.bottom);
+			//shadowCheck.sort(HitData.SORT_BY_T);
+			var hd:HitData;
+			while ((hd = shadowCheck.pop()) != null)
+			{
+				if (hd.hit is Part)
+				{
+					point = hd.y;
+					//trace("---- " + point)
+				}
+				hd.destroy();
+			}
+			
+			return point;
+		}
+		
 		public function testHitRadial (results:Vector.<HitData>, x:Number, y:Number, radius:Number, blockedBy:Vector.<Class>) : void
 		{
 			
