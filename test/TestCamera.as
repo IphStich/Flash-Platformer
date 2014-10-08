@@ -33,8 +33,8 @@ package iphstich.platformer.test
 			viewX = player.x + shiftX;
 			viewY = (player.y - player.getHeight()/2) + shiftY;
 			
-			if (player.x >= level.left && player.x <= level.right
-				&& player.y >= level.top && player.y <= level.bottom)
+			if (player.x >= level.left - 30 && player.x <= level.right + 30
+				&& player.y - 10 >= level.top && player.y - 40 <= level.bottom)
 			{
 				restrictViewToLevel();
 			}

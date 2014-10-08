@@ -38,7 +38,7 @@ package iphstich.platformer.engine
 				this.visible = false;
 			}
 			
-			//this.visible = false;
+			this.visible = false;
 		}
 		
 		public function setDimensions(l:Number, t:Number, r:Number, b:Number):void

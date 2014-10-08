@@ -10,6 +10,7 @@ package iphstich.platformer.engine.levels
 	import iphstich.pips.EnemyPegasus;
 	import iphstich.pips.EnemyEarth;
 	import iphstich.platformer.engine.effects.Effect;
+	import iphstich.platformer.engine.levels.misc.KillLine;
 	import iphstich.platformer.engine.levels.misc.POI;
 	import iphstich.platformer.engine.Renderable;
 	import iphstich.platformer.engine.levels.misc.Trigger;
@@ -83,6 +84,7 @@ package iphstich.platformer.engine.levels
 		public var left:Number;
 		public var right:Number;
 		public var bottom:Number;
+		public var killLevel:Number;
 		
 		public var engine:Engine;
 		
@@ -127,6 +129,7 @@ package iphstich.platformer.engine.levels
 			left 	= Number.MAX_VALUE;
 			right 	= Number.MIN_VALUE;
 			bottom 	= Number.MIN_VALUE;
+			killLevel = NaN;
 			
 			// grab the level pieces
 			var numC:uint = numChildren;
@@ -141,7 +144,10 @@ package iphstich.platformer.engine.levels
 				if (child is POI) addPOI (child);
 				if (child is Entity) (child as Entity).spawn(child.x, child.y, this);
 				if (child is Trigger) addTrigger (child);
+				if (child is KillLine) killLevel = child.y;
 			}
+			
+			if (isNaN(killLevel)) killLevel = bottom;
 			
 			numInteractables = interactables.length;
 			
@@ -252,6 +258,12 @@ package iphstich.platformer.engine.levels
 				}
 				
 				throw Error("Cannot find appropriate spawn point " + searchName);
+			}
+			
+			else if (trigger.label == "kill")
+			{
+				other.death();
+				trigger.canBeActivated = true;
 			}
 		}
 		

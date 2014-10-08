@@ -158,13 +158,6 @@ package iphstich.platformer.test {
 		
 		override protected function calculateMoveVariables():void 
 		{
-			JUMP_HEIGHT = 160 + 9;
-			JUMP_ARC_TIME = 1.1;
-			JUMP_ARC_DISTANCE = 330 + 20;
-			TIME_TO_MAX_SPEED = 0.15;
-			AIR_ACC_PENALTY = 0.5;
-			AIR_ACC_FEATHER = 0.1;
-			
 			super.calculateMoveVariables();
 			
 			SPRINT_SPEED = MAX_HORIZ_SPEED * 1.75;

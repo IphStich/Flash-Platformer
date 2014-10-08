@@ -270,14 +270,19 @@ package iphstich.platformer.engine.entities
 			{
 				var tPart = target as Part;
 				
+				// landing
+				// Occurs no matter what the base points collide with
+				if (point == baseLeft || point == baseRight)
+				{
+					land(data);
+					return;
+				}
+				
+				// if not 'landing', and is a platform, do nothing
+				if (target is Platform) return;
+				
 				if (data.type == HitData.TYPE_SURFACE)
 				{
-					// landing
-					if (point == baseLeft || point == baseRight)
-					{
-						land(data);
-						return;
-					}
 					
 					// force off the edge of Parts if not 'clean'
 					if (px >= tPart.right && tPart.slope <= 0) {
@@ -293,9 +298,6 @@ package iphstich.platformer.engine.entities
 				//{
 					//return;
 				//}
-				
-				// if not 'landing', and is a platform, do nothing
-				if (target is Platform) return;
 				
 				// hitting a wall
 				if (data.type == HitData.TYPE_LEFT)

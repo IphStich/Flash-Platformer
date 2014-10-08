@@ -167,6 +167,14 @@ package iphstich.platformer.engine.entities
 				r = pr;
 				rotation = r / Math.PI * 180;
 			}
+			
+			if (!alive) return;
+			
+			// check for out of level
+			if (y + hitBox.top >= level.killLevel)
+			{
+				this.death();
+			}
 		}
 		
 		protected var collisions:Vector.<HitData>;
@@ -227,7 +235,7 @@ package iphstich.platformer.engine.entities
 		public function hitTestPath (x1:Number, y1:Number, x2:Number, y2:Number) : HitData
 		{
 			if (!alive) return null;
-			if (!hitBox) return null;
+			if (!hitBox) { trace("Null hitBox test on " + this); return null; }
 			
 			// first test with current position
 			var hd:HitData = hitBox.hitTestPath(x1 - x, y1 - y, x2 - x, y2 - y);
@@ -277,6 +285,8 @@ package iphstich.platformer.engine.entities
 		
 		public function spawn (x:Number, y:Number, lev:Level) : void
 		{
+			collided = true; // just in caase this occurs mid-tick
+			
 			alive 	= true;
 			vx = 0;
 			ax = 0;
