@@ -550,14 +550,14 @@ package iphstich.platformer.engine.levels
 		
 		public function removeEntity(target:Entity):void
 		{
+			var i:int = collidables.indexOf(target);
+			if (i != -1) { collidables.splice(i, 1); numCollidables --; }
+			
 			if (inTick) { markForRemoval(target); return; }
 			
 			//trace("REMOVE: " + getQualifiedClassName(target), Util.getMemoryLocation(target));
 			entities.splice(entities.indexOf(target), 1);
 			numEntities --;
-			
-			collidables.splice(collidables.indexOf(target), 1);
-			numCollidables --;
 			
 			entityPlane.removeChild(target);
 			
@@ -566,6 +566,10 @@ package iphstich.platformer.engine.levels
 		
 		private function markForRemoval (entity:Entity) : void
 		{
+			// check and remove them from the to add entities if needed
+			var i:int = toAddEntities.indexOf(entity);
+			if (i != -1) { toAddEntities.splice(i, 1); return }
+			
 			if (toRemoveEntities.indexOf(entity) != -1) trace("Cannot remove an entity twice!");
 			else toRemoveEntities.push(entity);
 		}

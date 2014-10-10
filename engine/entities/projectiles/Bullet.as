@@ -32,6 +32,7 @@ package iphstich.platformer.engine.entities.projectiles
 			vx = speedX;
 			vy = speedY;
 			facing = (speedX < 0) ? -1 : 1;
+			alive = true;
 			
 			this.scaleX = facing;
 		}
