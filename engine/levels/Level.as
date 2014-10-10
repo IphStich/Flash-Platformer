@@ -262,7 +262,7 @@ package iphstich.platformer.engine.levels
 			
 			else if (trigger.label == "kill")
 			{
-				other.death();
+				other.hitKillBarrier ();
 				trigger.canBeActivated = true;
 			}
 		}

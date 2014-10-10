@@ -173,7 +173,7 @@ package iphstich.platformer.engine.entities
 			// check for out of level
 			if (y + hitBox.top >= level.killLevel)
 			{
-				this.death();
+				this.hitKillBarrier ();
 			}
 		}
 		
@@ -323,6 +323,11 @@ package iphstich.platformer.engine.entities
 		{
 			vx = x;
 			vy = y;
+		}
+		
+		public function hitKillBarrier () : void
+		{
+			death ();
 		}
 		
 		public function death () : void
