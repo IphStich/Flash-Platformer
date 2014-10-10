@@ -339,6 +339,7 @@ package iphstich.platformer.engine.entities
 		
 		public function destroy () : void
 		{
+			alive = false;
 			stop();
 			if (level != null) level.removeEntity(this);
 			// garbage collection
