@@ -65,6 +65,7 @@ package iphstich.platformer.engine.entities
 		public var canActivateTriggers:Boolean = true;
 		
 		protected var DestroyOnClear:Boolean = true;
+		protected var StopOnPause:Boolean = false;
 		
 		public function Entity()
 		{
@@ -427,7 +428,19 @@ package iphstich.platformer.engine.entities
 		
 		public function hitBy (other:*) : void
 		{
-			
+			// do nothing
+		}
+		
+		public function pause () : void
+		{
+			// do nothing
+			if (StopOnPause) stop();
+		}
+		
+		public function unpause () : void
+		{
+			// do nothing
+			if (StopOnPause) play();
 		}
 	}
 }

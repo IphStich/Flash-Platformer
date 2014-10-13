@@ -484,8 +484,6 @@ package iphstich.platformer.engine.levels
 		
 		protected function postTick (style:uint, delta:Number) : void
 		{
-			if (style == Engine.TICK_DISTINCT) Controls.manualReset();
-			
 			while (toAddEntities.length > 0)
 				addEntity (toAddEntities.pop());
 			
@@ -633,6 +631,24 @@ package iphstich.platformer.engine.levels
 			//{
 				//new TestEnemy().spawn(CustomMath.randomBetween(a.left, a.right), a.bottom, this);
 			//}
+		}
+		
+		public function pause () : void
+		{
+			var e:Entity;
+			
+			for each (e in entities)
+			{
+				e.pause ();
+			}
+		}
+		
+		public function unpause () : void
+		{
+			var e:Entity;
+			
+			for each (e in entities)
+				e.unpause ();
 		}
 	}
 }
